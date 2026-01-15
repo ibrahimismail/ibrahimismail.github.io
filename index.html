@@ -1,18 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ibrahim Ismail</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  </head>
-  <body>
-    <main>
-        <h1>Welcome to My Website</h1> 
-        <h1>My name is Ibrahim Hussein Ismail!!</h1>  
-    </main>
-	<script src="index.js"></script>
-  </body>
+    <title>Ibrahim Ismail | Software Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="glitch-container">
+                    <h1 class="glitch" data-text="Ibrahim Ismail">
+                        <span class="glitch-text">Ibrahim Ismail</span>
+                        <span class="glitch-slice glitch-slice-1" aria-hidden="true">Ibrahim Ismail</span>
+                        <span class="glitch-slice glitch-slice-2" aria-hidden="true">Ibrahim Ismail</span>
+                        <span class="glitch-slice glitch-slice-3" aria-hidden="true">Ibrahim Ismail</span>
+                        <span class="glitch-slice glitch-slice-4" aria-hidden="true">Ibrahim Ismail</span>
+                    </h1>
+                </div>
+                <p class="subtitle">Software Engineer</p>
+                <p class="hero-description">
+                    Crafting digital experiences with code, creativity, and cutting-edge technology.
+                    Passionate about building scalable solutions and pushing the boundaries of what's possible.
+                </p>
+                <a href="#contact" class="cta-button">Get In Touch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title fade-in">About Me</h2>
+            <div class="about-content">
+                <div class="about-text fade-in">
+                    <p>
+                        I'm a <strong>Software Engineer</strong> with a passion for creating innovative solutions 
+                        and pushing the boundaries of technology. With expertise in modern web development, 
+                        I specialize in building scalable, performant applications that deliver exceptional user experiences.
+                    </p>
+                    <p>
+                        My journey in software engineering has been driven by curiosity and a relentless pursuit 
+                        of excellence. I thrive in challenging environments and love solving complex problems 
+                        with elegant, efficient code.
+                    </p>
+                    <p>
+                        When I'm not coding, you'll find me exploring new technologies, contributing to open-source 
+                        projects, or sharing knowledge with the developer community.
+                    </p>
+                </div>
+                <div class="skills-grid fade-in">
+                    <div class="skill-card">
+                        <div class="skill-icon">⚡</div>
+                        <div class="skill-name">Frontend</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">🚀</div>
+                        <div class="skill-name">Backend</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">💾</div>
+                        <div class="skill-name">Databases</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">☁️</div>
+                        <div class="skill-name">Cloud</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">🔧</div>
+                        <div class="skill-name">DevOps</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">🎨</div>
+                        <div class="skill-name">UI/UX</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title fade-in">Experience</h2>
+            <div class="timeline">
+                <div class="timeline-item fade-in">
+                    <div class="timeline-title">Senior Software Engineer</div>
+                    <div class="timeline-company">Tech Company</div>
+                    <div class="timeline-date">2022 - Present</div>
+                    <div class="timeline-description">
+                        Leading development of high-performance web applications using modern frameworks.
+                        Architecting scalable solutions and mentoring junior developers.
+                    </div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-title">Software Engineer</div>
+                    <div class="timeline-company">Innovation Labs</div>
+                    <div class="timeline-date">2020 - 2022</div>
+                    <div class="timeline-description">
+                        Developed full-stack applications with focus on user experience and performance.
+                        Collaborated with cross-functional teams to deliver cutting-edge products.
+                    </div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-title">Junior Developer</div>
+                    <div class="timeline-company">Startup Inc</div>
+                    <div class="timeline-date">2018 - 2020</div>
+                    <div class="timeline-description">
+                        Built responsive web applications and learned best practices in software development.
+                        Contributed to multiple projects and gained expertise in various technologies.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title fade-in">Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card fade-in">
+                    <div class="project-title">E-Commerce Platform</div>
+                    <div class="project-description">
+                        A full-stack e-commerce solution with real-time inventory management, 
+                        payment integration, and advanced analytics dashboard.
+                    </div>
+                    <div class="project-tech">
+                        <span class="tech-tag">React</span>
+                        <span class="tech-tag">Node.js</span>
+                        <span class="tech-tag">MongoDB</span>
+                    </div>
+                </div>
+                <div class="project-card fade-in">
+                    <div class="project-title">AI Analytics Dashboard</div>
+                    <div class="project-description">
+                        Machine learning-powered analytics platform with real-time data visualization 
+                        and predictive insights for business intelligence.
+                    </div>
+                    <div class="project-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">TensorFlow</span>
+                        <span class="tech-tag">D3.js</span>
+                    </div>
+                </div>
+                <div class="project-card fade-in">
+                    <div class="project-title">Cloud Infrastructure</div>
+                    <div class="project-description">
+                        Scalable cloud infrastructure setup with automated deployment, 
+                        monitoring, and disaster recovery capabilities.
+                    </div>
+                    <div class="project-tech">
+                        <span class="tech-tag">AWS</span>
+                        <span class="tech-tag">Docker</span>
+                        <span class="tech-tag">Kubernetes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title fade-in">Get In Touch</h2>
+            <p class="hero-description fade-in">
+                I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+            </p>
+            <div class="contact-links fade-in">
+                <a href="mailto:ibrahim@example.com" class="contact-link" title="Email">📧</a>
+                <a href="https://github.com/ibrahimismail" class="contact-link" title="GitHub">💻</a>
+                <a href="https://linkedin.com/in/ibrahimismail" class="contact-link" title="LinkedIn">💼</a>
+                <a href="https://twitter.com/ibrahimismail" class="contact-link" title="Twitter">🐦</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+</body>
 </html>
