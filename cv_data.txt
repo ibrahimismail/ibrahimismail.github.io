@@ -1,0 +1,49 @@
+ 
+Ibrahim Ismail
+Senior Full-Stack Engineer with 5+ years of experience specializing in high-performance frontend architectures, including micro-frontends and browser extensions, backed by robust full-stack capabilities. I can adapt to any tech stack and I am available to start immediately.
+
+Beirut, Lebanon
++961 3 689 039
+ibrahimismailh@gmail.com
+https://ibrahimismail.dev
+EXPERIENCE
+JumpCloud, Colorado, US (Remote) — Software Engineer
+FEB 2022 - MAY 2026 (4 years 3 months)
+JumpCloud is a company that provides a unified platform for device and access management. My responsibilities included:.
+Migrating the password manager’s cross-browser extension from manifest v2 to v3 and designing  a modern webpack build/dev workflow that optimized build times and increased development velocity.
+Adding Safari browser support and creating a communication layer using Swift to communicate with the supporting desktop application.
+Migrating UI elements from React to Vue, to use the common ui libraries.
+Setting up CI/CD pipelines using CircleCI and Github Actions to release the browser extension to all major browser stores.
+Adding new features to the authentication and authorization systems such as: custom roles, MFA factors, multiple roles, implementing both UI elements and the supporting backend endpoints.
+Integrating AI tools and AI workflows into daily  development cycles to increase development velocity.
+Working closely with designers to improve UX.
+
+MYKI, Beirut, Lebanon — Software Engineer
+SEP 2021 - FEB 2022 (6 months)
+Eventually acquired by JumpCloud, MYKI  was  a Password Manager company that provided solutions to Businesses and MSPs. My responsibilities included:
+Leading the MYKI password manager’s browser extension development efforts. Adding new features, ensuring cross-browser support, and improving the credentials autofill mechanism.
+
+Neo Mena Technologies, Beirut, Lebanon — Software Engineer
+DEC 2020 - SEP 2021 (9 months)
+Neo is a FinTech company that specializes in investment and  wealth management. My responsibilities included:
+Translating designs into performant, pixel perfect, and responsive web components using React, and SASS CSS.
+Setting up a new mini project with localization, dark mode, unit testing, and mobile first design and leading it to completion.
+
+SKILLS
+Programming Languages:
+JavaScript, TypeScript, Vue, React, Node.js, Express.js, Java, Python, Flask, PHP.
+Database Systems:
+PostgresQL, MySql, MongoDB.
+CI/CD:
+GitHub Actions, CircleCI.
+Other:
+Browser extensions, Mobile Applications (React Native), Unit testing, Feature Flags.
+
+
+EDUCATION
+Master of Science in Computer Engineering — LIU, Beirut, Lebanon
+SEP 2019 - JUNE 2021
+GPA: 3.85
+Bachelor of Science in Computer Engineering — LIU, Beirut, Lebanon
+SEP 2016 - JUNE 2019
+GPA: 4.0
