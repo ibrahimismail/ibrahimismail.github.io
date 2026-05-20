@@ -147,7 +147,7 @@ const App: React.FC = () => {
         </section>
 
         <section className="mb-24">
-          <h2 className="text-3xl font-bold mb-10 flex items-center gap-3">
+          <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
             <Briefcase className="text-blue-500" /> Professional Experience
           </h2>
           <div className="relative ml-4 border-l-2 border-slate-200 dark:border-slate-800">
@@ -204,8 +204,8 @@ const App: React.FC = () => {
         </section>
 
         <section className="mb-24">
-          <h2 className="text-3xl font-bold mb-10 flex items-center gap-3">
-            <Code2 className="text-blue-500" /> Technical Arsenal
+          <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
+            <Code2 className="text-blue-500" /> Technical Skills
           </h2>
           <motion.div
             variants={staggerContainer}
@@ -235,7 +235,7 @@ const App: React.FC = () => {
         </section>
 
         <section className="mb-24">
-          <h2 className="text-3xl font-bold mb-10 flex items-center gap-3">
+          <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
             <GraduationCap className="text-blue-500" /> Education
           </h2>
           <motion.div
