@@ -78,6 +78,10 @@ export const SKILLS: Skill[] = [
   { name: "React", icon: "https://img.icons8.com/color/48/react-native.png" },
   { name: "Node.js", icon: "https://img.icons8.com/color/48/nodejs.png" },
   {
+    name: "Electron.js",
+    icon: "https://img.icons8.com/?size=100&id=z1hRF8ZnphmY&format=png&color=000000",
+  },
+  {
     name: "Express.js",
     icon: "https://img.icons8.com/color/48/express-js.png",
   },
