@@ -1,9 +1,15 @@
+export interface ExperienceSubsection {
+  title: string;
+  items: string[];
+}
+
 export interface Experience {
   company: string;
   role: string;
   period: string;
   location: string;
-  description: string[];
+  description?: string[];
+  subsections?: ExperienceSubsection[];
 }
 
 export interface Education {

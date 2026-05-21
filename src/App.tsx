@@ -182,20 +182,46 @@ const App: React.FC = () => {
                         {exp.period}
                       </div>
                     </div>
-                    <ul className="space-y-2">
-                      {exp.description.map((desc, dIdx) => (
-                        <li
-                          key={dIdx}
-                          className="text-slate-600 dark:text-slate-400 text-sm flex items-start gap-2"
-                        >
-                          <ChevronRight
-                            size={14}
-                            className="mt-1 text-blue-500 shrink-0"
-                          />
-                          {desc}
-                        </li>
-                      ))}
-                    </ul>
+                    {exp.subsections ? (
+                      <div className="space-y-6">
+                        {exp.subsections.map((section, sIdx) => (
+                          <div key={sIdx}>
+                            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3">
+                              {section.title}
+                            </h4>
+                            <ul className="space-y-2">
+                              {section.items.map((item, iIdx) => (
+                                <li
+                                  key={iIdx}
+                                  className="text-slate-600 dark:text-slate-400 text-sm flex items-start gap-2"
+                                >
+                                  <ChevronRight
+                                    size={14}
+                                    className="mt-1 text-blue-500 shrink-0"
+                                  />
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <ul className="space-y-2">
+                        {exp.description?.map((desc, dIdx) => (
+                          <li
+                            key={dIdx}
+                            className="text-slate-600 dark:text-slate-400 text-sm flex items-start gap-2"
+                          >
+                            <ChevronRight
+                              size={14}
+                              className="mt-1 text-blue-500 shrink-0"
+                            />
+                            {desc}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </motion.div>
                 </motion.div>
               ))}
