@@ -150,7 +150,7 @@ const App: React.FC = () => {
           <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
             <Briefcase className="text-blue-500" /> Professional Experience
           </h2>
-          <div className="relative ml-4 border-l-2 border-slate-200 dark:border-slate-800">
+          <div className="relative -mx-2 border-l-2 border-slate-200 dark:border-slate-800 md:mx-0 md:ml-4">
             <motion.div
               variants={staggerContainer}
               initial="initial"
@@ -162,7 +162,7 @@ const App: React.FC = () => {
                 <motion.div
                   key={idx}
                   variants={fadeInUp}
-                  className="relative pl-8"
+                  className="relative pl-4 md:pl-8"
                 >
                   <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-6 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
                   <motion.div
