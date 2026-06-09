@@ -11,8 +11,10 @@ import {
   Briefcase,
   GraduationCap,
   Code2,
+  Sparkles,
+  ArrowUpRight,
 } from "lucide-react";
-import { PROFILE, SKILLS, EXPERIENCE, EDUCATION } from "./constants";
+import { PROFILE, SKILLS, EXPERIENCE, EDUCATION, FOUNDER_VENTURE } from "./constants";
 import { Theme } from "./types";
 
 const fadeInUp = {
@@ -33,6 +35,8 @@ const btnSize =
   "w-full sm:min-w-[12.5rem] sm:w-[12.5rem] flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-semibold transition-all";
 const btnPrimary = `${btnSize} bg-blue-600 hover:bg-blue-700 text-white shadow-lg`;
 const btnOutline = `${btnSize} border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800`;
+const btnVioletCompact =
+  "inline-flex w-fit items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-500/20";
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
@@ -143,6 +147,90 @@ const App: React.FC = () => {
                 <Download size={18} /> Download CV
               </motion.a>
             </div>
+          </motion.div>
+        </section>
+
+        <section className="mb-24">
+          <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
+            <Sparkles className="text-violet-500" /> Founder Work
+          </h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div
+              whileHover={{ scale: 1.01, y: -4 }}
+              className="glass p-6 md:p-8 rounded-2xl border border-violet-500/20 border-l-4 border-l-violet-500 shadow-[0_0_40px_rgba(139,79,217,0.08)] dark:shadow-[0_0_40px_rgba(139,79,217,0.14)] transition-all"
+            >
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="space-y-3">
+                    <a
+                      href={FOUNDER_VENTURE.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-block transition-opacity hover:opacity-80"
+                    >
+                      <img
+                        src={FOUNDER_VENTURE.logo}
+                        alt={FOUNDER_VENTURE.name}
+                        className="h-7 w-auto dark:brightness-110"
+                      />
+                    </a>
+                    <div>
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                        {FOUNDER_VENTURE.role}
+                      </h3>
+                      <a
+                        href={FOUNDER_VENTURE.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-sm font-semibold text-violet-600 dark:text-violet-400 hover:underline"
+                      >
+                        {FOUNDER_VENTURE.url.replace("https://", "")}
+                        <ArrowUpRight size={14} />
+                      </a>
+                    </div>
+                  </div>
+                  <div className="text-sm text-slate-500 font-medium bg-violet-500/10 text-violet-700 dark:text-violet-300 px-3 py-1 rounded-full w-fit shrink-0">
+                    {FOUNDER_VENTURE.period}
+                  </div>
+                </div>
+
+                <p className="text-base font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
+                  {FOUNDER_VENTURE.tagline}
+                </p>
+
+                <ul className="space-y-3">
+                  {FOUNDER_VENTURE.description.map((item, idx) => (
+                    <li
+                      key={idx}
+                      className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed flex items-start gap-2"
+                    >
+                      <ChevronRight
+                        size={14}
+                        className="mt-1 text-violet-500 shrink-0"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <motion.a
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  href={FOUNDER_VENTURE.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={btnVioletCompact}
+                >
+                  {FOUNDER_VENTURE.ctaLabel}
+                  <ArrowUpRight size={16} />
+                </motion.a>
+              </div>
+            </motion.div>
           </motion.div>
         </section>
 

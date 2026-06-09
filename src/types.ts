@@ -25,6 +25,17 @@ export interface Skill {
   icon: string;
 }
 
+export interface FounderVenture {
+  name: string;
+  role: string;
+  period: string;
+  tagline: string;
+  url: string;
+  logo: string;
+  description: string[];
+  ctaLabel: string;
+}
+
 export enum Theme {
   LIGHT = "light",
   DARK = "dark",

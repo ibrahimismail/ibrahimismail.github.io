@@ -1,4 +1,4 @@
-import { Skill, Experience, Education } from "./types";
+import { Skill, Experience, Education, FounderVenture } from "./types";
 
 export const PROFILE = {
   name: "Ibrahim Ismail",
@@ -9,6 +9,22 @@ export const PROFILE = {
   email: "ibrahimismailh@gmail.com",
   website: "https://ibrahimismail.dev",
   linkedin: "https://linkedin.com/in/ibrahimismailh",
+};
+
+export const FOUNDER_VENTURE: FounderVenture = {
+  name: "KlikNote",
+  role: "Founder & Lead Engineer",
+  period: "2026 – Present",
+  tagline:
+    "A high-velocity, local-first, keyboard-native note-taking app built for uninterrupted focus.",
+  url: "https://kliknote.com",
+  logo: "/kliknote-logo.svg",
+  description: [
+    "When your mind moves fast, context-switching kills momentum. I founded KlikNote to replace the cloud latency, account walls, and heavy interfaces of traditional note tools with something that keeps up.",
+    "Designed and engineered a zero-latency, client-side engine with global context-menu capture—web research and ideas are saved the instant they happen, living securely in the browser's isolated storage.",
+    "Local-first by default, keyboard-native, and built entirely around the browser extension experience I wanted as a power user.",
+  ],
+  ctaLabel: "Try KlikNote today",
 };
 
 export const EXPERIENCE: Experience[] = [
