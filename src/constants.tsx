@@ -3,7 +3,9 @@ import { Skill, Experience, Education, FounderVenture } from "./types";
 export const PROFILE = {
   name: "Ibrahim Ismail",
   title: "Senior Full-Stack Engineer",
-  bio: "Senior Full-Stack Engineer with 5+ years of experience specializing in high-performance frontend architectures, including micro-frontends and browser extensions, backed by robust full-stack capabilities.",
+  bioLead: "Senior Full-Stack Engineer",
+  bioBody:
+    " with 5+ years building full-stack systems across frontend architecture, backend APIs, and browser extension platforms—including micro-frontends, REST and GraphQL APIs, and secure authentication and authorization flows.",
   location: "Beirut, Lebanon",
   phone: "+961 3 689 039",
   email: "ibrahimismailh@gmail.com",
@@ -33,50 +35,41 @@ export const EXPERIENCE: Experience[] = [
     role: "Software Engineer",
     period: "FEB 2022 - MAY 2026 (4 years 3 months)",
     location: "Colorado, US (Remote)",
+    summary:
+      "JumpCloud provides an enterprise cloud directory platform securing access, identity, and device management across global workforces.",
     subsections: [
       {
-        title: "Password Manager",
+        title: "Core Architecture & Team Leadership",
         items: [
-          "Leading the JumpCloud Password Manager browser extension (PWMBE) team, and owning all the processes, deliverables and the full SDLC.",
-          "Engineering a new build process for the PWMBE using webpack to replace the legacy gulp workflow, reducing build times by 8x (from 4 minutes to 30 seconds).",
-          "Migrating the PWMBE from manifest v2 to manifest v3, redesigning the extension to use a service worker instead of a persistent background script.",
-          "Rewriting the whole PWMBE UI to implement a new design while migrating from React to Vue.",
-          "Optimized the PWMBE credentials autofilling mechanism, and added multiple features such as autofill exceptions, blacklisting, whitelisting, and user-defined autofill rules.",
-          "Implementing a new communication mechanism between the extension's service worker, popup, and UI dialogs.",
-          "Adding Safari browser support to the PWMBE and creating a native low-level communication layer using Swift to communicate with the supporting desktop application.",
-          "Improved the peer sync mechanism that the PWMBE uses to communicate with the supporting desktop application, enhancing performance and greatly reducing memory leaks.",
-          "Experience implementing secure peer-to-peer communication and the underlying encryption mechanisms, from key generation, key exchange, key rotation, asymmetric and symmetric encryption.",
-          "Scaling the PWMBE to support a much larger number of items by implementing caching and lazy loading, in addition to list virtualization. Increased the supported number of items by 10x (from 5,000 to 50,000).",
-          "Implementing an image server with frontend caching to stream website icon images for different PWM applications, including calling GraphQL third-party endpoints and subscribing to updates using a webhook.",
-          "Contributed to the cross-platform (Electron.js) PWM Desktop Application.",
-          "Implementing CI/CD pipelines to build debugging and production builds for the PWMBE, then distribute them to all major browser stores. First implemented in CircleCI then migrated to GitHub Actions.",
-          "Onboarded multiple new team members to the PWMBE and hosted knowledge transfer sessions.",
+          "Led the JumpCloud Password Manager Browser Extension (PWMBE) team, taking full accountability for end-to-end delivery, architectural decisions, and cross-team execution.",
+          "Architected complex UI structures within a micro-frontends framework for the core JumpCloud Admin Portal.",
+          "Engineered a dynamic rendering UI for custom admin roles, grouping permission scopes flexibly into categorized tables with logical selection dependencies. This eliminated the need for frontend code changes when adding new scopes.",
+          "Actively participated in the technical hiring pipeline, interviewing engineering candidates, and built a structured onboarding process with continuous knowledge-transfer sessions.",
         ],
       },
       {
-        title: "Admin & User Portal",
+        title: "System Optimization & Performance Engineering",
         items: [
-          "Created a new browser extension (JumpCloud Go) to support cross-platform biometric authentication for User Portal login, allowing users to login without needing to use their passwords.",
-          "Implemented custom roles UI using dynamic rendering to allow building a new custom role, grouping scopes into different categories, then splitting them into different tables based on type, and implementing logical dependencies between selections. This also allows adding new scopes without needing any frontend changes.",
-          "Implemented multiple backend endpoints to support CRUD operations of custom roles.",
-          "Implemented database migration scripts to allow adding new scopes to the system.",
-          "Implemented a new scope checking mechanism to determine access on the admin portal.",
-          "Implemented a new feature to allow admins to be assigned to multiple roles.",
-          "Experience working with microfrontends on the JumpCloud Admin Portal.",
-          "Owning the full SDLC from design to implementation and testing to deploying to multiple environments.",
+          "Replaced a legacy Gulp build workflow with a modern Webpack configuration for the browser extension, slashing build compilation times by 8x (from 4 minutes to 30 seconds).",
+          "Implemented client-side caching, lazy loading, and list virtualization to scale the extension's data capability, expanding smoothly from a 5,000-item ceiling to handling 50,000+ items with minimal footprints.",
+          "Overhauled the low-level peer synchronization mechanism connecting the web extension to the desktop application, mitigating critical memory leaks and boosting performance.",
         ],
       },
       {
-        title: "General",
+        title: "Security, Authentication & Native Integrations",
         items: [
-          "Integrating AI tools and AI workflows into daily development cycles to increase development velocity. Utilizing tools such as Gemini, GitHub Copilot, Cursor, agent skills, MCP servers, etc.",
-          "Experience writing unit tests both for frontend and backend applications.",
-          "Experience working with feature flags (LaunchDarkly, Split).",
-          "Experience working with logging services such as DataDog.",
-          "Experience working with microservices and gRPC with Protocol Buffers (Protobuf).",
-          "Experience with handling production incidents, rollbacks, and root cause analysis.",
-          "Experience working in an Agile Scrum team.",
-          "Participated in the hiring process, interviewing multiple candidates and providing feedback and recommendations.",
+          "Led the critical migration of the primary web extension from Manifest v2 to v3, redesigning core workflows around background Service Workers to maintain high-efficiency operations.",
+          "Developed the JumpCloud Go browser extension from scratch, enabling secure, cross-platform biometric authentication for seamless user logins.",
+          "Extended extension ecosystem capabilities by delivering Safari browser support, using a native Swift communication layer to interface securely with supporting desktop software.",
+          "Implemented secure peer-to-peer data synchronization pipelines utilizing complex underlying encryption models, including asymmetric/symmetric encryption, key generation, and robust key rotation.",
+        ],
+      },
+      {
+        title: "Modern Engineering Workflows & DevOps",
+        items: [
+          "Embedded advanced AI tools (Cursor, Claude Code, Gemini, Copilot, and custom MCP server integrations) directly into regular development cycles, establishing massive gains in coding velocity and test writing.",
+          "Built and managed full CI/CD deployment automation (migrating from CircleCI to GitHub Actions) to compile, test, and automatically distribute production builds directly to major web stores.",
+          "Managed production incident responses, rollbacks, and root-cause analyses using LaunchDarkly for real-time feature flagging and DataDog for centralized system logging.",
         ],
       },
     ],
@@ -86,8 +79,10 @@ export const EXPERIENCE: Experience[] = [
     role: "Software Engineer",
     period: "SEP 2021 - FEB 2022 (6 months)",
     location: "Beirut, Lebanon",
+    summary:
+      "A decentralized password management company serving global businesses and MSPs (Acquired by JumpCloud).",
     description: [
-      "Led the MYKI password manager's browser extension development efforts, adding new features, ensuring cross-browser support, and improving the credentials autofill mechanism.",
+      "Led the development efforts for the flagship password manager browser extension, shipping key updates, strengthening cross-browser stability, and refining automated credential autofill logic.",
     ],
   },
   {
@@ -95,23 +90,25 @@ export const EXPERIENCE: Experience[] = [
     role: "Software Engineer",
     period: "DEC 2020 - SEP 2021 (9 months)",
     location: "Beirut, Lebanon",
+    summary:
+      "A premier FinTech corporation specializing in wealth management and modern digital investment applications.",
     description: [
-      "Translated designs into performant, pixel-perfect, and responsive web components using React and SASS CSS.",
-      "Set up a new mini project with localization, dark mode, unit testing, and mobile-first design and led it to completion.",
+      "Translated structural UX drafts into highly performant, pixel-perfect, and fully responsive frontend views using React and SASS.",
+      "Independently managed a standalone mini-project from scratch to production deployment, introducing full localization, dark mode, mobile-first design rules, and complete automated unit testing patterns.",
     ],
   },
 ];
 
 export const EDUCATION: Education[] = [
   {
-    school: "Lebanese International University (LIU)",
+    school: "LIU",
     degree: "Master of Science in Computer Engineering",
     location: "Beirut, Lebanon",
     period: "SEP 2019 - JUNE 2021",
     gpa: "3.85",
   },
   {
-    school: "Lebanese International University (LIU)",
+    school: "LIU",
     degree: "Bachelor of Science in Computer Engineering",
     location: "Beirut, Lebanon",
     period: "SEP 2016 - JUNE 2019",
@@ -128,17 +125,16 @@ export const SKILLS: Skill[] = [
     name: "TypeScript",
     icon: "https://img.icons8.com/color/48/typescript.png",
   },
-  { name: "Vue", icon: "https://img.icons8.com/color/48/vue-js.png" },
   { name: "React", icon: "https://img.icons8.com/color/48/react-native.png" },
+  { name: "Next.js", icon: "https://img.icons8.com/color/48/nextjs.png" },
+  { name: "Vue", icon: "https://img.icons8.com/color/48/vue-js.png" },
+  { name: "Tailwind", icon: "https://img.icons8.com/color/48/tailwindcss.png" },
   { name: "Node.js", icon: "https://img.icons8.com/color/48/nodejs.png" },
-  {
-    name: "Electron.js",
-    icon: "https://img.icons8.com/?size=100&id=z1hRF8ZnphmY&format=png&color=000000",
-  },
   {
     name: "Express.js",
     icon: "https://img.icons8.com/color/48/express-js.png",
   },
+  { name: "GraphQL", icon: "https://img.icons8.com/color/48/graphql.png" },
   { name: "Java", icon: "https://img.icons8.com/color/48/java-coffee-cup-logo.png" },
   { name: "Python", icon: "https://img.icons8.com/color/48/python--v1.png" },
   { name: "Flask", icon: "https://img.icons8.com/color/48/flask.png" },
@@ -155,6 +151,7 @@ export const SKILLS: Skill[] = [
     name: "MongoDB",
     icon: "https://img.icons8.com/color/48/mongodb.png",
   },
+  { name: "Docker", icon: "https://img.icons8.com/color/48/docker.png" },
   {
     name: "GitHub Actions",
     icon: "https://img.icons8.com/color/48/github--v1.png",
@@ -166,9 +163,5 @@ export const SKILLS: Skill[] = [
   {
     name: "Browser Extensions",
     icon: "https://img.icons8.com/?size=100&id=63785&format=png&color=000000",
-  },
-  {
-    name: "React Native",
-    icon: "https://img.icons8.com/color/48/react-native.png",
   },
 ];

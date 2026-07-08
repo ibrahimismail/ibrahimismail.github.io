@@ -126,7 +126,10 @@ const App: React.FC = () => {
               {PROFILE.title}
             </p>
             <p className="text-lg max-w-2xl mx-auto mb-10 text-slate-500 dark:text-slate-400 leading-relaxed">
-              {PROFILE.bio}
+              <span className="font-bold text-slate-700 dark:text-slate-200">
+                {PROFILE.bioLead}
+              </span>
+              {PROFILE.bioBody}
             </p>
             <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4 w-full max-w-xs mx-auto sm:max-w-none sm:mx-0">
               <motion.a
@@ -270,6 +273,11 @@ const App: React.FC = () => {
                         {exp.period}
                       </div>
                     </div>
+                    {exp.summary ? (
+                      <p className="mb-4 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        {exp.summary}
+                      </p>
+                    ) : null}
                     {exp.subsections ? (
                       <div className="space-y-6">
                         {exp.subsections.map((section, sIdx) => (

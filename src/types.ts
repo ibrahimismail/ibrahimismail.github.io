@@ -8,6 +8,7 @@ export interface Experience {
   role: string;
   period: string;
   location: string;
+  summary?: string;
   description?: string[];
   subsections?: ExperienceSubsection[];
 }
