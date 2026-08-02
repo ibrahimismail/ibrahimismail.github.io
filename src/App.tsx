@@ -154,7 +154,7 @@ const App: React.FC = () => {
           </motion.div>
         </section>
 
-        <section className="mb-24">
+        <section className="mb-24 hidden">
           <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
             <Sparkles className="text-violet-500" /> Founder Work
           </h2>
