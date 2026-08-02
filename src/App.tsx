@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { PROFILE, SKILLS, EXPERIENCE, EDUCATION, FOUNDER_VENTURE } from "./constants";
 import { Theme } from "./types";
+import { formatExperiencePeriod } from "./utils/formatPeriod";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -197,9 +198,6 @@ const App: React.FC = () => {
                       </a>
                     </div>
                   </div>
-                  <div className="text-sm text-slate-500 font-medium bg-violet-500/10 text-violet-700 dark:text-violet-300 px-3 py-1 rounded-full w-fit shrink-0">
-                    {FOUNDER_VENTURE.period}
-                  </div>
                 </div>
 
                 <p className="text-base font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -270,7 +268,7 @@ const App: React.FC = () => {
                         </p>
                       </div>
                       <div className="text-sm text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full w-fit shrink-0">
-                        {exp.period}
+                        {formatExperiencePeriod(exp.dates)}
                       </div>
                     </div>
                     {exp.summary ? (

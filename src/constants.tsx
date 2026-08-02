@@ -16,7 +16,6 @@ export const PROFILE = {
 export const FOUNDER_VENTURE: FounderVenture = {
   name: "KlikNote",
   role: "Founder & Lead Engineer",
-  period: "2026 – Present",
   tagline:
     "A high-velocity, local-first, keyboard-native note-taking app built for uninterrupted focus.",
   url: "https://kliknote.com",
@@ -33,7 +32,7 @@ export const EXPERIENCE: Experience[] = [
   {
     company: "JumpCloud",
     role: "Software Engineer",
-    period: "FEB 2022 - MAY 2026 (4 years 3 months)",
+    dates: { startMonth: 2, startYear: 2022 },
     location: "Colorado, US (Remote)",
     summary:
       "JumpCloud provides an enterprise cloud directory platform securing access, identity, and device management across global workforces.",
@@ -77,7 +76,7 @@ export const EXPERIENCE: Experience[] = [
   {
     company: "MYKI",
     role: "Software Engineer",
-    period: "SEP 2021 - FEB 2022 (6 months)",
+    dates: { startMonth: 9, startYear: 2021, endMonth: 2, endYear: 2022 },
     location: "Beirut, Lebanon",
     summary:
       "A decentralized password management company serving global businesses and MSPs (Acquired by JumpCloud).",
@@ -88,7 +87,7 @@ export const EXPERIENCE: Experience[] = [
   {
     company: "Neo Mena Technologies",
     role: "Software Engineer",
-    period: "DEC 2020 - SEP 2021 (9 months)",
+    dates: { startMonth: 12, startYear: 2020, endMonth: 9, endYear: 2021 },
     location: "Beirut, Lebanon",
     summary:
       "A premier FinTech corporation specializing in wealth management and modern digital investment applications.",

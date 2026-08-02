@@ -3,10 +3,17 @@ export interface ExperienceSubsection {
   items: string[];
 }
 
+export interface ExperienceDates {
+  startMonth: number;
+  startYear: number;
+  endMonth?: number | null;
+  endYear?: number | null;
+}
+
 export interface Experience {
   company: string;
   role: string;
-  period: string;
+  dates: ExperienceDates;
   location: string;
   summary?: string;
   description?: string[];
@@ -29,7 +36,6 @@ export interface Skill {
 export interface FounderVenture {
   name: string;
   role: string;
-  period: string;
   tagline: string;
   url: string;
   logo: string;
