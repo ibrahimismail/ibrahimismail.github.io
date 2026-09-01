@@ -32,45 +32,51 @@ export const EXPERIENCE: Experience[] = [
   {
     company: "JumpCloud",
     role: "Software Engineer",
-    dates: { startMonth: 2, startYear: 2022 },
+    dates: { startMonth: 2, startYear: 2022, endMonth: 5, endYear: 2026 },
     location: "Colorado, US (Remote)",
     summary:
-      "JumpCloud provides an enterprise cloud directory platform securing access, identity, and device management across global workforces.",
+      "JumpCloud is a unified identity and device management platform (SSO, MFA, Zero Trust, RADIUS) securing Windows, macOS, Linux, and Mobile devices.",
     subsections: [
       {
-        title: "Backend Systems, APIs & Data",
+        title: "Ownership & Technical Leadership",
         items: [
-          "Built and maintained backend services powering password vault synchronization across web extensions, desktop apps, and native clients—handling encrypted data flows end to end.",
-          "Engineered secure peer-to-peer sync pipelines with asymmetric and symmetric encryption, key generation, and rotation—designing the data layer for a distributed credential management system.",
-          "Overhauled the low-level synchronization mechanism between the web extension and desktop application, eliminating critical memory leaks and significantly improving throughput under load.",
-          "Scaled vault data handling from a 5,000-item ceiling to 50,000+ entries through optimized persistence patterns, client-side caching, and efficient reads/writes across SQL and NoSQL storage backends.",
-          "Led the JumpCloud Password Manager Browser Extension (PWMBE) team with full ownership of backend integration, architectural decisions, and cross-team delivery.",
+          "Lead the Password Manager browser extension team, owning the full SDLC—architecture, delivery process, testing strategy, staged rollout, and production support—for a security product shipped to every major browser.",
+          "Onboard and mentor engineers, run knowledge-transfer sessions, and interview candidates across the hiring pipeline with hire recommendations.",
         ],
       },
       {
-        title: "Platform Architecture & Admin Portal",
+        title: "Architecture & Platform Engineering",
         items: [
-          "Architected TypeScript micro-frontend modules for the JumpCloud Admin Portal, integrating REST and GraphQL APIs for identity, device, and access management workflows.",
-          "Built a dynamic permission-scope rendering system driven by backend role definitions—grouping scopes into categorized tables with logical dependencies so new permissions ship without frontend code changes.",
-          "Participated in the technical hiring pipeline, interviewed engineering candidates, and established structured onboarding with continuous knowledge-transfer sessions.",
+          "Re-architected the password manager browser extension for Manifest V3, replacing a persistent background script with an ephemeral service worker and designing a new message-passing layer connecting the service worker, popup, injected page dialogs, and the desktop client.",
+          "Rebuilt the entire extension UI against a new design system while migrating the codebase from React to Vue, delivered incrementally without disrupting the release cadence.",
+          "Extended the platform to Safari, authoring a native Swift bridge for low-level IPC with the macOS desktop application, and contributed across the cross-platform Electron desktop app.",
+          "Build and ship admin portal features as independently deployable microfrontends, working within a distributed frontend architecture where multiple teams release into a shared application shell on separate cadences.",
         ],
       },
       {
-        title: "Frontend, Extensions & Client Applications",
+        title: "Backend & Distributed Systems",
         items: [
-          "Led the Manifest v2 to v3 migration for the primary web extension, redesigning core workflows around background Service Workers in TypeScript.",
-          "Developed the JumpCloud Go browser extension from scratch, enabling secure, cross-platform biometric authentication for seamless user logins.",
-          "Delivered Safari browser support via a native Swift communication layer interfacing securely with desktop software.",
-          "Replaced a legacy Gulp build with a modern Webpack configuration, cutting extension build times by 8x (from 4 minutes to 30 seconds).",
-          "Implemented lazy loading and list virtualization to keep UI performance stable as vault sizes grew by an order of magnitude.",
+          "Designed and shipped the custom roles authorization system end to end: backend CRUD endpoints, database migrations for new permission scopes, a new scope-evaluation engine governing access across the admin portal, and support for admins holding multiple roles.",
+          "Built a metadata-driven roles UI that dynamically renders scope categories, type-split tables, and inter-scope dependencies—so new permissions ship server-side with zero frontend changes.",
+          "Built an icon-streaming service with client-side caching, integrating third-party GraphQL APIs and consuming webhooks to keep application metadata current as upstream sources change.",
+          "Build and consume services across a microservices architecture, defining typed contracts with gRPC and Protocol Buffers and owning deployment through multiple environments.",
         ],
       },
       {
-        title: "Engineering Workflows & DevOps",
+        title: "Security Engineering",
         items: [
-          "Built and managed full CI/CD automation (migrating from CircleCI to GitHub Actions) to compile, test, and distribute production builds to major web stores.",
-          "Embedded advanced AI tools (Cursor, Claude Code, Gemini, Copilot, and custom MCP server integrations) into daily development, accelerating implementation and test coverage.",
-          "Managed production incident response, rollbacks, and root-cause analysis using LaunchDarkly for feature flagging and DataDog for centralized logging.",
+          "Implemented secure peer-to-peer communication between extension and desktop client, including the underlying cryptography: key generation, key exchange, key rotation, and combined symmetric/asymmetric encryption.",
+          "Built JumpCloud Go, a browser extension enabling cross-platform biometric, passwordless authentication to the User Portal; hardened the credential autofill engine with user-defined autofill rules, per-site exceptions, and allow/deny listing.",
+        ],
+      },
+      {
+        title: "Performance, Scale & Delivery",
+        items: [
+          "Scaled the vault 10×—from 5,000 to 50,000 items—through caching, lazy loading, and list virtualization; rebuilt the peer-sync mechanism to raise throughput and eliminate memory leaks.",
+          "Replaced a legacy Gulp workflow with a Webpack build pipeline, cutting build times 8× (4 minutes → 30 seconds).",
+          "Own CI/CD for the extension: automated debug and production builds and distribution to all major browser stores, migrated from CircleCI to GitHub Actions.",
+          "Drive release safety and reliability in an Agile Scrum team—feature-flagged rollouts (LaunchDarkly, Split), DataDog observability, and hands-on incident response including rollbacks and root-cause analysis.",
+          "Introduced AI-assisted development workflows across the team (Cursor, GitHub Copilot, Gemini, agent skills, MCP servers) to increase engineering velocity.",
         ],
       },
     ],
