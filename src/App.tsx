@@ -74,8 +74,8 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen text-slate-800 dark:text-slate-200 transition-colors duration-500 overflow-x-hidden">
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px] dark:hidden" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px] dark:hidden" />
       </div>
 
       <nav className="fixed top-0 w-full z-50 glass py-4 transition-all">
@@ -166,7 +166,7 @@ const App: React.FC = () => {
           >
             <motion.div
               whileHover={{ scale: 1.01, y: -4 }}
-              className="glass p-6 md:p-8 rounded-2xl border border-violet-500/20 border-l-4 border-l-violet-500 shadow-[0_0_40px_rgba(139,79,217,0.08)] dark:shadow-[0_0_40px_rgba(139,79,217,0.14)] transition-all"
+              className="glass p-6 md:p-8 rounded-2xl border border-violet-500/20 border-l-4 border-l-violet-500 transition-all"
             >
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
