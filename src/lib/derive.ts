@@ -104,7 +104,7 @@ export function where(tag: Tag): { company: string; path: string }[] {
 	return hits;
 }
 
-/** Totals for the instruments panel, counted rather than claimed. */
+/** Totals the build transcript prints, counted rather than claimed. */
 export const TOTALS = {
 	roles: EXPERIENCE.length,
 	files: EXPERIENCE.reduce((sum, role) => sum + fileCount(role), 0),

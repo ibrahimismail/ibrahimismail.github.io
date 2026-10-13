@@ -5,13 +5,11 @@ import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-import { stats } from './plugins/stats';
-
 // https://astro.build/config
 export default defineConfig({
   site: 'https://ibrahimismail.dev',
 
-  integrations: [sitemap(), stats()],
+  integrations: [sitemap()],
 
   build: {
     assets: 'assets',

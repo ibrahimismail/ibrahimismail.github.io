@@ -106,8 +106,13 @@
 }
 
 @theme inline {
+	/*
+	 * Two faces, not three. A neutral sans was carrying the running prose, and in a page built
+	 * out of editor panes it read as a different document pasted in. The mono carries the body
+	 * now and the display face carries the headings, which is the whole typographic system.
+	 */
 	--font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
-	--font-sans: 'Inter Tight Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-sans: var(--font-mono);
 	--font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
 
 	--color-ink-900: var(--ink-900);
@@ -151,7 +156,7 @@
 	}
 
 	html {
-		@apply font-sans scroll-smooth;
+		@apply font-mono scroll-smooth;
 	}
 
 	body {
@@ -184,9 +189,13 @@
 		transform: none;
 	}
 
-	/* Shown only on paper and on /cv, where there are no links to click. */
-	[data-print-only] {
-		display: none;
+	/*
+	 * Preflight sets `margin: 0` on everything, and a <dialog> is centred by its UA margin — so
+	 * without this the palette opens in the top-left corner.
+	 */
+	dialog[data-palette] {
+		inset: 0;
+		margin: auto;
 	}
 
 	/*
@@ -209,12 +218,6 @@
 		background-size: 256px 256px;
 		mix-blend-mode: soft-light;
 		opacity: var(--grain);
-	}
-
-	@media print {
-		body::after {
-			display: none;
-		}
 	}
 }
 

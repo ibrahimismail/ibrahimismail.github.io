@@ -70,7 +70,11 @@ export function mountPalette() {
 		{ name: 'theme dark', hint: 'one dark', run: () => setTheme('dark') },
 		{ name: 'theme light', hint: 'one light', run: () => setTheme('light') },
 		{ name: 'theme system', hint: 'follow the os', run: () => setTheme('system') },
-		{ name: 'cv', hint: 'print', run: () => window.print() },
+		{
+			name: 'cv',
+			hint: 'download the pdf',
+			run: () => window.open('/Ibrahim_Ismail_CV.pdf', '_blank', 'noopener'),
+		},
 		{
 			name: 'replay',
 			hint: 'watch the build again',

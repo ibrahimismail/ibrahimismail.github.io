@@ -94,7 +94,7 @@ export function runBuild(overlay: HTMLElement) {
 		const row = document.createElement('div');
 		row.dataset.card = String(index);
 		row.className =
-			'rounded border border-border/70 bg-surface/40 px-2.5 py-2 transition-colors duration-200';
+			'shrink-0 rounded border border-border/70 bg-surface/40 px-2.5 py-1.5 transition-colors duration-200 sm:py-2';
 
 		const head = document.createElement('p');
 		head.className = 'flex items-baseline gap-2';

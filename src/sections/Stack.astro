@@ -33,12 +33,15 @@ import { STACK } from '../content/stack';
 									{group.label}
 								</dt>
 								<dd>
-									{/* Each term gets its own ground: several are two words, and spacing
-									alone left "Protocol Buffers GraphQL REST" ambiguous. A separator
-									would do it too, but strands itself at the end of a wrapped line. */}
+									{/* Each term needs its own edge: several are two words, and spacing
+									alone left "Protocol Buffers GraphQL REST" ambiguous. An outline
+									rather than a filled block — a grid of grey fills with no borders
+									reads as noise before it reads as a list. */}
 									<p class="flex flex-wrap gap-1.5 font-mono text-[0.8125rem] text-text-hi">
 										{group.main.map((entry) => (
-											<span class="rounded-sm bg-surface px-1.5 py-0.5">{entry}</span>
+											<span class="rounded border border-border px-1.5 py-0.5">
+												{entry}
+											</span>
 										))}
 									</p>
 									{group.also && (

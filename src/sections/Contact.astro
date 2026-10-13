@@ -27,12 +27,7 @@ const WAYS = [
 		{PROFILE.status.text}, from {PROFILE.location}.
 	</p>
 
-	<p data-print-only class="mt-4 font-mono text-[0.8125rem]">
-		{PROFILE.email} · {PROFILE.phone} · {PROFILE.linkedin.replace('https://', '')} ·
-		{PROFILE.github.replace('https://', '')}
-	</p>
-
-	<dl data-no-print class="mt-8 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+	<dl class="mt-8 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
 		{
 			WAYS.map((way, index) => (
 				<div

@@ -17,7 +17,7 @@
 import profileSource from '../content/profile.ts?raw';
 import stackSource from '../content/stack.ts?raw';
 import deriveSource from '../lib/derive.ts?raw';
-import instrumentsSource from '../scripts/instruments.ts?raw';
+import factsSource from '../content/facts.ts?raw';
 
 import { EXPERIENCE } from '../content/experience';
 import { highlightCode, unit } from '../lib/code';
@@ -59,16 +59,15 @@ const steps: (Step | null)[] = [
 		arg: 'content/stack.ts',
 		out: 'two halves, backend first',
 		reveals: 'stack',
-		optional: true,
 		code: highlightCode(unit(stackSource, 'export type Column')),
 	},
 	{
-		tool: 'Write',
-		arg: 'scripts/instruments.ts',
-		out: 'measured on your view, not asserted',
-		reveals: 'instruments',
+		tool: 'Read',
+		arg: 'content/facts.ts',
+		out: 'every figure traces to a line above',
+		reveals: 'numbers',
 		optional: true,
-		code: highlightCode(unit(instrumentsSource, 'function transferred()')),
+		code: highlightCode(unit(factsSource, 'export const FACTS')),
 	},
 	{
 		tool: 'Bash',
@@ -97,7 +96,7 @@ const plan = [
 >
 	{/* Window chrome. */}
 	<div
-		class="flex shrink-0 items-center gap-3 border-b border-border bg-surface/70 px-4 py-2.5 text-[0.75rem]"
+		class="flex shrink-0 items-center gap-3 border-b border-border bg-surface/70 px-3 py-2 text-[0.6875rem] sm:px-4 sm:py-2.5 sm:text-[0.75rem]"
 	>
 		<span aria-hidden="true" class="flex gap-1.5">
 			<span class="size-2.5 rounded-full bg-sx-del/70"></span>
@@ -115,27 +114,42 @@ const plan = [
 		</button>
 	</div>
 
-	<div class="grid min-h-0 grow sm:grid-cols-[minmax(0,21rem)_minmax(0,1fr)]">
-		{/* The agent. */}
-		<aside class="min-h-0 overflow-hidden border-border sm:border-r">
-			<div data-transcript class="h-full space-y-2 overflow-hidden p-4"></div>
+	{/*
+	 * On a phone the two panes stack rather than one of them disappearing. The code was hidden
+	 * below sm, which left the smaller screen watching a list of filenames — the least
+	 * interesting half of the sequence, and the half that needs the least space.
+	 */}
+	<div
+		class="grid min-h-0 grow grid-rows-[auto_minmax(0,1fr)] sm:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] sm:grid-rows-1"
+	>
+		{/* The agent. A short strip on a phone, the full column on a laptop. */}
+		<aside
+			class="min-h-0 overflow-hidden border-b border-border sm:border-r sm:border-b-0"
+		>
+			<div
+				data-transcript
+				class="flex max-h-[7.5rem] flex-col justify-end gap-1.5 overflow-hidden p-3 sm:h-full sm:max-h-none sm:justify-start sm:gap-2 sm:p-4"
+			>
+			</div>
 		</aside>
 
 		{/* What it is writing. */}
-		<section class="hidden min-h-0 flex-col sm:flex">
-			<div class="flex shrink-0 items-center gap-2 border-b border-border px-4 py-2 text-[0.75rem]">
+		<section class="flex min-h-0 flex-col">
+			<div
+				class="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2 text-[0.6875rem] sm:px-4 sm:text-[0.75rem]"
+			>
 				<span aria-hidden="true" data-code-dot class="size-1.5 rounded-full bg-sx-fn"></span>
-				<span data-code-name class="text-text-lo">waiting…</span>
-				<span data-code-state class="text-sx-add"></span>
+				<span data-code-name class="truncate text-text-lo">waiting…</span>
+				<span data-code-state class="shrink-0 text-sx-add"></span>
 			</div>
-			<div class="min-h-0 grow overflow-hidden p-4">
-				<ol data-code class="leading-[1.65]"></ol>
+			<div class="min-h-0 grow overflow-hidden p-3 sm:p-4">
+				<ol data-code class="text-[0.6875rem] leading-[1.6] sm:text-[0.8125rem] sm:leading-[1.65]"></ol>
 			</div>
 		</section>
 	</div>
 
 	{/* The prompt, which stays behind as the palette. */}
-	<div class="shrink-0 border-t border-border px-4 py-3">
+	<div class="shrink-0 border-t border-border px-3 py-2.5 sm:px-4 sm:py-3">
 		<p class="flex items-baseline gap-2">
 			<span aria-hidden="true" class="text-accent">›</span>
 			<span data-prompt class="text-text-hi"></span>

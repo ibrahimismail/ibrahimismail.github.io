@@ -14,7 +14,7 @@ export type SectionId =
 	| 'systems'
 	| 'venture'
 	| 'stack'
-	| 'instruments'
+	| 'numbers'
 	| 'contact';
 
 export type Section = {
@@ -29,7 +29,7 @@ const ALL: Section[] = [
 	{ id: 'systems', label: 'systems' },
 	{ id: 'venture', label: 'kliknote' },
 	{ id: 'stack', label: 'stack' },
-	{ id: 'instruments', label: 'instruments' },
+	{ id: 'numbers', label: 'numbers' },
 	{ id: 'contact', label: 'contact' },
 ];
 

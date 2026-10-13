@@ -17,9 +17,6 @@ const WAYS = [
 ];
 
 /*
- * The `const status = '…'` framing on row 7 is screen dressing — every part of it but the
- * sentence carries data-no-print, so paper keeps the words and drops the code.
- *
  * The gutter counts rows, including the blank ones, the way a real one does — and every row
  * keeps a line's height so the numbers space evenly rather than bunching wherever the content
  * happens to stop.
@@ -97,11 +94,11 @@ const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 							{number === 9 && (
 								<p class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-									<span data-no-print class="text-sx-key">const</span>
-									<span data-no-print class="text-sx-fn">status</span>
-									<span data-no-print class="text-text-lo/60">=</span>
+									<span class="text-sx-key">const</span>
+									<span class="text-sx-fn">status</span>
+									<span class="text-text-lo/60">=</span>
 									<span class="text-sx-add">
-										<span data-no-print>'</span>{PROFILE.status.text}<span data-no-print>'</span>
+										<span>'</span>{PROFILE.status.text}<span>'</span>
 									</span>
 								</p>
 							)}

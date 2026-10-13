@@ -13,21 +13,16 @@ import Palette from '../islands/Palette.astro';
 import Base from '../layouts/Base.astro';
 import Contact from '../sections/Contact.astro';
 import Footer from '../sections/Footer.astro';
-import Instruments from '../sections/Instruments.astro';
+import Numbers from '../sections/Numbers.astro';
 import Masthead from '../sections/Masthead.astro';
 import Stack from '../sections/Stack.astro';
 import Systems from '../sections/Systems.astro';
 import Timeline from '../sections/Timeline.astro';
 import Venture from '../sections/Venture.astro';
 
-export interface Props {
-	canonicalPath?: string;
-}
-
-const { canonicalPath = '' } = Astro.props;
 ---
 
-<Base canonicalPath={canonicalPath}>
+<Base>
 	<BuildOverlay />
 
 	<main id="content" class="mx-auto w-full max-w-5xl px-6 pt-16 pb-8 sm:px-10 sm:pt-24">
@@ -39,7 +34,7 @@ const { canonicalPath = '' } = Astro.props;
 			{SYSTEMS.length > 0 && <Systems />}
 			{VENTURE && <Venture />}
 			<Stack />
-			<Instruments />
+			<Numbers />
 			<Contact />
 		</div>
 	</main>

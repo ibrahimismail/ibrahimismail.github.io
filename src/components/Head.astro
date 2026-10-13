@@ -4,13 +4,11 @@
 // Weight axis only, upright only: index.css also pulls in italic faces nothing here uses.
 // Every subset ships behind a unicode-range, so a visitor downloads the latin file and no more.
 import '@fontsource-variable/bricolage-grotesque/wght.css';
-import '@fontsource-variable/inter-tight/wght.css';
 import '@fontsource-variable/jetbrains-mono/wght.css';
 
 /*
- * Preload only what paints first: the display face for the name and the mono for the eyebrow
- * and the build transcript. Inter Tight is below them and arrives in time on its own, and a
- * third preload would compete with the two that matter.
+ * Preload both faces, because both paint immediately: the display face carries the name and the
+ * mono carries everything else. There is no third face to compete with them.
  */
 import displayFont from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
 import monoFont from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
@@ -31,11 +29,6 @@ export interface Props {
 	imageAlt?: string;
 	/** Browser UI colour at first paint. ThemeScript updates it from the resolved theme. */
 	themeColor?: string;
-	/**
-	 * Apply the paper stylesheet on screen as well as on paper. /cv sets it; everywhere else
-	 * the same file is linked media="print" and only bites in the print dialog.
-	 */
-	paper?: boolean;
 }
 
 const {
@@ -45,7 +38,6 @@ const {
 	image = '/og.png',
 	imageAlt = `${PROFILE.name} — ${PROFILE.title}`,
 	themeColor = '#1b1e24',
-	paper = false,
 } = Astro.props;
 
 const siteUrl = PROFILE.website;
@@ -107,7 +99,6 @@ const structuredData = {
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="stylesheet" href="/print.css" media={paper ? 'all' : 'print'} />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <OrderStyles />
 <title>{title}</title>

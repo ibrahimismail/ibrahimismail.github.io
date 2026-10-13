@@ -1,7 +1,8 @@
 ---
 /*
- * The repo link is part of the pitch, not a formality: the site argues that it was built with
- * care, and the source is where that is checked.
+ * A copyright line. The replay link and the source link were both pointing at things a reader
+ * has no reason to want from a footer: the sequence runs on every load anyway, and the repo is
+ * a click away from the GitHub link in the masthead.
  */
 import { PROFILE } from '../content/profile';
 
@@ -13,14 +14,5 @@ const year = new Date().getFullYear();
 		class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-6 font-mono text-xs text-text-lo sm:px-10"
 	>
 		<p>© {year} {PROFILE.name}</p>
-		<a href="/" data-no-print class="transition-colors duration-200 hover:text-text-hi"
-			>↻ replay build</a
-		>
-		<a
-			href={`${PROFILE.github}/ibrahimismail.github.io`}
-			rel="noopener"
-			target="_blank"
-			class="transition-colors duration-200 hover:text-text-hi">view source</a
-		>
 	</div>
 </footer>
