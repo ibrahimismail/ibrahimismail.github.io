@@ -256,6 +256,14 @@ export function runBuild(overlay: HTMLElement) {
 	 * tab — open the site in a new tab, switch away, come back, and without the timer the overlay
 	 * would still be sitting there. And leaving the tab at all ends the show: nobody is watching.
 	 */
+	/*
+	 * And the restored position itself has to go: the overlay covers the page, so a reader who
+	 * reloads from halfway down would watch a build and then find themselves mid-document.
+	 */
+	const restoration = history.scrollRestoration;
+	if (restoration) history.scrollRestoration = 'manual';
+	window.scrollTo(0, 0);
+
 	let watchdog = 0;
 	const onHidden = () => {
 		if (document.visibilityState === 'hidden') finish();
@@ -267,6 +275,7 @@ export function runBuild(overlay: HTMLElement) {
 		cancelAnimationFrame(frame);
 		clearTimeout(watchdog);
 		document.removeEventListener('visibilitychange', onHidden);
+		if (restoration) history.scrollRestoration = restoration;
 		detach();
 
 		paint(total);
@@ -293,8 +302,15 @@ export function runBuild(overlay: HTMLElement) {
 		frame = requestAnimationFrame(tick);
 	}
 
-	/* Anything at all means "I would rather read the page". */
-	const events = ['wheel', 'touchstart', 'keydown', 'pointerdown', 'scroll'] as const;
+	/*
+	 * Anything the reader does means "I would rather read the page".
+	 *
+	 * `scroll` is deliberately not in this list. A reload restores the previous scroll position,
+	 * which fires one — so reloading mid-page skipped the sequence before it had drawn a frame.
+	 * Every way a person actually scrolls is already covered by wheel and touchstart, and those
+	 * cannot fire without them.
+	 */
+	const events = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const;
 	function onInput(event: Event) {
 		if (event.type === 'keydown' && (event as KeyboardEvent).repeat) return;
 		finish();
