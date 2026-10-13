@@ -10,13 +10,20 @@
 import Base from '../layouts/Base.astro';
 import { PROFILE } from '../content/profile';
 
+import { VENTURE } from '../content/venture';
+
+/*
+ * Section order. The venture is spliced in only when there is one — see content/venture.ts.
+ * Everything that lays the page out reads this list, so hiding KlikNote cannot leave a gap.
+ */
 const SECTIONS = [
 	{ id: 'timeline', label: 'Career, as a commit log' },
 	{ id: 'systems', label: 'Systems' },
+	...(VENTURE ? [{ id: 'venture', label: VENTURE.name }] : []),
 	{ id: 'stack', label: 'Stack' },
 	{ id: 'instruments', label: 'Instruments' },
 	{ id: 'contact', label: 'Contact' },
-] as const;
+];
 ---
 
 <Base>

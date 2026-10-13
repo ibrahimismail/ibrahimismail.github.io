@@ -65,15 +65,33 @@ export type Role = {
 };
 
 export type System = {
-	id: 'scope-engine' | 'extension-bus' | 'kliknote';
+	id: 'scope-engine' | 'extension-bus' | 'icon-service' | 'contracts';
 	half: Half;
 	title: string;
 	/** ≤ 90 characters. The card has room for one line and no more. */
 	blurb: string;
-	island: 'ExtensionBus' | 'ScopeEngine' | 'KlikNote';
+	/** Absent on the two static cards: they are a diagram and a code block, not an island. */
+	island?: 'ScopeEngine' | 'ExtensionBus';
 	cover: string;
 	/** Which company the work belongs to, so a card can point back into the timeline. */
 	company?: string;
+};
+
+/**
+ * Something he built himself. Separate from System on purpose — a product he owns is not one of
+ * the systems he shipped for an employer, and it is the one thing on the site that can be
+ * hidden (see content/venture.ts).
+ */
+export type Venture = {
+	name: string;
+	role: string;
+	tagline: string;
+	url: string;
+	logo: string;
+	/** The playable demo, if there is one to play. */
+	island?: 'KlikNote';
+	body: string[];
+	cta: string;
 };
 
 export type Education = {

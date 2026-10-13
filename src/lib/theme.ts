@@ -33,8 +33,8 @@ export function resolveTheme(preference: ThemePreference): ResolvedTheme {
 }
 
 export const THEME_COLORS: Record<ResolvedTheme, string> = {
-	light: '#f7f6f3',
-	dark: '#08090b',
+	light: '#fafafa',
+	dark: '#1b1e24',
 };
 
 /*

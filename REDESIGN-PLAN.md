@@ -23,7 +23,8 @@ src/styles/global.css palette tokens (both themes), motion tokens, reveal utilit
 src/lib/theme.ts      preference → resolved theme, localStorage, theme-color
 src/components/       Head.astro (meta + Person/WebSite JSON-LD), ThemeScript.astro
 src/layouts/Base.astro
-src/content/          profile.ts (two-clause pitch, server-first knowsAbout), types.ts (Half)
+src/content/          profile.ts (two-clause pitch, server-first knowsAbout)
+                      types.ts (Half, Venture), venture.ts (KlikNote + its one-line switch)
 src/pages/index.astro masthead real, five section anchors stubbed
 public/               favicons, apple-touch-icon, CV pdf, robots.txt, _headers
 ```
@@ -166,9 +167,10 @@ Single scrolling document, real anchors, five acts.
   #build               act 0 — the agent build (overlay, not a section)
   #masthead            act 1 — who, one line of what, status, ways in
   #timeline            act 2 — career as a commit log
-  #systems             act 3 — the three interactive system pieces
-  #stack               act 4 — what he reaches for, honestly tiered
-  #instruments         act 5 — live numbers of this page + career numbers
+  #systems             act 3 — the interactive system pieces
+  #venture             act 4 — KlikNote, playable  (removable — §8.1)
+  #stack               act 5 — what he reaches for, honestly tiered
+  #instruments         act 6 — live numbers of this page + career numbers
   #contact             ship it
 /cv                    print-optimised route (also what ⌘P produces from /)
 /replay                deep link that forces the build sequence
@@ -198,12 +200,17 @@ chat behaviour). Prompt bar pinned at the bottom with a blinking block cursor.
 | 3300 | `Read content/experience.ts` → `3 roles · 16 systems` | timeline entries, staggered |
 | 4200 | `Write islands/ScopeEngine.tsx` | `#systems` card 1 |
 | 4800 | `Write islands/ExtensionBus.tsx` | `#systems` card 2 |
-| 5300 | `Write islands/KlikNote.tsx` | `#systems` card 3 |
+| 5300 | `Write islands/KlikNote.tsx` | `#venture` *(step absent when KlikNote is hidden)* |
 | 5900 | `Bash npm run build` → `✓ 6 pages · 94 kB js · 1.1 s` | `#stack`, `#instruments` |
 | 6700 | `done` — `ready · ⌘K to drive` | `#contact`, overlay dissolves |
 
-Every number the transcript prints is **real**, read from `stats.json` at build time (§5 act 5).
+Every number the transcript prints is **real**, read from `stats.json` at build time (§5 act 6).
 A fake build log on an engineer's portfolio would be the one unforgivable detail.
+
+**The timetable above is derived, not authored as fixed milliseconds.** `build/script.ts` exports
+a function of the content modules, and the driver sums step durations to get its clock — so when
+KlikNote is hidden its step disappears and everything after it closes up. A hardcoded timetable
+would leave a 500ms hole in the sequence the first time content changed.
 
 **The reveal mechanism.** Each section carries `data-build="timeline"`. Under `html.js-build`,
 sections sit at `opacity:0; translateY(14px); clip-path: inset(0 0 100% 0)`. The driver adds
@@ -319,7 +326,8 @@ any directory is opened at all.
 
 **Mechanics.**
 - Default: `backend/` open, every other directory collapsed with counts. Click one → it expands.
-- `+` lines in the accent, mono, with colouring restricted to two hues.
+- `+` lines in `--sx-add` green, `−` in `--sx-del` red, paths in `--sx-type`, mono throughout —
+  the colours an engineer already reads without thinking.
 - Keyboard: `j`/`k` move, `enter` expands, `/` filters lines — the filter is live and highlights
   matches across all roles, so `crypto` or `vue` instantly shows every place it appears.
 - **No typewriter effect here.** The diff is content; content appears immediately.
@@ -389,7 +397,11 @@ in one short line, and a scrub bar lets you step hop by hop.
 Accessibility: the log is the accessible version — a real `<ol>` of steps, readable with the
 animation off. Reduced motion → packets jump between hops instead of travelling.
 
-#### 3.3 KlikNote, playable *(client, small)*
+#### 3.3 KlikNote — moved out
+
+It is not one of these. It is his own product, not a system he shipped for an employer, so it
+has its own act (§5 act 4) and its own removability (§8.1). The systems section is two deep
+interactives and two static cards.
 
 An embedded mini KlikNote: press the hotkey, type, it persists locally, `↑↓` to navigate,
 `⌘⏎` to save. Shows local-first (a `network: 0 requests` badge that is actually true) and
@@ -403,12 +415,34 @@ only three things are interactive:
 - **`contracts.proto`** — a real protobuf excerpt and the services either side of it, as a
   syntax-highlighted block.
 
-**Scope discipline:** 3.1 and 3.2 are deep, 3.3 is small, the other two are static. Three
-interactives is the ceiling — four is where the timeline doubles.
+**Scope discipline:** 3.1 and 3.2 are deep, the two cards are static, and the KlikNote demo in
+act 4 is small. Three interactives across the whole site is the ceiling — four is where the
+timeline doubles.
 
 ---
 
-### Act 4 — Stack, in two halves
+### Act 4 — KlikNote
+
+His own product, so it gets its own act rather than a card among the work he did for employers —
+that distinction is the whole point of showing it. Different surface treatment from the systems
+section: wider, quieter, one cover image, the logo, his own words from the old site.
+
+- Role line: *Founder & Lead Engineer* — and the tagline, verbatim: *a high-velocity,
+  local-first, keyboard-native note-taking app built for uninterrupted focus.*
+- Three short paragraphs: why he built it, the zero-latency client-side engine with global
+  context-menu capture, and local-first / keyboard-native as a stance rather than a feature list.
+- **Playable.** Press the hotkey, type, it persists locally, `↑↓` to navigate, `⌘⏎` to save.
+  A `network: 0 requests` badge that is actually true, measured from `PerformanceObserver` on
+  the island itself, not hardcoded.
+- `Try KlikNote today` → kliknote.com.
+
+It also carries its own justification for the command palette: the site is keyboard-driven
+because he built a keyboard-native product. The act and the `⌘K` bar explain each other.
+
+**Placement.** After the systems section: employment first for a recruiter skimming, then the
+thing he built alone. A `?role=` preset can move it up — and `?role=founder` would.
+
+### Act 5 — Stack, in two halves
 
 Kill the 20 colour icons from `img.icons8.com` (third-party requests, mismatched logo styles,
 and a flat list implies equal depth in Flask and TypeScript, which is not true).
@@ -437,7 +471,7 @@ Honest tiering reads as senior; a wall of equal badges reads as junior. Each ter
 surface *where* you used it — pulling the link straight from the timeline data, which is what
 `Tag` and `Dir.half` are for. On mobile the columns stack, server first.
 
-### Act 5 — Instruments
+### Act 6 — Instruments
 
 A panel of live, real numbers measured on the visitor's own page view, next to the career numbers.
 You do observability and incident response; show an instrument, not an animated counter.
@@ -531,6 +565,12 @@ export type System = {
   island: 'ScopeEngine' | 'ExtensionBus' | 'KlikNote';
   cover: string; company?: string;
 };
+export type Venture = {                                 // his own product, not an employer's
+  name: string; role: string; tagline: string;
+  url: string; logo: string;
+  island?: 'KlikNote';                                   // the playable demo, if there is one
+  body: string[]; cta: string;
+};
 export type Target = { id: string; label: string; sentence: string; openDirs: string[] };
 ```
 
@@ -544,37 +584,93 @@ added. `profile.ts` and `types.ts` already carry it.
 **Derived in `src/lib/derive.ts`, never hand-written:** file counts, `+` counts, role durations,
 the stack tiers' "where I used it" links, the palette index, the sitemap.
 
+### 8.1 Hiding KlikNote
+
+It has to be possible to take KlikNote off the site and redeploy, then put it back, without
+anything breaking or any other edit. **Already built** — `src/content/venture.ts`:
+
+```ts
+const KLIKNOTE: Venture = { /* the content, which stays either way */ };
+
+/** KLIKNOTE to show it, null to take it off the site — then redeploy. */
+export const VENTURE: Venture | null = KLIKNOTE;
+```
+
+One line. The design points worth keeping:
+
+1. **Nullable, not boolean.** `Venture | null` makes TypeScript force every consumer to handle
+   its absence. A `shown: false` flag can be read in four places and honoured in three; this
+   cannot compile that way.
+2. **The content survives the switch.** Turning it back on is the same edit in reverse — no
+   commented-out blocks, no copy to recover from git.
+3. **A section, never a route.** The venture is part of the one document, so hiding it cannot
+   404 a URL, orphan a sitemap entry, or strand an inbound link.
+4. **Section order is computed.** `index.astro` splices the venture into the section list only
+   when there is one, so the page cannot be left with a gap or a stray heading.
+5. **The build sequence re-times itself**, because `script.ts` derives its steps from content
+   (§5 act 0). Hiding KlikNote removes its `Write` step and everything after it closes up.
+6. **Everything else is untouched** — `knowsAbout`, the JSON-LD, the OG image, the print route
+   and the palette index all read the same nullable export.
+
+**Verified both ways** on the scaffold: `VENTURE = KLIKNOTE` builds with `#venture` present,
+`VENTURE = null` builds with it absent, and both are green. That check belongs in phase 1's
+acceptance so it stays true.
+
 ---
 
 ## 9. Design system
 
-### Palette — two directions, pick one
+### Palette — Atom One Dark, with Atom One Light as its twin
 
-**A · Signal** — the one I picked for the scaffold. Reads as instrumentation, nothing like the
-industry's default sky-blue, and the accent is unmissable on near-black.
+Decided. Not a palette of our own, and deliberately not a terminal palette.
 
-```css
---ink-900: #08090b;   /* page, dark */
---ink-800: #0f1114;   /* raised surfaces */
---ink-700: #171a1f;   /* borders */
---paper:   #f7f6f3;   /* page, light */
---text-hi: #f2f3f5;  --text-lo: #8b9099;
---accent:  #c3f53c;   /* acid lime — packets, + lines, focus rings */
---accent-dim: #7f9e2b;  /* the accent, legible on paper */
---warn:    #ff7a45;   /* the one second hue: − lines, "no grant" */
-```
+**Why this one.** The page is made of code-shaped surfaces — a diff, a build transcript, a
+resolver trace, a protobuf excerpt — and in One Dark those colours already carry meaning to the
+people reading them. Green is an addition, red is a removal, purple is a keyword, orange is a
+number. A diff whose `+` lines are green is read instantly; a diff whose `+` lines are some
+bespoke brand colour has to be decoded. Colour doing semantic work for free is worth more than
+colour being distinctive.
 
-**B · Ember** — warmer, more editorial, slightly less "terminal".
+**Structure follows an editor, not a web page.** This is the part that keeps a mid-grey palette
+from reading flat across a full page, which is the real risk with One Dark — it was designed for
+a code pane surrounded by darker chrome, not for 4,000px of scroll.
 
 ```css
---ink-900: #0d0b0a;  --ink-800: #141110;  --ink-700: #1f1b19;  --paper: #faf7f2;
---accent: #ff6b35;  --accent-dim: #b8431a;  --warn: #4fd1c5;
+--ink-900: #1b1e24;   /* workbench — the page */
+--ink-800: #21252b;   /* panels, cards, the sticky bar */
+--ink-700: #282c34;   /* editor surface — transcript, diff panes, code blocks */
+--paper:   #fafafa;   /* the light twin's page, and the printed sheet */
+--text-hi: #d7dae0;  --text-lo: #7f848e;  --border: #343a45;
+
+--accent:     #61afef;   /* One Dark blue: links, focus, marks, live packets */
+--accent-dim: #4078f2;   /* One Light blue — same role, legible on paper */
+--cursor:     #528bff;
+
+/* Syntax hues — code-shaped surfaces only */
+--sx-add: #98c379;  --sx-del: #e06c75;  --sx-key: #c678dd;
+--sx-type: #e5c07b; --sx-num: #d19a66;  --sx-fn: #61afef;  --sx-esc: #56b6c2;
 ```
 
-Switching is a change to those eight values in `global.css` and nothing else — the comment at
-the top of the file says so. Both ship light and dark. Dark is the default (`:root` *is* the dark
-set, `.light` overrides) because the build sequence is authored for it; light is a real second
-theme, not an afterthought, because the print route is light by definition.
+So code-shaped things sit on `#282c34` and look like a pane floating on a `#1b1e24` workbench.
+Cards sit on `#21252b` between them. Three values of depth, all authentic to the source.
+
+**The discipline, or it becomes a parrot.** Seven hues is five more than a page should wear. The
+rule, written into `global.css`: the `--sx-*` hues appear **only** inside code-shaped surfaces,
+where they mean what they mean in an editor. Everything else — links, focus rings, buttons,
+marks, the diagram's live packets — uses the one `--accent` blue. A section heading is never
+purple because purple means keyword.
+
+**Light theme: Atom One Light**, the published twin, so light mode is coherent rather than
+invented, and the print route inherits it. Both comment greys get darkened for body text —
+`#5c6370` is 3:1 on the workbench and `#a0a1a7` is 2.4:1 on paper, so both are decoration only
+and `--text-lo` carries the legible value instead.
+
+**What this replaced.** The first draft was acid lime `#c3f53c` on near-black `#08090b`, picked
+to be unmissable and nothing like the industry's default sky-blue. Fair objection: on a page that
+contains a build transcript, lime-on-black lands as retro phosphor terminal whatever the exact
+hue is, and it put a 2015 costume on a 2026 idea. One Dark does not have that problem, and it
+buys the semantic colour the first palette had to invent. Testing other palettes later is eight
+values in one file; the `--sx-*` split means a swap keeps the diff readable either way.
 
 ### Type
 
@@ -606,7 +702,8 @@ Rules: animate only `transform`, `opacity`, `clip-path`, `offset-distance`. Neve
 
 Grain + a hairline technical grid, at very low opacity, composited once as a fixed
 pseudo-element so it never repaints on scroll. This is where the "flash" actually comes from —
-not from images.
+not from images. On One Dark the grid reads at about 4% white; any more and `#1b1e24` turns
+muddy.
 
 ---
 
@@ -663,18 +760,20 @@ Everything generated is **abstract, monochrome-plus-one-accent, and text-free** 
 
 **#4 `blueprint-light.png`** — same prompt as #1 with:
 
-> …monochrome charcoal grey #2a2a2a lines on a fully transparent background…
+> …monochrome charcoal grey #383a42 lines on a fully transparent background…
 
 ### 10.2 System covers — 6 images, 1600×1000, one coherent set
 
 Append this **style suffix to every one of the six** so the set hangs together:
 
-> — abstract technical illustration, near-black background #08090b, single acid-lime accent
-> #c3f53c, matte finish, fine grain, minimal, generous negative space, centred composition,
-> no text, no letters, no numbers, no logos, no UI elements, no people, no hands, no devices,
-> flat depth of field, 1600×1000.
+> — abstract technical illustration, dark desaturated blue-grey background #1b1e24, single
+> soft blue accent #61afef, matte finish, fine grain, minimal, generous negative space, centred
+> composition, no text, no letters, no numbers, no logos, no UI elements, no people, no hands,
+> no devices, flat depth of field, 1600×1000.
 
-*(On palette B, swap the two hex values for `#0d0b0a` and `#ff6b35`.)*
+The accent is the one `--accent` blue, never a syntax hue: a cover in `--sx-key` purple would
+read as "keyword" next to a diff that uses purple for exactly that. Where a second colour is
+genuinely needed, use `--sx-esc` cyan `#56b6c2`.
 
 **#5 `bus.webp`**
 > A severed, re-forming channel: two halves of a glowing conduit caught mid-reconnection, with
@@ -736,9 +835,9 @@ A build-time Satori/resvg render of a real layout: name, sentence, accent rule, 
 SHA. Always current, always on-brand, zero model drift, and it costs one dev dependency. If you
 would rather generate it, the fallback prompt is:
 
-> Minimal abstract social card background, near-black #08090b, a single thin acid-lime #c3f53c
-> rule entering from the left third, fine grain, vast empty space on the right two thirds for
-> text to be placed later. No text, no letters, no logos. 1200×630.
+> Minimal abstract social card background, dark desaturated blue-grey #1b1e24, a single thin
+> soft blue #61afef rule entering from the left third, fine grain, vast empty space on the right
+> two thirds for text to be placed later. No text, no letters, no logos. 1200×630.
 
 ### 10.7 Monogram
 
@@ -868,8 +967,10 @@ Still to do:
   document immediately and never hears the show.
 - Every diagram has an `<ol>` step log as its accessible equivalent, and the `plain` toggle
   switches the whole page to text-first.
-- Contrast ≥ 4.5:1 for body, ≥ 3:1 for large text, in both themes. The acid accent is for large
-  text, rules and marks only — body copy on paper uses `--accent-dim`.
+- Contrast ≥ 4.5:1 for body, ≥ 3:1 for large text, in both themes. Checked already: One Dark's
+  comment grey `#5c6370` is 3:1 on the workbench and One Light's `#a0a1a7` is 2.4:1 on paper, so
+  both are decoration only and `--text-lo` carries a legible value in each theme. `--accent`
+  blue is for links, large text, rules and marks; on paper that role goes to `--accent-dim`.
 
 ---
 
@@ -891,13 +992,15 @@ what `main` holds today.
 - [ ] All six sections rendered as a **plain, complete, beautifully typeset document**
 - [ ] `/cv` + `print.css`; `404.astro`
 - [ ] Deploy to the Workers preview URL
-- **Acceptance:** Lighthouse ≥ 98 with zero JS, two-page print, reads better than the old site
+- **Acceptance:** Lighthouse ≥ 98 with zero JS, two-page print, reads better than the old site,
+  and `VENTURE = null` builds clean with no gap, no stray heading and no broken anchor
 
 ### Phase 2 — Timeline + systems *(1–2 sessions)*
 - [ ] Commit-log rail, diff panes, `plain ⇄ diff` toggle, `j/k/enter`, live filter
 - [ ] `ExtensionBus` island: 5 scenarios, packet animation, hop log, scrubber
 - [ ] `ScopeEngine` island: scope graph, cascade, resolver trace
-- [ ] `KlikNote` island: hotkey capture, local persistence, `network: 0` badge
+- [ ] Venture act + `KlikNote` island: hotkey capture, local persistence, a `network: 0` badge
+      measured rather than asserted
 - [ ] Mobile layouts for all three; reduced-motion variants
 - **Acceptance:** every interactive usable by thumb and by keyboard, 60fps on a mid-range Android
 
@@ -932,23 +1035,31 @@ what `main` holds today.
 | Clever filtering hides content from crawlers | Everything is in the DOM; filters toggle classes, never remove nodes |
 | Safari `offset-path` quirks | Fallback to a keyframed `translate` path per scenario; Safari gets a pass in phase 4 |
 | A backend reviewer reads it as a frontend portfolio | §2 "Framing": server-first ordering carried in `Dir.half`, `backend/` open by default, equal depth on the scope engine, two-column stack, server-first `knowsAbout` |
+| Hiding KlikNote leaves a hole in the build sequence | The choreography derives its steps from content and the driver sums durations; `VENTURE = null` is built and verified in phase 1's acceptance, not assumed |
+| Seven syntax hues turn the page into a parrot | The `--sx-*` hues are confined to code-shaped surfaces by a rule written into `global.css`; all chrome uses the one accent blue |
+| One Dark's `#282c34` reads flat over a long page | Editor depth: `#1b1e24` workbench / `#21252b` cards / `#282c34` code surfaces, so code-shaped things float rather than fill |
 | Domain cut-over downtime | Worker verified on `workers.dev` first; DNS swapped only after; `main` untouched until then |
 
 ---
 
-## 16. Decisions I need from you
+## 16. Decisions
 
-1. **Palette** — A · Signal (acid lime on near-black, in the scaffold now) or B · Ember (warm
-   orange)? Switching is eight values.
-2. **KlikNote's billing** — headline venture with its own act, or a peer among the three systems
-   as specced here? The old site gave it a full section.
-3. **Status line** — what are you open to, in one sentence, as of October 2026? `profile.ts`
-   currently carries a placeholder marked `TODO`, and it is the most load-bearing sentence on
-   the page.
-4. **Portrait** — off the masthead (my recommendation) or in it? If in it, I need a photo for
+**Settled:**
+
+1. **Palette — Atom One Dark**, with Atom One Light as its twin, structured as workbench /
+   panel / editor depth and with the syntax hues confined to code-shaped surfaces. §9. *(The
+   first draft's acid-lime-on-black was rejected as retro-terminal; it is in the scaffold's
+   history if it is ever wanted back.)*
+2. **KlikNote stays, with its own act** — a product he designed and owns, not a card among the
+   work he did for employers. §5 act 4. And it is **hideable in one line**: §8.1.
+3. **No second venture.** Nothing else of his appears on the site.
+
+**Still open:**
+
+4. **Status line** — what are you open to, in one sentence, as of October 2026? `profile.ts`
+   carries a placeholder marked `TODO`, and it is the most load-bearing sentence on the page.
+5. **Portrait** — off the masthead (my recommendation) or in it? If in it, I need a photo for
    the img2img pass in §10.5.
-
----
 
 ## 17. Rejected, and why
 

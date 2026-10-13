@@ -8,35 +8,55 @@
 @custom-variant dark (&:is(.dark, .dark *));
 
 /*
- * Palette "Signal": near-black with one acid accent. Dark is the default here — the build
- * sequence is authored for it — and light is a real second theme, not an afterthought, because
- * the print route is light by definition.
+ * Palette: Atom One Dark, with Atom One Light as its twin.
  *
- * Swapping to palette "Ember" is a change to these eight values and nothing else:
- *   --ink-900 #0d0b0a  --ink-800 #141110  --ink-700 #1f1b19
- *   --paper #faf7f2  --accent #ff6b35  --accent-dim #b8431a  --warn #4fd1c5
+ * The reason it is this and not a palette of our own: the page is made of code-shaped surfaces —
+ * a diff, a build transcript, a resolver trace, a protobuf excerpt — and in One Dark the colours
+ * already carry meaning to the people reading. Green is an addition, red is a removal, purple is
+ * a keyword, orange is a number. Nothing has to be learned.
+ *
+ * Structure follows an editor rather than a web page: --ink-900 is the workbench (the page),
+ * --ink-800 is panels and cards, --ink-700 is the editor surface, so code-shaped things look
+ * like a pane floating on the workbench. That depth is what keeps a mid-grey palette from
+ * reading flat across a whole page.
+ *
+ * Discipline, or it turns into a parrot: the --sx-* hues appear ONLY inside code-shaped
+ * surfaces, where they mean what they mean in an editor. Everything else — links, focus rings,
+ * buttons, marks, the diagram's live packets — uses the one --accent blue.
  */
 :root {
 	color-scheme: dark;
 
-	--ink-900: #08090b;
-	--ink-800: #0f1114;
-	--ink-700: #171a1f;
-	--paper: #f7f6f3;
+	--ink-900: #1b1e24; /* workbench — the page */
+	--ink-800: #21252b; /* panels, cards, the sticky bar */
+	--ink-700: #282c34; /* editor surface — transcript, diff panes, code blocks */
+	--paper: #fafafa; /* light twin's page, and the printed sheet */
 
-	--accent: #c3f53c;
-	--accent-dim: #7f9e2b;
-	--warn: #ff7a45;
+	--accent: #61afef; /* One Dark blue: links, focus, marks, live packets */
+	--accent-dim: #4078f2; /* One Light blue — the same role, legible on paper */
+	--warn: #d19a66;
+
+	/* Syntax hues. Code-shaped surfaces only. */
+	--sx-add: #98c379; /* + lines, strings */
+	--sx-del: #e06c75; /* − lines, errors, "no grant" */
+	--sx-key: #c678dd; /* keywords */
+	--sx-type: #e5c07b; /* types, classes */
+	--sx-num: #d19a66; /* numbers, constants */
+	--sx-fn: #61afef; /* functions */
+	--sx-esc: #56b6c2; /* escapes, support — the diagram's second packet colour */
+	--cursor: #528bff;
 
 	--background: var(--ink-900);
 	--surface: var(--ink-800);
-	--border: #22262d;
-	--text-hi: #f2f3f5;
-	--text-lo: #8b9099;
+	--editor: var(--ink-700);
+	--border: #343a45;
+	--text-hi: #d7dae0;
+	--text-lo: #7f848e; /* One Dark's comment grey, at the lightest of its two values:
+	                       #5c6370 is 3:1 on the workbench and is decoration only */
 	--ring: var(--accent);
 
 	--radius: 0.5rem;
-	--selection: color-mix(in oklch, var(--accent) 28%, transparent);
+	--selection: #3e4451;
 
 	/* Motion. Nothing animates above --t-slow except the build sequence itself. */
 	--t-fast: 120ms;
@@ -50,14 +70,25 @@
 .light {
 	color-scheme: light;
 
-	--background: var(--paper);
-	--surface: #ffffff;
-	--border: #e3e0d9;
-	--text-hi: #14161a;
-	--text-lo: #5d6269;
-	/* The acid accent fails contrast on paper, so light mode uses the dimmed one for text. */
+	--background: #f0f0f1;
+	--surface: #f7f7f8;
+	--editor: var(--paper);
+	--border: #dbdbdc;
+	--text-hi: #383a42;
+	--text-lo: #6b6d76; /* One Light's comment grey #a0a1a7 is 2.4:1 on paper — decoration only */
 	--ring: var(--accent-dim);
-	--selection: color-mix(in oklch, var(--accent-dim) 24%, transparent);
+
+	--accent: #4078f2;
+	--sx-add: #50a14f;
+	--sx-del: #e45649;
+	--sx-key: #a626a4;
+	--sx-type: #c18401;
+	--sx-num: #986801;
+	--sx-fn: #4078f2;
+	--sx-esc: #0184bc;
+	--cursor: #526fff;
+
+	--selection: #e5e5e6;
 }
 
 @theme inline {
@@ -69,12 +100,23 @@
 	--color-ink-800: var(--ink-800);
 	--color-ink-700: var(--ink-700);
 	--color-paper: var(--paper);
+
 	--color-accent: var(--accent);
 	--color-accent-dim: var(--accent-dim);
 	--color-warn: var(--warn);
 
+	--color-sx-add: var(--sx-add);
+	--color-sx-del: var(--sx-del);
+	--color-sx-key: var(--sx-key);
+	--color-sx-type: var(--sx-type);
+	--color-sx-num: var(--sx-num);
+	--color-sx-fn: var(--sx-fn);
+	--color-sx-esc: var(--sx-esc);
+	--color-cursor: var(--cursor);
+
 	--color-background: var(--background);
 	--color-surface: var(--surface);
+	--color-editor: var(--editor);
 	--color-border: var(--border);
 	--color-text-hi: var(--text-hi);
 	--color-text-lo: var(--text-lo);
