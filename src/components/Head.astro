@@ -7,6 +7,14 @@ import '@fontsource-variable/bricolage-grotesque/wght.css';
 import '@fontsource-variable/inter-tight/wght.css';
 import '@fontsource-variable/jetbrains-mono/wght.css';
 
+/*
+ * Preload only what paints first: the display face for the name and the mono for the eyebrow
+ * and the build transcript. Inter Tight is below them and arrives in time on its own, and a
+ * third preload would compete with the two that matter.
+ */
+import displayFont from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
+import monoFont from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+
 import OrderStyles from './OrderStyles.astro';
 import { PROFILE } from '../content/profile';
 import '../styles/global.css';
@@ -75,6 +83,8 @@ const structuredData = {
 ---
 
 <meta charset="UTF-8" />
+<link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+<link rel="preload" href={monoFont} as="font" type="font/woff2" crossorigin />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content={description} />
 <meta name="theme-color" content={themeColor} />

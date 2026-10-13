@@ -20,6 +20,20 @@ export function applyTargeting() {
 	if (!root.dataset.role) return;
 	const target = targetFor(root.dataset.role);
 
+	/*
+	 * CSS `order` moved the sections before first paint, which is what keeps the arrangement
+	 * from visibly rearranging itself. But `order` does not move the tab sequence, so without
+	 * this the keyboard would walk the page in an order nobody can see. Matching the DOM to the
+	 * visual order afterwards is invisible — everything is already where it ends up.
+	 */
+	const container = document.querySelector<HTMLElement>('[data-sections]');
+	if (container) {
+		for (const id of target.order) {
+			const section = container.querySelector<HTMLElement>(`[data-build='${id}']`);
+			if (section) container.append(section);
+		}
+	}
+
 	for (const details of document.querySelectorAll<HTMLDetailsElement>('[data-dir]')) {
 		const wanted = target.openDirs.includes(details.dataset.dir ?? '');
 		details.toggleAttribute('data-collapsed', !wanted);

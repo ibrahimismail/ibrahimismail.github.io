@@ -33,12 +33,12 @@
 	--paper: #fafafa; /* light twin's page, and the printed sheet */
 
 	--accent: #61afef; /* One Dark blue: links, focus, marks, live packets */
-	--accent-dim: #4078f2; /* One Light blue — the same role, legible on paper */
+	--accent-dim: #2162f0; /* One Light blue, darkened — the same role, legible on paper */
 	--warn: #d19a66;
 
 	/* Syntax hues. Code-shaped surfaces only. */
 	--sx-add: #98c379; /* + lines, strings */
-	--sx-del: #e06c75; /* − lines, errors, "no grant" */
+	--sx-del: #e17079; /* − lines, errors, "no grant" */
 	--sx-key: #c678dd; /* keywords */
 	--sx-type: #e5c07b; /* types, classes */
 	--sx-num: #d19a66; /* numbers, constants */
@@ -51,8 +51,9 @@
 	--editor: var(--ink-700);
 	--border: #343a45;
 	--text-hi: #d7dae0;
-	--text-lo: #7f848e; /* One Dark's comment grey, at the lightest of its two values:
-	                       #5c6370 is 3:1 on the workbench and is decoration only */
+	--text-lo: #90949d; /* One Dark's comment grey, lifted to clear 4.5:1 on the editor
+	                       surface — #7f848e is 3.73:1 there, and #5c6370 is 3:1 even on the
+	                       workbench, so both are decoration only */
 	--ring: var(--accent);
 
 	--radius: 0.5rem;
@@ -85,14 +86,19 @@
 	--text-lo: #6b6d76; /* One Light's comment grey #a0a1a7 is 2.4:1 on paper — decoration only */
 	--ring: var(--accent-dim);
 
-	--accent: #4078f2;
-	--sx-add: #50a14f;
-	--sx-del: #e45649;
+	/*
+	 * One Light, darkened just enough to clear 4.5:1 on the page. The published values are
+	 * tuned for a code pane, and several of them land between 2.8 and 3.5 against #f0f0f1 —
+	 * fine for a glyph in an editor, not fine for 13px of running text on a CV.
+	 */
+	--accent: #2162f0;
+	--sx-add: #3c7a3c;
+	--sx-del: #cf2d1f;
 	--sx-key: #a626a4;
-	--sx-type: #c18401;
-	--sx-num: #986801;
-	--sx-fn: #4078f2;
-	--sx-esc: #0184bc;
+	--sx-type: #916301;
+	--sx-num: #8f6201;
+	--sx-fn: #2162f0;
+	--sx-esc: #0174a5;
 	--cursor: #526fff;
 
 	--selection: #e5e5e6;

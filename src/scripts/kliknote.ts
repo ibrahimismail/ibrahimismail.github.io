@@ -35,15 +35,16 @@ export function mountKlikNote() {
 		}
 
 		/*
-		 * The badge counts requests made after the page finished loading — not after this script
-		 * mounted. Mounting happens before the fonts and the stylesheet have landed, so the
-		 * earlier version proudly reported five requests the demo had nothing to do with.
+		 * The badge claims the demo makes no network requests, so it has to count the demo's
+		 * requests and nothing else. Two earlier versions got the window wrong: counting from
+		 * mount caught the fonts still arriving, and counting from load caught another island
+		 * fetching the build's stats. The honest window is the interaction itself — snapshot
+		 * before handling a key, count after.
 		 */
 		let baseline = performance.getEntriesByType('resource').length;
 
-		function rebase() {
+		function mark() {
 			baseline = performance.getEntriesByType('resource').length;
-			render();
 		}
 
 		function save() {
@@ -81,6 +82,7 @@ export function mountKlikNote() {
 		}
 
 		input.addEventListener('keydown', (event) => {
+			mark();
 			if (event.key === 'Enter' && input.value.trim()) {
 				notes = [{ text: input.value.trim(), note: 'just now' }, ...notes];
 				input.value = '';
@@ -109,6 +111,7 @@ export function mountKlikNote() {
 		list.addEventListener('click', (event) => {
 			const item = (event.target as HTMLElement).closest('[data-note]');
 			if (!item) return;
+			mark();
 			selected = [...list.children].indexOf(item);
 			render();
 			input.focus();
@@ -116,10 +119,15 @@ export function mountKlikNote() {
 
 		render();
 
+		/* Until someone types, the window is "since the page settled". */
 		if (document.readyState === 'complete') {
-			rebase();
+			mark();
+			render();
 		} else {
-			addEventListener('load', rebase, { once: true });
+			addEventListener('load', () => {
+				mark();
+				render();
+			}, { once: true });
 		}
 	});
 }
