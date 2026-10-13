@@ -1,0 +1,95 @@
+---
+// Everything in <head> that every page shares: fonts, styles, SEO and link-preview tags, and
+// structured data. Layouts add their own scripts after it.
+// Weight axis only, upright only: index.css also pulls in italic faces nothing here uses.
+// Every subset ships behind a unicode-range, so a visitor downloads the latin file and no more.
+import '@fontsource-variable/bricolage-grotesque/wght.css';
+import '@fontsource-variable/inter-tight/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+
+import { PROFILE } from '../content/profile';
+import '../styles/global.css';
+
+export interface Props {
+	title?: string;
+	description?: string;
+	canonicalPath?: string;
+	/**
+	 * Link-preview image, as a path under public/. Must be 1200×630. Previews are cached for
+	 * weeks, so when the image changes, give it a new filename rather than overwriting it.
+	 */
+	image?: string;
+	imageAlt?: string;
+	/** Browser UI colour at first paint. ThemeScript updates it from the resolved theme. */
+	themeColor?: string;
+}
+
+const {
+	title = `${PROFILE.name} — ${PROFILE.title}`,
+	description = PROFILE.description,
+	canonicalPath = '',
+	image = '/og.png',
+	imageAlt = `${PROFILE.name} — ${PROFILE.title}`,
+	themeColor = '#08090b',
+} = Astro.props;
+
+const siteUrl = PROFILE.website;
+const canonicalUrl = `${siteUrl}${canonicalPath}`;
+// Crawlers ignore relative image paths, so this has to be absolute.
+const imageUrl = `${siteUrl}${image}`;
+
+// Who he is, for searches of the name itself, and for the crawlers that feed answer engines —
+// in 2026 that is as much of the traffic as classic search.
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'WebSite',
+			'@id': `${siteUrl}/#website`,
+			url: `${siteUrl}/`,
+			name: PROFILE.name,
+			publisher: { '@id': `${siteUrl}/#person` },
+		},
+		{
+			'@type': 'Person',
+			'@id': `${siteUrl}/#person`,
+			name: PROFILE.name,
+			url: `${siteUrl}/`,
+			jobTitle: PROFILE.title,
+			email: `mailto:${PROFILE.email}`,
+			telephone: PROFILE.phone,
+			description: PROFILE.description,
+			address: { '@type': 'PostalAddress', addressLocality: 'Beirut', addressCountry: 'LB' },
+			knowsAbout: PROFILE.knowsAbout,
+			sameAs: PROFILE.sameAs,
+		},
+	],
+};
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content={description} />
+<meta name="theme-color" content={themeColor} />
+<link rel="canonical" href={canonicalUrl} />
+<meta property="og:type" content="profile" />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:site_name" content={PROFILE.name} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAlt} />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<title>{title}</title>
+<script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />

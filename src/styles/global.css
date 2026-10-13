@@ -1,0 +1,158 @@
+@import 'tailwindcss';
+
+/*
+ * The .dark element itself as well as everything inside it, so a subtree can carry its own
+ * theme (the print route forces light on a page the visitor left dark). :is keeps the
+ * specificity the variant always had.
+ */
+@custom-variant dark (&:is(.dark, .dark *));
+
+/*
+ * Palette "Signal": near-black with one acid accent. Dark is the default here — the build
+ * sequence is authored for it — and light is a real second theme, not an afterthought, because
+ * the print route is light by definition.
+ *
+ * Swapping to palette "Ember" is a change to these eight values and nothing else:
+ *   --ink-900 #0d0b0a  --ink-800 #141110  --ink-700 #1f1b19
+ *   --paper #faf7f2  --accent #ff6b35  --accent-dim #b8431a  --warn #4fd1c5
+ */
+:root {
+	color-scheme: dark;
+
+	--ink-900: #08090b;
+	--ink-800: #0f1114;
+	--ink-700: #171a1f;
+	--paper: #f7f6f3;
+
+	--accent: #c3f53c;
+	--accent-dim: #7f9e2b;
+	--warn: #ff7a45;
+
+	--background: var(--ink-900);
+	--surface: var(--ink-800);
+	--border: #22262d;
+	--text-hi: #f2f3f5;
+	--text-lo: #8b9099;
+	--ring: var(--accent);
+
+	--radius: 0.5rem;
+	--selection: color-mix(in oklch, var(--accent) 28%, transparent);
+
+	/* Motion. Nothing animates above --t-slow except the build sequence itself. */
+	--t-fast: 120ms;
+	--t-base: 200ms;
+	--t-slow: 320ms;
+	--t-reveal: 520ms;
+	--e-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--e-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.light {
+	color-scheme: light;
+
+	--background: var(--paper);
+	--surface: #ffffff;
+	--border: #e3e0d9;
+	--text-hi: #14161a;
+	--text-lo: #5d6269;
+	/* The acid accent fails contrast on paper, so light mode uses the dimmed one for text. */
+	--ring: var(--accent-dim);
+	--selection: color-mix(in oklch, var(--accent-dim) 24%, transparent);
+}
+
+@theme inline {
+	--font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-sans: 'Inter Tight Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+
+	--color-ink-900: var(--ink-900);
+	--color-ink-800: var(--ink-800);
+	--color-ink-700: var(--ink-700);
+	--color-paper: var(--paper);
+	--color-accent: var(--accent);
+	--color-accent-dim: var(--accent-dim);
+	--color-warn: var(--warn);
+
+	--color-background: var(--background);
+	--color-surface: var(--surface);
+	--color-border: var(--border);
+	--color-text-hi: var(--text-hi);
+	--color-text-lo: var(--text-lo);
+	--color-ring: var(--ring);
+
+	--radius-sm: calc(var(--radius) * 0.6);
+	--radius-md: calc(var(--radius) * 0.8);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) * 1.6);
+
+	--ease-out-soft: var(--e-out);
+	--ease-in-out-soft: var(--e-in-out);
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+
+	html {
+		@apply font-sans scroll-smooth;
+	}
+
+	body {
+		@apply m-0 min-h-screen bg-background text-text-hi antialiased;
+	}
+
+	/* Never removed, only restyled: the whole site is keyboard-drivable. */
+	:focus-visible {
+		@apply outline-2 outline-offset-2 outline-ring;
+	}
+
+	::selection {
+		background-color: var(--selection);
+	}
+
+	::-moz-selection {
+		background-color: var(--selection);
+	}
+}
+
+@layer utilities {
+	/*
+	 * Sections the build sequence reveals. The styles only bite under html.js-build, which an
+	 * inline head script sets before first paint — so with JS off, or before the driver loads,
+	 * every section is simply visible. Nothing is ever absent from the DOM.
+	 */
+	.js-build [data-build]:not(.built) {
+		opacity: 0;
+		transform: translateY(14px);
+		clip-path: inset(0 0 100% 0);
+	}
+
+	[data-build] {
+		transition:
+			opacity var(--t-reveal) var(--e-out),
+			transform var(--t-reveal) var(--e-out),
+			clip-path var(--t-reveal) var(--e-out);
+	}
+}
+
+/* One kill switch for the whole site. */
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+
+	.js-build [data-build]:not(.built) {
+		opacity: 1;
+		transform: none;
+		clip-path: none;
+	}
+}

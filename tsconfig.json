@@ -1,21 +1,5 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": false,
-    "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
-    "types": ["node"],
-    "moduleResolution": "bundler",
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "allowJs": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "allowImportingTsExtensions": true,
-    "noEmit": true
-  },
-  "include": ["src"]
+	"extends": "astro/tsconfigs/strict",
+	"include": [".astro/types.d.ts", "**/*", "./worker-configuration.d.ts"],
+	"exclude": ["dist"]
 }

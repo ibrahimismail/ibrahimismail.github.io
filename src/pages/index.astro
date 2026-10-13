@@ -1,0 +1,51 @@
+---
+/*
+ * The document. Every section renders complete, server-side, in source order — the build
+ * sequence is an overlay over a page that is already finished, so this file never knows the
+ * overlay exists beyond the data-build attributes it hands out.
+ *
+ * Scaffold state: the masthead is real, the rest are anchors waiting on phase 1 of
+ * REDESIGN-PLAN.md.
+ */
+import Base from '../layouts/Base.astro';
+import { PROFILE } from '../content/profile';
+
+const SECTIONS = [
+	{ id: 'timeline', label: 'Career, as a commit log' },
+	{ id: 'systems', label: 'Systems' },
+	{ id: 'stack', label: 'Stack' },
+	{ id: 'instruments', label: 'Instruments' },
+	{ id: 'contact', label: 'Contact' },
+] as const;
+---
+
+<Base>
+	<main class="mx-auto w-full max-w-5xl px-6 py-20 sm:px-10 lg:py-28">
+		<section id="masthead" data-build="masthead" aria-labelledby="masthead-name">
+			<p class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+				{PROFILE.location}
+			</p>
+			<h1
+				id="masthead-name"
+				class="font-display mt-5 text-[clamp(2.75rem,9vw,6rem)] leading-[0.92] font-semibold tracking-tight"
+			>
+				{PROFILE.name}
+			</h1>
+			<p class="mt-6 max-w-[48ch] text-lg text-text-lo sm:text-xl">{PROFILE.sentence}</p>
+			<p class="mt-8 font-mono text-sm">
+				<span class="text-accent">▍</span>
+				<span>{PROFILE.status.text}</span>
+			</p>
+		</section>
+
+		{
+			SECTIONS.map(({ id, label }) => (
+				<section id={id} data-build={id} class="mt-24 border-t border-border pt-8">
+					<h2 class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+						{label}
+					</h2>
+				</section>
+			))
+		}
+	</main>
+</Base>

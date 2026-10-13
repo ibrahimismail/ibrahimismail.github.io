@@ -1,0 +1,18 @@
+---
+import Head, { type Props as HeadProps } from '../components/Head.astro';
+import ThemeScript from '../components/ThemeScript.astro';
+
+type Props = HeadProps;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<Head {...Astro.props} />
+		<ThemeScript />
+	</head>
+	<body id="top">
+		<slot />
+		<script src="../scripts/theme-init.ts"></script>
+	</body>
+</html>
