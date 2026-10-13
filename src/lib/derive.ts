@@ -84,11 +84,6 @@ export function serverFirst(dirs: Dir[]): Dir[] {
 	return [...dirs].sort((a, b) => HALF_RANK[a.half] - HALF_RANK[b.half]);
 }
 
-/** Which directory opens by default: the first one, after the sort. So `backend/`. */
-export function openByDefault(role: Role): string | undefined {
-	return serverFirst(role.dirs)[0]?.name;
-}
-
 /** Every place a technology actually appears, for the stack section and the palette's `stack`. */
 export function where(tag: Tag): { company: string; path: string }[] {
 	const hits: { company: string; path: string }[] = [];
