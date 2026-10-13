@@ -57,7 +57,7 @@ for i, line in enumerate([
     d.text((PAD, 348 + i * 40), line, font=body, fill=LO)
 
 # The one measured claim, in the diff colour it wears on the page.
-d.text((PAD, 508), '+ 6 years · 4 browser stores · 10x vault scale · 1 acquisition', font=mono, fill=ADD)
+d.text((PAD, 508), '+ 6 years', font=mono, fill=ADD)
 d.text((PAD, 552), 'ibrahimismail.dev', font=mono, fill=LO)
 
 im.save(OUT, 'PNG', optimize=True)
