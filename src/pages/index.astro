@@ -31,7 +31,10 @@ const SECTIONS = [
 			>
 				{PROFILE.name}
 			</h1>
-			<p class="mt-6 max-w-[48ch] text-lg text-text-lo sm:text-xl">{PROFILE.sentence}</p>
+			{/* Two lines, equal weight, server first: the balance is shown, not asserted. */}
+			<div class="mt-6 grid max-w-[62ch] gap-2 text-lg text-text-lo sm:text-xl">
+				{PROFILE.sentence.map((clause) => <p>{clause}</p>)}
+			</div>
 			<p class="mt-8 font-mono text-sm">
 				<span class="text-accent">▍</span>
 				<span>{PROFILE.status.text}</span>

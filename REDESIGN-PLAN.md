@@ -23,7 +23,7 @@ src/styles/global.css palette tokens (both themes), motion tokens, reveal utilit
 src/lib/theme.ts      preference → resolved theme, localStorage, theme-color
 src/components/       Head.astro (meta + Person/WebSite JSON-LD), ThemeScript.astro
 src/layouts/Base.astro
-src/content/          profile.ts, types.ts
+src/content/          profile.ts (two-clause pitch, server-first knowsAbout), types.ts (Half)
 src/pages/index.astro masthead real, five section anchors stubbed
 public/               favicons, apple-touch-icon, CV pdf, robots.txt, _headers
 ```
@@ -65,7 +65,7 @@ A cold visit lands on a near-black canvas: one prompt bar, a cursor, nothing els
 intent types itself —
 
 ```
-build: senior engineer portfolio  ·  target: frontend architecture
+build: senior full-stack engineer portfolio  ·  target: backend + platform
 ```
 
 — then an agent loop runs **visibly**. A short plan. Then tool calls streaming as cards:
@@ -98,6 +98,30 @@ servers to your team. So the honest move is not *talking to an AI on your site*.
 
 And it cannot be templated. A build sequence that stays readable, skippable, 60fps, SEO-intact
 and accessible is a real engineering problem. Solving it in public *is* the portfolio piece.
+
+### Framing
+
+**Half server, half client — and the server half comes first.** He is a full-stack engineer and
+the site has to read that way, or a backend hiring manager bounces off a page that looks like a
+frontend portfolio with APIs bolted on.
+
+Enforced by **order and structure only** — never by volume, never by adjectives. Nothing is
+inflated and nothing is buried:
+
+| Where | How |
+|---|---|
+| `profile.ts` | the one-sentence pitch is two clauses of equal length, server then client, set as two lines of equal weight |
+| `knowsAbout` in the JSON-LD | server-side terms first; crawlers and answer engines read array order as ranking |
+| Timeline directories | `backend/` then `security/` before `platform/` and `client/`; `backend/` is the one open by default |
+| `Dir.half` / `System.half` | the side of the stack is a typed field, so every list sorts itself rather than being hand-ordered in three places |
+| Systems section | the scope engine leads, at the same depth budget as the extension bus — the backend interactive is not the junior one |
+| Stack section | two columns, server first, with the depth tiers running inside each |
+| `?role=` presets | `backend`, `platform` and `security` before `fullstack` and `frontend` |
+
+The extension work gets described for what it actually was: a distributed-systems problem — an
+ephemeral process, a message queue that has to survive it, IPC to a native host, and a key
+rotation mid-flight — that happened to live in a browser. Framed that way it counts for both
+halves, which is the truth of it.
 
 ### Name
 
@@ -167,13 +191,13 @@ chat behaviour). Prompt bar pinned at the bottom with a blinking block cursor.
 
 | t (ms) | Step | Reveals |
 |---|---|---|
-| 0 | prompt types `build portfolio --target=frontend-architecture` | — |
+| 0 | prompt types `build portfolio --target=full-stack` | — |
 | 900 | `plan` — 4 short lines | — |
 | 1600 | `Read content/profile.ts` | `#masthead` |
 | 2400 | `Write sections/Timeline.astro` `+312 −0` | `#timeline` (rail only) |
 | 3300 | `Read content/experience.ts` → `3 roles · 16 systems` | timeline entries, staggered |
-| 4200 | `Write islands/ExtensionBus.tsx` | `#systems` card 1 |
-| 4800 | `Write islands/ScopeEngine.tsx` | `#systems` card 2 |
+| 4200 | `Write islands/ScopeEngine.tsx` | `#systems` card 1 |
+| 4800 | `Write islands/ExtensionBus.tsx` | `#systems` card 2 |
 | 5300 | `Write islands/KlikNote.tsx` | `#systems` card 3 |
 | 5900 | `Bash npm run build` → `✓ 6 pages · 94 kB js · 1.1 s` | `#stack`, `#instruments` |
 | 6700 | `done` — `ready · ⌘K to drive` | `#contact`, overlay dissolves |
@@ -204,8 +228,10 @@ Not a hero. A masthead: name, one sentence, current status, three ways in.
 
 - Name in the display face, large, tight, left — no gradient fill (the single most dated thing
   on the old site).
-- One sentence, concrete: *Builds the software other software runs inside — browser extensions,
-  micro-frontends, native bridges, permission engines.*
+- The pitch, as two lines of equal weight — *Authorization engines, service contracts and
+  encrypted channels on the server.* / *Extension platforms, native bridges and micro-frontends
+  on the client.* Same length by construction, server on top. A reader who only takes in two
+  lines takes in both halves.
 - A status chip: what you are open to, as of a date. Recruiters look for exactly this.
 - `Download CV` · `Email` · `LinkedIn`, plus the `⌘K` hint.
 - Optional portrait, treated (§10.5). My recommendation: **no portrait in the masthead** — a mono
@@ -236,53 +262,63 @@ dense, and native to the audience.
 I would author exactly like this:
 
 ```
-leadership/
-  team.ts                     + lead the Password Manager extension team, full SDLC
-                              + onboard, mentor, run knowledge transfers
-                              + interview across the pipeline with hire recommendations
-architecture/
-  manifest-v3.ts              + replaced the persistent background script with an ephemeral
-                                service worker
-                              + designed the message-passing layer: SW ↔ popup ↔ injected
-                                dialogs ↔ desktop client
-  ui-migration.ts             + rebuilt the extension UI on a new design system
-                              + migrated React → Vue incrementally, release cadence unbroken
-platform/
-  safari-bridge.swift         + authored a native Swift bridge for low-level IPC with the
-                                macOS desktop app
-  microfrontends.ts           + shipped admin portal features as independently deployable
-                                micro-frontends into a shared shell
 backend/
-  roles-authz.go              + custom roles authorization end to end: CRUD, migrations,
-                                scope-evaluation engine, multi-role admins
-  roles-ui.ts                 + metadata-driven UI — new permissions ship server-side with
-                                zero frontend changes
-  icon-service.ts             + icon streaming with client-side caching, third-party GraphQL,
-                                webhook-driven freshness
-  contracts.proto             + typed service contracts over gRPC + protobuf
+  roles-authz.go              + custom roles authorization end to end: CRUD endpoints,
+                                migrations for new permission scopes, multi-role admins
+  scope-engine.go             + the scope-evaluation engine governing access across the
+                                admin portal, including inter-scope dependencies
+  icon-service.ts             + icon-streaming service: third-party GraphQL integration,
+                                webhook-driven freshness, client-side caching
+  contracts.proto             + typed service contracts across microservices over gRPC and
+                                protocol buffers, owned through every environment
+  roles-ui.ts                 + metadata-driven roles UI — scope categories, type-split
+                                tables and dependencies render from server metadata, so new
+                                permissions ship backend-only with zero frontend changes
 security/
   p2p-crypto.ts               + secure extension ↔ desktop channel: key generation, exchange,
                                 rotation, combined symmetric/asymmetric
   passwordless.ts             + JumpCloud Go — cross-platform biometric passwordless auth
                               + hardened autofill: user rules, per-site exceptions, allow/deny
+platform/
+  manifest-v3.ts              + replaced the persistent background script with an ephemeral
+                                service worker
+                              + designed the message-passing layer: SW ↔ popup ↔ injected
+                                dialogs ↔ desktop client
+  safari-bridge.swift         + authored a native Swift bridge for low-level IPC with the
+                                macOS desktop app
+  microfrontends.ts           + shipped admin portal features as independently deployable
+                                micro-frontends into a shared shell
+client/
+  ui-migration.ts             + rebuilt the extension UI on a new design system
+                              + migrated React → Vue incrementally, release cadence unbroken
 perf/
   vault-scale.ts              + 5,000 → 50,000 items: caching, lazy loading, virtualization
                               + rebuilt peer sync — higher throughput, memory leaks gone
-build/
+delivery/
   webpack.config.js           + replaced Gulp; 4 min → 30 s
-ci/
   release.yml                 + automated builds + distribution to every major browser store
                               + CircleCI → GitHub Actions
-ops/
   reliability.md              + feature-flagged rollouts (LaunchDarkly, Split)
                               + DataDog observability, incident response, rollbacks, RCA
+leadership/
+  team.ts                     + lead the Password Manager extension team, full SDLC
+                              + onboard, mentor, run knowledge transfers
+                              + interview across the pipeline with hire recommendations
 ai/
   workflows.md                + introduced AI-assisted development across the team
                                 (Cursor, Copilot, Gemini, agent skills, MCP servers)
 ```
 
+Eight directories, ordered server-first, with `backend/` the one expanded by default. `Dir.half`
+carries the side of the stack, so that ordering is data rather than a hand-sorted literal — and
+a `?role=frontend` link re-sorts it without touching the content.
+
+Leadership does not lose by sitting low in the tree: it is in the commit's subject line
+(*Lead, Password Manager browser extension team*), which is visible in the collapsed rail before
+any directory is opened at all.
+
 **Mechanics.**
-- Default: directories collapsed with counts. Click a directory → its diff lines expand.
+- Default: `backend/` open, every other directory collapsed with counts. Click one → it expands.
 - `+` lines in the accent, mono, with colouring restricted to two hues.
 - Keyboard: `j`/`k` move, `enter` expands, `/` filters lines — the filter is live and highlights
   matches across all roles, so `crypto` or `vue` instantly shows every place it appears.
@@ -295,10 +331,42 @@ ai/
 
 ### Act 3 — Systems, not screenshots
 
-Your hardest work is invisible. You cannot screenshot a message-passing layer. Three pieces,
-each one an actual interactive, each one earning its place:
+Your hardest work is invisible. You cannot screenshot an authorization engine or a
+message-passing layer. Three interactives, server-side first, and the first two share the depth
+budget equally — the backend piece is not the junior one:
 
-#### 3.1 The extension bus *(the centrepiece)*
+#### 3.1 The scope engine *(server, deep)*
+
+A mock admin portal nav on the right, role chips on the left. Toggle a scope → watch resolved
+access change across the nav, with inter-scope dependencies lighting up as they cascade, and a
+resolver trace printing the evaluation:
+
+```
+resolve(admin: [billing-viewer, device-manager])
+  ✓ devices.read        ← device-manager
+  ✓ devices.write       ← device-manager
+  ✓ billing.read        ← billing-viewer
+  ✗ billing.write       ← no grant
+  ✓ users.read          ← implied by devices.write
+```
+
+Three things to drive, which is what earns it equal billing with the bus:
+
+| Control | What it shows |
+|---|---|
+| role chips | an admin holding two roles — the union, and which grant won |
+| a scope toggle | the dependency cascade firing through the graph |
+| `metadata ⇄ hand-rolled` | the same new permission arriving server-side only, versus the frontend changes a hand-rolled UI would have needed |
+
+Pure client state machine over a small JSON scope graph — no backend, no animation paths, so the
+depth costs authoring rather than engineering. It demonstrates the metadata-driven design better
+than any paragraph could, and it is the piece a backend reviewer will spend their time on.
+
+#### 3.2 The extension bus *(both halves, deep)*
+
+Described for what it actually was: a distributed-systems problem — an ephemeral process, a
+queue that has to survive it, IPC to a native host, a key rotation mid-flight — that happened to
+live in a browser.
 
 Inline SVG, ~7 nodes: `Service Worker (ephemeral)`, `Popup`, `Content script`, `Injected dialog`,
 `Desktop client (Electron)`, `Swift bridge`, `API`.
@@ -321,53 +389,53 @@ in one short line, and a scrub bar lets you step hop by hop.
 Accessibility: the log is the accessible version — a real `<ol>` of steps, readable with the
 animation off. Reduced motion → packets jump between hops instead of travelling.
 
-#### 3.2 The scope engine
-
-A mock admin portal nav on the right, role chips on the left. Toggle a scope → watch resolved
-access change across the nav, with inter-scope dependencies lighting up as they cascade, and a
-tiny resolver trace printing the evaluation:
-
-```
-resolve(admin: [billing-viewer, device-manager])
-  ✓ devices.read        ← device-manager
-  ✓ devices.write       ← device-manager
-  ✓ billing.read        ← billing-viewer
-  ✗ billing.write       ← no grant
-  ✓ users.read          ← implied by devices.write
-```
-
-Pure client state machine over a small JSON scope graph. No backend. Demonstrates the
-metadata-driven design better than any paragraph could.
-
-#### 3.3 KlikNote, playable
+#### 3.3 KlikNote, playable *(client, small)*
 
 An embedded mini KlikNote: press the hotkey, type, it persists locally, `↑↓` to navigate,
 `⌘⏎` to save. Shows local-first (a `network: 0 requests` badge that is actually true) and
 keyboard-native in ten seconds of use. Links out to the real product.
 
-**Scope discipline:** 3.1 is deep, 3.2 is medium, 3.3 is small. Any further projects are tight
-static cards. Three interactives is the ceiling — four is where the timeline doubles.
+**Plus two static cards, both server-side**, so the section's card count is balanced even though
+only three things are interactive:
+
+- **`icon-service`** — third-party GraphQL, webhooks in, client-side cache, streamed to the
+  client. One diagram, no interaction.
+- **`contracts.proto`** — a real protobuf excerpt and the services either side of it, as a
+  syntax-highlighted block.
+
+**Scope discipline:** 3.1 and 3.2 are deep, 3.3 is small, the other two are static. Three
+interactives is the ceiling — four is where the timeline doubles.
 
 ---
 
-### Act 4 — Stack, tiered honestly
+### Act 4 — Stack, in two halves
 
 Kill the 20 colour icons from `img.icons8.com` (third-party requests, mismatched logo styles,
 and a flat list implies equal depth in Flask and TypeScript, which is not true).
 
-Replace with three tiers, mono type, no logos:
+Two columns, **server first**, with depth tiers running inside each. The layout is the argument:
+a reader sees two full columns before they read a word, which is the 50/50 claim made visible
+instead of asserted.
 
 ```
-BUILD WITH DAILY     TypeScript · React · Vue · Node · Astro · Tailwind · Webpack/Vite
-SHIPPED IN ANGER     Swift (native bridge) · Go · gRPC/protobuf · GraphQL · PostgreSQL · Electron
-                     Manifest V3 · Chrome/Firefox/Safari/Edge stores · GitHub Actions
-READ AND REACH FOR   Python · Java · PHP · MongoDB · MySQL · Docker · Flask
+SERVER & PLATFORM                      CLIENT & INTERFACE
+─────────────────────                  ──────────────────
+daily        Node · TypeScript         daily        TypeScript · Vue · React
+             PostgreSQL · REST                      Astro · Tailwind · Vite
+shipped      Go · gRPC/protobuf        shipped      Manifest V3 · service workers
+             GraphQL · webhooks                     micro-frontends · Electron
+             schema migrations                      Swift (native bridge)
+             authz / scope engines                  4 browser stores
+             applied cryptography                   list virtualization
+             microservices                          design systems
+reach for    Python · Flask · Java     reach for    SASS · Webpack
+             PHP · MySQL · MongoDB                  framer-motion
+             Docker · CI/CD
 ```
 
-Honest tiering reads as senior. A wall of equal badges reads as junior. Each term is hoverable
-to surface *where* you used it — pulling the link straight from the timeline data.
-
----
+Honest tiering reads as senior; a wall of equal badges reads as junior. Each term is hoverable to
+surface *where* you used it — pulling the link straight from the timeline data, which is what
+`Tag` and `Dir.half` are for. On mobile the columns stack, server first.
 
 ### Act 5 — Instruments
 
@@ -423,13 +491,14 @@ the page so it is never the only path to anything.
 
 ## 7. Per-audience links — the feature that makes this a tool
 
-`?role=staff-frontend`, `?role=security`, `?role=fullstack`, `?for=acme`
+`?role=backend`, `?role=platform`, `?role=security`, `?role=fullstack`, `?role=frontend`, `?for=acme`
 
 Effects:
-1. The build's target line reads `target: staff frontend architecture`.
+1. The build's target line reads `target: backend + distributed systems`.
 2. Section order and the timeline's default-expanded directories change — `security/` first for
-   a security role, `architecture/` first for a platform role.
-3. The masthead sentence swaps to one of three authored variants.
+   a security role, `platform/` first for a platform role, `client/` first for a frontend one.
+   It is a sort over `Dir.half` plus a per-preset `openDirs`, not a second copy of the content.
+3. The two masthead clauses swap order, so the half that matters to that reader is the top line.
 4. `?for=acme` adds one line to the masthead: *Built this view for the Acme team.*
 
 No LLM. A map of presets in `src/content/targets.ts`. Send a tailored link with every
@@ -446,7 +515,8 @@ shapes are:
 ```ts
 export type Line = { text: string; tags?: Tag[] };    // one diff line — one thing he did
 export type File = { path: string; lines: Line[] };    // a "file changed" — a slice of the work
-export type Dir  = { name: string; files: File[] };    // a collapsed directory
+export type Half = 'server' | 'client' | 'both';       // which side of the stack
+export type Dir  = { name: string; half: Half; files: File[] };
 export type Role = {
   company: string; role: string; location: string;
   start: string; end?: string;                         // 'YYYY-MM', absent end = current
@@ -455,9 +525,10 @@ export type Role = {
   dirs: Dir[];
 };
 export type System = {
-  id: 'extension-bus' | 'scope-engine' | 'kliknote';
+  id: 'scope-engine' | 'extension-bus' | 'kliknote';
+  half: Half;
   title: string; blurb: string;                        // blurb ≤ 90 chars
-  island: 'ExtensionBus' | 'ScopeEngine' | 'KlikNote';
+  island: 'ScopeEngine' | 'ExtensionBus' | 'KlikNote';
   cover: string; company?: string;
 };
 export type Target = { id: string; label: string; sentence: string; openDirs: string[] };
@@ -465,6 +536,10 @@ export type Target = { id: string; label: string; sentence: string; openDirs: st
 
 Tags are what power `find` and `stack` without a search index: every line is already tagged, so
 filtering is a `.filter()` over data that is in the bundle regardless.
+
+`half` is what keeps the framing rule from rotting. Server-first ordering is a sort over one
+typed field in one place — not three hand-sorted lists that drift the next time content is
+added. `profile.ts` and `types.ts` already carry it.
 
 **Derived in `src/lib/derive.ts`, never hand-written:** file counts, `+` counts, role durations,
 the stack tiers' "where I used it" links, the palette index, the sitemap.
@@ -776,9 +851,11 @@ phase 4 rather than chasing a major now.
 
 Mostly wired already in `Head.astro`:
 
-- `<title>`: `Ibrahim Ismail — Senior Full-Stack Engineer`. Description rewritten around
-  extensions / micro-frontends / native bridges / permission engines.
-- JSON-LD `Person` (with `jobTitle`, `knowsAbout`, `sameAs`, address) + `WebSite`. Recruiter
+- `<title>`: `Ibrahim Ismail — Senior Full-Stack Engineer`. Description rewritten server-first:
+  authorization engines / gRPC contracts / key exchange / migrations, then Manifest V3 /
+  native bridges / micro-frontends.
+- JSON-LD `Person` (with `jobTitle`, `knowsAbout`, `sameAs`, address) + `WebSite`. `knowsAbout`
+  lists server-side terms first, because array order is read as ranking. Recruiter
   tooling and the crawlers behind answer engines both read this; in 2026 that is table stakes.
 - `sitemap-index.xml` generated by `@astrojs/sitemap`; `robots.txt` points at it.
 - Canonical URL, OG `profile` type, Twitter large card, theme-color per theme.
@@ -854,6 +931,7 @@ what `main` holds today.
 | Mobile perf on the diagram | `offset-distance` only, ≤ 12 animated nodes, `will-change` scoped, measured on a throttled profile before it ships |
 | Clever filtering hides content from crawlers | Everything is in the DOM; filters toggle classes, never remove nodes |
 | Safari `offset-path` quirks | Fallback to a keyframed `translate` path per scenario; Safari gets a pass in phase 4 |
+| A backend reviewer reads it as a frontend portfolio | §2 "Framing": server-first ordering carried in `Dir.half`, `backend/` open by default, equal depth on the scope engine, two-column stack, server-first `knowsAbout` |
 | Domain cut-over downtime | Worker verified on `workers.dev` first; DNS swapped only after; `main` untouched until then |
 
 ---
@@ -891,7 +969,8 @@ what `main` holds today.
 ## 18. What "done" means
 
 A hiring manager opens the link on a phone, on hotel wifi. In seven seconds they watch an agent
-assemble a portfolio, and they can read it the entire time. They scroll to the timeline, tap
+assemble a portfolio, and they can read it the entire time. They scroll to the timeline, where
+`backend/` is already open on a scope-evaluation engine and a set of gRPC contracts, tap
 `security/`, and see cryptographic key rotation shipped to production. They tap `cold start` and
 watch a service worker die mid-conversation without losing a message. They hit `⌘P` and get a
 clean two-page CV. Nothing stutters, nothing waits on a network call, nothing is fake.

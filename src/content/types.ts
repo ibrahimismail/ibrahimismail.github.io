@@ -3,6 +3,13 @@
  * palette's index and the print route — nothing on the site is authored twice.
  */
 
+/**
+ * Which side of the stack a slice of work sits on. Carried as data, not decided in markup, so
+ * the timeline, the stack section and the `?role=` presets all order themselves backend-first
+ * from one field instead of three hand-sorted lists.
+ */
+export type Half = 'server' | 'client' | 'both';
+
 /** Anything a line can be filtered by. The palette's `find` and `stack` are a filter over these. */
 export type Tag =
 	| 'typescript'
@@ -19,7 +26,10 @@ export type Tag =
 	| 'ci'
 	| 'ai'
 	| 'leadership'
-	| 'microfrontends';
+	| 'microfrontends'
+	| 'authz'
+	| 'postgres'
+	| 'migrations';
 
 /** One `+` line in a diff: a single thing he did. */
 export type Line = {
@@ -36,6 +46,7 @@ export type File = {
 /** A grouping of files. Rendered as a collapsed directory until the reader opens it. */
 export type Dir = {
 	name: string;
+	half: Half;
 	files: File[];
 };
 
@@ -54,7 +65,8 @@ export type Role = {
 };
 
 export type System = {
-	id: 'extension-bus' | 'scope-engine' | 'kliknote';
+	id: 'scope-engine' | 'extension-bus' | 'kliknote';
+	half: Half;
 	title: string;
 	/** ≤ 90 characters. The card has room for one line and no more. */
 	blurb: string;
