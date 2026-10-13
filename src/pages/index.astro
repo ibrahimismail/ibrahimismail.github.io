@@ -1,36 +1,5 @@
 ---
-/*
- * The document. Every section renders complete, server-side, in source order — the build
- * sequence of phase 3 is an overlay over a page that is already finished, so this file never
- * needs to know the overlay exists beyond the data-build attributes the sections carry.
- *
- * The venture is the one removable part: switch it off in content/venture.ts and it is absent
- * here, with no gap left behind. See REDESIGN-PLAN.md §8.1.
- */
-import { VENTURE } from '../content/venture';
-import Base from '../layouts/Base.astro';
-import Contact from '../sections/Contact.astro';
-import Footer from '../sections/Footer.astro';
-import Instruments from '../sections/Instruments.astro';
-import Masthead from '../sections/Masthead.astro';
-import Stack from '../sections/Stack.astro';
-import Systems from '../sections/Systems.astro';
-import Timeline from '../sections/Timeline.astro';
-import Venture from '../sections/Venture.astro';
+import Page from '../components/Page.astro';
 ---
 
-<Base>
-	<main class="mx-auto w-full max-w-5xl px-6 pt-16 pb-8 sm:px-10 sm:pt-24">
-		<Masthead />
-
-		<div class="mt-24 space-y-24">
-			<Timeline />
-			<Systems />
-			{VENTURE && <Venture />}
-			<Stack />
-			<Instruments />
-			<Contact />
-		</div>
-	</main>
-	<Footer />
-</Base>
+<Page />

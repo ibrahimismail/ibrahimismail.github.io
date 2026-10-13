@@ -103,6 +103,7 @@ const { allOpen = false } = Astro.props;
 							{serverFirst(role.dirs).map((dir, index) => (
 								<details
 									open
+									data-dir={dir.name}
 									data-collapsed={!allOpen && dir.name !== open ? '' : undefined}
 									class:list={['group', index > 0 && 'border-t border-border']}
 								>

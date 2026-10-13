@@ -26,9 +26,18 @@ const WAYS = [
 	</h1>
 
 	{/* Two clauses, equal weight, server on top: the balance is shown, not asserted. */}
-	<div class="mt-7 grid max-w-[58ch] gap-1.5 text-lg leading-snug sm:text-xl">
-		{PROFILE.sentence.map((clause) => <p class="text-text-lo">{clause}</p>)}
+	<div class="mt-7 flex max-w-[58ch] flex-col gap-1.5 text-lg leading-snug sm:text-xl">
+		{
+			PROFILE.sentence.map((clause, index) => (
+				<p data-clause={index === 0 ? 'server' : 'client'} class="text-text-lo">
+					{clause}
+				</p>
+			))
+		}
 	</div>
+
+	{/* Filled in by ?for=, and absent otherwise. */}
+	<p data-addressee hidden class="mt-5 font-mono text-[0.8125rem] text-accent"></p>
 
 	<p class="mt-8 flex items-center gap-2.5 font-mono text-sm">
 		<span aria-hidden="true" class="text-sx-add">●</span>

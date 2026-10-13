@@ -35,12 +35,37 @@ import { DEFAULT_THEME_PREFERENCE, THEME_COLORS, THEME_STORAGE_KEY } from '../li
 		 * later and the sections would flash in before the driver hides them. With JS off it
 		 * is never set, so the finished document renders as-is.
 		 */
-		const seen = sessionStorage.getItem('ii:built');
-		const skipped = new URLSearchParams(location.search).has('skip');
+		/*
+		 * Who gets the build sequence: someone who has not seen it this session or this week,
+		 * did not ask to skip it, and did not ask for less motion. Deciding here, inline and
+		 * before first paint, is what keeps the reveal styles from ever flashing.
+		 */
+		const params = new URLSearchParams(location.search);
+		let seen = false;
+		try {
+			const stamp = Number(localStorage.getItem('ii:built-at') || 0);
+			seen =
+				!!sessionStorage.getItem('ii:built') ||
+				(stamp > 0 && Date.now() - stamp < 7 * 24 * 60 * 60 * 1000);
+		} catch (error) {
+			/* Blocked storage means they watch it again. */
+		}
+
 		const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		if (buildEnabled && !seen && !skipped && !still) {
+		const replay = location.pathname.replace(/\.html$/, '').endsWith('/replay');
+		if (buildEnabled && (replay || (!seen && !params.has('skip') && !still))) {
 			root.classList.add('js-build');
 		}
+
+		/*
+		 * The audience this link was written for. CSS generated at build time reads it to order
+		 * the sections and the two halves of the pitch, so the arrangement is right at first
+		 * paint rather than rearranged afterwards.
+		 */
+		const role = params.get('role');
+		if (role) root.dataset.role = role;
+		const addressee = params.get('for');
+		if (addressee) root.dataset.for = addressee.slice(0, 40);
 
 		// Set here too, not just in theme-init: the browser reads theme-color at first paint,
 		// before the deferred module runs.

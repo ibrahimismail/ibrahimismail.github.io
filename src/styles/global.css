@@ -63,7 +63,7 @@
 	 * symmetric: speckle above mid-grey lightens, below it darkens. Tune by eye — this is the
 	 * only value either theme needs.
 	 */
-	--grain: 0.32;
+	--grain: 0.26;
 
 	/* Motion. Nothing animates above --t-slow except the build sequence itself. */
 	--t-fast: 120ms;
@@ -96,7 +96,7 @@
 	--cursor: #526fff;
 
 	--selection: #e5e5e6;
-	--grain: 0.22;
+	--grain: 0.18;
 }
 
 @theme inline {
@@ -198,6 +198,15 @@
 		margin-left: 1.25rem;
 	}
 
+	/*
+	 * Preflight sets `margin: 0` on everything, and a <dialog> is centred by its UA margin —
+	 * so without this the palette opens in the top-left corner.
+	 */
+	dialog[data-palette] {
+		inset: 0;
+		margin: auto;
+	}
+
 	/* Shown only on paper and on /cv, where there are no links to click. */
 	[data-print-only] {
 		display: none;
@@ -214,13 +223,13 @@
 		inset: 0;
 		z-index: 100;
 		pointer-events: none;
-		background-image: url('/textures/grain.webp'), url('/textures/grain.webp');
-		background-size:
-			256px 256px,
-			173px 173px;
-		background-position:
-			0 0,
-			37px 61px;
+		/*
+		 * One tile. Two at different sizes pushed the visible repeat further out, but they beat
+		 * against each other and the moiré was worse than the seam they were hiding. At this
+		 * strength the seam is below the threshold anyway.
+		 */
+		background-image: url('/textures/grain.webp');
+		background-size: 256px 256px;
 		mix-blend-mode: soft-light;
 		opacity: var(--grain);
 	}
@@ -244,11 +253,26 @@
 		clip-path: inset(0 0 100% 0);
 	}
 
+	/* Without the pre-paint class there is no sequence, so there is no overlay either. */
+	[data-build-overlay] {
+		display: none;
+	}
+
+	.js-build [data-build-overlay] {
+		display: flex;
+	}
+
 	[data-build] {
 		transition:
 			opacity var(--t-reveal) var(--e-out),
 			transform var(--t-reveal) var(--e-out),
 			clip-path var(--t-reveal) var(--e-out);
+	}
+}
+
+@keyframes blink {
+	50% {
+		opacity: 0;
 	}
 }
 

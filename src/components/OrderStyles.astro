@@ -1,0 +1,23 @@
+---
+/*
+ * The `?role=` arrangements, as static CSS.
+ *
+ * Generated from content/targets.ts at build time and applied through `order`, so a link
+ * written for a backend reader lays itself out correctly at first paint — no reordering after
+ * the fact, no flash, no JavaScript on the layout path at all.
+ */
+import { SECTION_IDS } from '../content/sections';
+import { TARGETS } from '../content/targets';
+
+const rules = TARGETS.flatMap((target) => {
+	const ordered = target.order.filter((id) => SECTION_IDS.includes(id));
+	const sections = ordered.map(
+		(id, index) => `[data-role='${target.id}'] [data-build='${id}']{order:${index + 1}}`,
+	);
+	/* Which half of the pitch leads. The other keeps its authored position. */
+	const clause = `[data-role='${target.id}'] [data-clause='${target.clause}']{order:-1}`;
+	return [...sections, clause];
+});
+---
+
+<style set:html={rules.join('')}></style>

@@ -1,0 +1,77 @@
+---
+/*
+ * The build overlay — act 0.
+ *
+ * It is an overlay over a page that is already complete, never a loading screen: every word of
+ * the document is in the HTML behind it, and if this element never ran, nothing would be
+ * missing. It is aria-hidden and inert, so a screen reader is handed the finished document and
+ * never hears the performance.
+ *
+ * It only renders at all when the sequence is enabled and the reader has not seen it this week;
+ * see ThemeScript, which decides that before first paint.
+ */
+import { SYSTEMS } from '../content/systems';
+import { VENTURE } from '../content/venture';
+import { EXPERIENCE } from '../content/experience';
+import { TARGETS, DEFAULT_TARGET } from '../content/targets';
+import { TOTALS } from '../lib/derive';
+
+const facts = {
+	roles: EXPERIENCE.length,
+	files: TOTALS.files,
+	lines: TOTALS.lines,
+	systems: SYSTEMS.length,
+	venture: VENTURE !== null,
+	/* Counted from the routes themselves, so the transcript cannot drift from the build. */
+	pages: Object.keys(import.meta.glob('../pages/*.astro')).length,
+};
+
+const labels = Object.fromEntries(TARGETS.map((target) => [target.id, target.label]));
+---
+
+<div
+	data-build-overlay
+	data-facts={JSON.stringify(facts)}
+	data-labels={JSON.stringify({ ...labels, default: DEFAULT_TARGET.label })}
+	aria-hidden="true"
+	inert
+	class="fixed inset-0 z-50 flex flex-col justify-end bg-background px-6 pt-10 pb-8 font-mono text-[0.8125rem] leading-relaxed transition-opacity duration-[260ms] data-[state=leaving]:opacity-0 sm:px-10"
+>
+	<div class="mx-auto w-full max-w-[720px]">
+		<div data-transcript class="max-h-[60vh] overflow-hidden"></div>
+
+		<p class="mt-4 flex items-baseline gap-2 border-t border-border pt-4">
+			<span aria-hidden="true" class="text-accent">›</span>
+			<span data-prompt class="text-text-hi"></span>
+			<span aria-hidden="true" class="animate-[blink_1s_steps(2)_infinite] text-cursor">▍</span>
+		</p>
+	</div>
+
+	<button
+		type="button"
+		data-skip
+		class="fixed top-5 right-5 rounded border border-border px-2.5 py-1 text-[0.75rem] text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi sm:top-7 sm:right-8"
+	>
+		skip ⏎
+	</button>
+</div>
+
+<script>
+	import { runBuild } from '../build/driver';
+
+	function start() {
+		const overlay = document.querySelector<HTMLElement>('[data-build-overlay]');
+		if (!overlay || overlay.dataset.ran) return;
+		if (!document.documentElement.classList.contains('js-build')) return;
+		overlay.dataset.ran = 'true';
+
+		const facts = JSON.parse(overlay.dataset.facts ?? '{}');
+		const labels = JSON.parse(overlay.dataset.labels ?? '{}');
+		const role = document.documentElement.dataset.role;
+
+		runBuild(overlay, { ...facts, target: labels[role ?? ''] ?? labels.default });
+	}
+
+	start();
+	document.addEventListener('astro:page-load', start);
+</script>

@@ -1,0 +1,68 @@
+---
+/*
+ * The command palette. ⌘K, or ctrl+K.
+ *
+ * It is the keyboard-native signature — this is a site built by someone who ships a
+ * keyboard-native product — but it is never the only way to reach anything: every command here
+ * has a mouse equivalent somewhere on the page. `/` is deliberately left to the timeline's
+ * filter rather than opening this.
+ *
+ * It is not a chatbot, and it says so when someone types a sentence at it.
+ */
+import { SECTIONS } from '../content/sections';
+import { SCENARIOS } from '../content/bus';
+---
+
+<dialog
+	data-palette
+	aria-label="Command palette"
+	class="w-[min(34rem,calc(100vw-2rem))] rounded-lg border border-border bg-surface p-0 text-text-hi backdrop:bg-ink-900/70 backdrop:backdrop-blur-sm"
+>
+	<form method="dialog" data-palette-form class="contents">
+		<div class="flex items-center gap-2.5 border-b border-border px-4 py-3">
+			<span aria-hidden="true" class="font-mono text-accent">›</span>
+			<input
+				type="text"
+				data-palette-input
+				autocomplete="off"
+				placeholder="goto, find, run, theme, plain, cv, replay, help"
+				aria-label="Type a command"
+				class="w-full bg-transparent font-mono text-[0.8125rem] text-text-hi placeholder:text-text-lo/60 focus:outline-none"
+			/>
+		</div>
+		<ul
+			data-palette-list
+			role="listbox"
+			aria-label="Commands"
+			class="max-h-[46vh] overflow-y-auto p-2 font-mono text-[0.8125rem]"
+		>
+		</ul>
+		<p class="border-t border-border px-4 py-2 font-mono text-[0.6875rem] text-text-lo">
+			<kbd>↑</kbd> <kbd>↓</kbd> move · <kbd>⏎</kbd> run · <kbd>esc</kbd> close
+		</p>
+	</form>
+</dialog>
+
+<button
+	type="button"
+	data-palette-open
+	class="fixed right-4 bottom-4 z-40 rounded-lg border border-border bg-surface/90 px-3 py-2 font-mono text-[0.75rem] text-text-lo shadow-lg backdrop-blur transition-colors duration-200 hover:border-accent/40 hover:text-text-hi sm:right-6 sm:bottom-6"
+>
+	⌘K
+</button>
+
+<script
+	define:vars={{
+		sections: SECTIONS.map((section) => ({ id: section.id, label: section.label })),
+		scenarios: SCENARIOS.map((scenario) => ({ id: scenario.id, label: scenario.label })),
+	}}
+>
+	window.__paletteData = { sections, scenarios };
+</script>
+
+<script>
+	import { mountPalette } from '../scripts/palette';
+
+	mountPalette();
+	document.addEventListener('astro:page-load', mountPalette);
+</script>
