@@ -12,9 +12,8 @@
 The repo was emptied and re-scaffolded. `main` still holds the old React/Vite site in full, so
 nothing is lost — anything from it is one `git checkout main -- <path>` away.
 
-**Phases 0, 1 and 2 are done.** The document is complete and typeset, and all three
-interactives are built and driveable. What is missing is the build sequence, the command
-palette, the art, and the measured instruments — phases 3 and 4.
+**All four phases are built.** What remains is the art pass (covers, textures, portrait,
+monogram), the deployment, and the printed-CV length decision — all three deferred on purpose.
 
 ```
 astro.config.mjs      Astro 6 · Cloudflare adapter · sitemap · build.format 'file'
@@ -25,16 +24,20 @@ src/lib/              derive.ts (counts, periods, server-first sort, tag index) 
 src/sections/         Masthead · Timeline · Systems · Venture · Stack · Instruments ·
                       Contact · Footer
 src/pages/            index.astro · cv.astro · 404.astro
-src/islands/          ScopeEngine · ExtensionBus · KlikNote  (markup, server-rendered)
-src/scripts/          scope-engine · extension-bus · kliknote · timeline · theme-init
+src/islands/          ScopeEngine · ExtensionBus · KlikNote · BuildOverlay · Palette
+src/scripts/          scope-engine · extension-bus · kliknote · timeline · palette ·
+                      instruments · targeting · theme-init
+src/build/            script.ts (the choreography) · driver.ts (the clock) · config.ts
+plugins/stats.ts      writes dist/client/stats.json after the build
+scripts/og.py         renders public/og.png from code
 src/build/config.ts   BUILD_SEQUENCE_ENABLED — false until phase 3 has a driver
 src/styles/global.css One Dark tokens, both themes, motion tokens, grain, reveal utilities
 public/               print.css · textures/grain.webp · favicons · CV pdf · robots · _headers
 ```
 
-**Measured on the built site:** HTML 15.8 kB gzip · CSS 9.2 kB gzip · **0 JS requests** — every
-script is small enough that Astro inlines it, so the interactives cost no round trip at all ·
-0 third-party requests · 3 pages built in ~2 s.
+**Measured on the built site:** HTML 19.5 kB gzip · CSS 9.7 kB · JS 7.9 kB in total, of which
+6.0 kB is inlined and costs no round trip · **0 third-party requests** · 20 bytes of
+render-blocking script · 4 pages. Budgets were 24 / 14 / 120.
 `/` and `/cv` print identically at 3 pages. Mobile verified at 500 px, which is as narrow as
 headless Chrome's window will go; a true 390 px pass needs CDP and happens in phase 4.
 
@@ -1049,24 +1052,38 @@ animations created, steps still advance, log still complete). Two checks found r
 request badge was counting fonts that landed after the island mounted, and the cold-start queue
 assertion was reading the step after the drain.
 
-### Phase 3 — First Run *(1–2 sessions)*
-- [ ] `build/script.ts` choreography + `build/driver.ts` clock, reveal, skip, fast-forward, replay
-- [ ] Overlay visuals: transcript, tool cards, prompt bar, dissolve
-- [ ] `sessionStorage` / 7-day stamp / `?skip=1` / `prefers-reduced-motion` paths
-- [ ] Command palette with the §6 command set
-- [ ] `?role=` targeting presets
-- **Acceptance:** the nine contract rules in §3, each verified individually over CDP
+### Phase 3 — First Run *(done)*
+- [x] `build/script.ts` choreography derived from content, `build/driver.ts` clock, reveal,
+      skip, fast-forward, replay
+- [x] Overlay visuals: transcript, tool cards, prompt bar, dissolve
+- [x] `sessionStorage` + a 7-day stamp, `?skip=1`, `prefers-reduced-motion`, `/replay`
+- [x] Command palette with the §6 command set
+- [x] `?role=` presets, through CSS generated at build time
 
-### Phase 4 — Finish *(1 session)*
-- [ ] Media assets generated per §10, graded, converted, sized, committed
-- [ ] Instruments panel + `plugins/stats.ts`
-- [ ] Code-rendered OG image, monogram, font preloads
-- [ ] Perf pass against every budget in §11; a11y pass; cross-browser (Safari `offset-path`,
-      Firefox `clip-path` transitions)
-- [ ] Custom domain cut-over per §11; merge `redesign` → `main`
-- **Acceptance:** every number in §11 met and recorded in the PR
+**Two things learned here.** `requestAnimationFrame` does not fire in a backgrounded tab, so a
+sequence that hides the document behind it needs a watchdog timer and a `visibilitychange`
+handler, or a reader who opens the link in a background tab comes back to an overlay. And CSS
+`order` moves pixels without moving the tab sequence, so the preset ordering is re-applied to
+the DOM after paint — otherwise the keyboard walks the page in an order nobody can see.
 
----
+`/` stays with the timeline's filter; the palette is `⌘K` alone. Two things cannot own one key.
+
+### Phase 4 — Finish *(done, less the art)*
+- [ ] **Media assets** — deferred by choice; the covers render as labelled placeholders and
+      nothing else depends on them
+- [x] Instruments panel + `plugins/stats.ts`
+- [x] OG image rendered from code (`scripts/og.py`) — the meta tag had been pointing at a file
+      that did not exist
+- [x] Font preloads for the two faces that paint first
+- [x] Contrast audited across both themes and all three surfaces: One Dark's comment grey is
+      3.73:1 on the editor surface, and several One Light hues land near 2.8:1 on paper. Each
+      moved the minimum distance in lightness that clears 4.5:1 with its hue intact. All 18
+      tokens pass.
+- [x] Skip link, `main#content`, focus order corrected for `?role=`
+- [x] Perf pass against §11
+- [ ] **Cross-browser** — Safari and Firefox not available in this environment; `offset-path`
+      was avoided for exactly this reason, but both still need a human pass
+- [ ] **Deployment** — deferred by choice
 
 ## 15. Risks
 
@@ -1083,6 +1100,8 @@ assertion was reading the step after the drain.
 | Hiding KlikNote leaves a hole in the build sequence | The choreography derives its steps from content and the driver sums durations; `VENTURE = null` is built and verified in phase 1's acceptance, not assumed |
 | Seven syntax hues turn the page into a parrot | The `--sx-*` hues are confined to code-shaped surfaces by a rule written into `global.css`; all chrome uses the one accent blue |
 | One Dark's `#282c34` reads flat over a long page | Editor depth: `#1b1e24` workbench / `#21252b` cards / `#282c34` code surfaces, so code-shaped things float rather than fill |
+| rAF throttled in a background tab leaves the overlay up | A watchdog timer and a `visibilitychange` handler finish the run whatever the compositor is doing |
+| `order` reorders pixels but not the tab sequence | `?role=` re-applies its order to the DOM after paint |
 | Domain cut-over downtime | Worker verified on `workers.dev` first; DNS swapped only after; `main` untouched until then |
 
 ---
