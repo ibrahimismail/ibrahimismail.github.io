@@ -1,101 +1,97 @@
-import type { Half, Tag } from './types';
+import type { Half } from './types';
 
 /**
- * Two halves, server first, with depth tiers inside each. The layout is the argument: a reader
- * sees two full columns before they read a word.
+ * Skills, grouped the way they are scanned for.
  *
- * Tiers are honest rather than flattering — a wall of equal badges reads as junior, and
- * claiming the same depth in Flask as in TypeScript would be a lie a reviewer can catch in one
- * question. `tag` links a term back to the timeline lines that prove it.
+ * The first version sorted everything into three depth tiers — "daily", "shipped", "reach for".
+ * Honest, but not readable: a recruiter scanning for a keyword does not parse "reach for without
+ * thinking" as a proficiency level, and a tier called "reach for" sitting below one called
+ * "shipped" reads as though it were the deeper of the two.
+ *
+ * So the grouping is now by category, which is what someone is actually looking for — languages,
+ * data, security — and depth survives in one plain-English form: whatever is in `also` is
+ * working knowledge rather than something he would claim as current.
+ *
+ * Two columns, backend first, per the framing rule in REDESIGN-PLAN.md §2.
  */
-export type Tier = 'daily' | 'shipped' | 'reach for';
-
-export type Entry = { name: string; tag?: Tag };
+export type Group = {
+	label: string;
+	/** What he would put his name to. Ordered most-used first. */
+	main: string[];
+	/** Read fluently, reached for when it fits. Rendered quietly, and labelled as such. */
+	also?: string[];
+};
 
 export type Column = {
 	half: Exclude<Half, 'both'>;
 	label: string;
-	tiers: { tier: Tier; entries: Entry[] }[];
-};
-
-export const TIER_NOTE: Record<Tier, string> = {
-	daily: 'reach for without thinking',
-	shipped: 'shipped to production and supported',
-	'reach for': 'read fluently, reach for when it fits',
+	groups: Group[];
 };
 
 export const STACK: Column[] = [
 	{
 		half: 'server',
-		label: 'Server & platform',
-		tiers: [
+		label: 'Backend & platform',
+		groups: [
 			{
-				tier: 'daily',
-				entries: [
-					{ name: 'Node.js', tag: 'node' },
-					{ name: 'TypeScript', tag: 'typescript' },
-					{ name: 'PostgreSQL', tag: 'postgres' },
-					{ name: 'REST' },
+				label: 'Languages',
+				main: ['TypeScript', 'Go', 'Node.js'],
+				also: ['Python', 'Java', 'PHP'],
+			},
+			{
+				label: 'APIs & contracts',
+				main: ['gRPC', 'Protocol Buffers', 'GraphQL', 'REST', 'Webhooks'],
+			},
+			{
+				label: 'Databases',
+				main: ['PostgreSQL', 'MySQL', 'MongoDB', 'Schema migrations'],
+			},
+			{
+				label: 'Security',
+				main: [
+					'Authorization engines',
+					'Scope evaluation',
+					'Applied cryptography',
+					'Key exchange & rotation',
 				],
 			},
 			{
-				tier: 'shipped',
-				entries: [
-					{ name: 'Go', tag: 'go' },
-					{ name: 'gRPC + protobuf', tag: 'grpc' },
-					{ name: 'GraphQL', tag: 'graphql' },
-					{ name: 'Webhooks', tag: 'graphql' },
-					{ name: 'Schema migrations', tag: 'migrations' },
-					{ name: 'Authorization engines', tag: 'authz' },
-					{ name: 'Applied cryptography', tag: 'crypto' },
-					{ name: 'Microservices', tag: 'grpc' },
-				],
-			},
-			{
-				tier: 'reach for',
-				entries: [
-					{ name: 'Python' },
-					{ name: 'Flask' },
-					{ name: 'Java' },
-					{ name: 'PHP' },
-					{ name: 'MySQL' },
-					{ name: 'MongoDB' },
-					{ name: 'Docker' },
-				],
+				label: 'Services & delivery',
+				main: ['Microservices', 'Docker', 'GitHub Actions', 'CI/CD'],
+				also: ['CircleCI', 'Flask'],
 			},
 		],
 	},
 	{
 		half: 'client',
-		label: 'Client & interface',
-		tiers: [
+		label: 'Frontend & browser',
+		groups: [
 			{
-				tier: 'daily',
-				entries: [
-					{ name: 'TypeScript', tag: 'typescript' },
-					{ name: 'Vue', tag: 'vue' },
-					{ name: 'React', tag: 'react' },
-					{ name: 'Tailwind' },
-					{ name: 'Astro' },
-					{ name: 'Vite' },
+				label: 'Languages',
+				main: ['TypeScript', 'JavaScript'],
+			},
+			{
+				label: 'Frameworks',
+				main: ['Vue', 'React', 'Astro'],
+			},
+			{
+				label: 'Browser & desktop',
+				main: [
+					'Manifest V3',
+					'Service workers',
+					'Four browser stores',
+					'Electron',
+					'Swift native bridge',
 				],
 			},
 			{
-				tier: 'shipped',
-				entries: [
-					{ name: 'Manifest V3', tag: 'mv3' },
-					{ name: 'Service workers', tag: 'mv3' },
-					{ name: 'Micro-frontends', tag: 'microfrontends' },
-					{ name: 'Swift native bridge', tag: 'swift' },
-					{ name: 'Electron' },
-					{ name: 'List virtualization', tag: 'perf' },
-					{ name: 'Four browser stores', tag: 'ci' },
-					{ name: 'Design systems', tag: 'vue' },
-				],
+				label: 'Architecture',
+				main: ['Micro-frontends', 'Design systems', 'List virtualization'],
 			},
 			{
-				tier: 'reach for',
-				entries: [{ name: 'SASS' }, { name: 'Webpack' }, { name: 'Framer Motion' }],
+				label: 'Styling & build',
+				main: ['Tailwind', 'Vite', 'Webpack'],
+				also: ['SASS', 'Framer Motion'],
 			},
 		],
 	},

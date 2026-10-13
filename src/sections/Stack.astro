@@ -1,48 +1,52 @@
 ---
 /*
- * Two halves, server first, depth tiers inside each. The two-column layout is the argument: a
- * reader sees two full columns before reading a word, so "full-stack" is something they observe
- * rather than something they are told.
+ * Skills, in two columns with backend first. The two-column layout is the argument: a reader
+ * sees two full columns before reading a word, so "full-stack" is something they observe rather
+ * than something they are told.
+ *
+ * Grouped by category, because that is what someone scanning for a keyword is looking for.
+ * Depth is carried by the quiet "also" line rather than by a tier name — see content/stack.ts.
  *
  * No logos. Twenty colour badges from a third-party icon CDN cost requests, mismatch each
  * other, and imply the same depth in Flask as in TypeScript.
  */
-import { STACK, TIER_NOTE, type Tier } from '../content/stack';
-
-/* Depth, as colour: what he reaches for daily reads as a call, the shipped work as a keyword,
-   and the rest stays plain. A reader sees the shape of the stack before reading a word of it. */
-const TIER_CLASS: Record<Tier, string> = {
-	daily: 'text-sx-fn',
-	shipped: 'text-sx-key',
-	'reach for': 'text-text-lo',
-};
+import { STACK } from '../content/stack';
 ---
 
 <section id="stack" data-build="stack" aria-labelledby="stack-heading">
 	<h2 id="stack-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
-		Stack
+		Skills
 	</h2>
 
-	<div class="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-8">
+	<div class="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-x-12">
 		{
 			STACK.map((column) => (
 				<div>
-					<h3 class="font-display text-lg font-semibold">{column.label}</h3>
-					<dl class="mt-5 space-y-5">
-						{column.tiers.map(({ tier, entries }) => (
-							<div>
-								<dt class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
-									{tier}
-									<span class="ml-2 tracking-normal normal-case opacity-70">
-										— {TIER_NOTE[tier]}
-									</span>
+					<h3 class="font-display border-b border-border pb-2 text-lg font-semibold">
+						{column.label}
+					</h3>
+
+					<dl class="mt-4 space-y-3.5">
+						{column.groups.map((group) => (
+							<div class="grid gap-1 sm:grid-cols-[9.5rem_minmax(0,1fr)] sm:gap-4">
+								<dt class="pt-0.5 font-mono text-[0.6875rem] tracking-[0.14em] text-sx-esc uppercase">
+									{group.label}
 								</dt>
-								{/* Spacing separates them. A printed interpunct strands itself at the
-								end of a wrapped line, and there is no CSS that can see that coming. */}
-								<dd class="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.8125rem]">
-									{entries.map((entry) => (
-										<span class={TIER_CLASS[tier]}>{entry.name}</span>
-									))}
+								<dd>
+									{/* Each term gets its own ground: several are two words, and spacing
+									alone left "Protocol Buffers GraphQL REST" ambiguous. A separator
+									would do it too, but strands itself at the end of a wrapped line. */}
+									<p class="flex flex-wrap gap-1.5 font-mono text-[0.8125rem] text-text-hi">
+										{group.main.map((entry) => (
+											<span class="rounded-sm bg-surface px-1.5 py-0.5">{entry}</span>
+										))}
+									</p>
+									{group.also && (
+										<p class="mt-1 font-mono text-[0.75rem] text-text-lo/75">
+											<span class="text-text-lo/55">also</span>{' '}
+											{group.also.join(', ')}
+										</p>
+									)}
 								</dd>
 							</div>
 						))}

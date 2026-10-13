@@ -101,47 +101,52 @@ export function highlightCode(lines: string[]): string[] {
 }
 
 /**
- * An excerpt that ends where the code does.
+ * One complete declaration, from its first line to the line that closes it.
  *
- * Taking a flat `count` lines cut files mid-statement — the last line streamed was often a
- * dangling `packet.animate(` or a bare `{`, which reads as a file that never finished no matter
- * how long it is left on screen.
+ * Earlier versions took a window of N lines and tried to end it tidily — on a balanced bracket,
+ * then on a line that closed something. Both still ended inside a structure: `],` four levels
+ * down an array of roles is syntactically closed and visibly chopped. There is no way to end a
+ * window well, so this does not take one. It starts at a top-level declaration and runs until
+ * the brackets it opened have all closed, which is the only thing that reads as a whole file
+ * being written.
  *
- * So: measure bracket depth line by line up to a cap, then end on the last line where depth has
- * returned to zero. Data files never balance inside a short window, so they fall back to the
- * last line that at least closes something rather than opening one.
+ * `max` is a guard against a marker that matches something unclosable; overrunning it means the
+ * wrong marker was chosen, and the fallback keeps the sequence running rather than throwing
+ * during a visitor's page load.
  */
-export function excerpt(source: string, marker: string, count: number, slack = 8): string[] {
+export function unit(source: string, marker: string, max = 46): string[] {
 	const lines = source.split('\n');
 	const start = Math.max(
 		0,
 		lines.findIndex((line) => line.includes(marker)),
 	);
-	const cap = Math.min(lines.length, start + count + slack);
 
 	let depth = 0;
-	let balanced = -1;
-	let closing = -1;
+	let opened = false;
+	let end = -1;
 
-	for (let i = start; i < cap; i++) {
+	for (let i = start; i < Math.min(lines.length, start + max); i++) {
 		/* Strings and comments go first, so a brace inside one cannot skew the count. */
 		const code = lines[i]
 			.replace(/(['"`])(?:\\.|(?!\1)[^\\])*\1/g, '')
 			.replace(/\/\/.*$/, '')
 			.replace(/\/\*.*?\*\//g, '');
+
 		for (const char of code) {
-			if ('{(['.includes(char)) depth++;
-			else if ('})]'.includes(char)) depth--;
+			if ('{(['.includes(char)) {
+				depth++;
+				opened = true;
+			} else if ('})]'.includes(char)) {
+				depth--;
+			}
 		}
 
-		const trimmed = lines[i].trim();
-		if (!trimmed) continue;
-		const closes = /[,;}\)\]]$/.test(trimmed);
-		/* Depth alone is not enough: a `/**` opening the next doc comment sits at depth 0 too. */
-		if (i >= start + count - 1 && depth <= 0 && closes) balanced = i;
-		if (closes) closing = i;
+		if (opened && depth <= 0) {
+			end = i;
+			break;
+		}
 	}
 
-	const end = balanced >= 0 ? balanced : closing >= 0 ? closing : cap - 1;
-	return lines.slice(start, end + 1).map((line) => line.replace(/\t/g, '  '));
+	const stop = end >= 0 ? end : Math.min(lines.length, start + max) - 1;
+	return lines.slice(start, stop + 1).map((line) => line.replace(/\t/g, '  '));
 }

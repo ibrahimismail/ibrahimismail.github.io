@@ -15,17 +15,12 @@
  * seen it this week — ThemeScript decides that before first paint.
  */
 import profileSource from '../content/profile.ts?raw';
-import experienceSource from '../content/experience.ts?raw';
 import stackSource from '../content/stack.ts?raw';
-import busSource from '../scripts/extension-bus.ts?raw';
-import scopeSource from '../scripts/scope-engine.ts?raw';
-import klikSource from '../scripts/kliknote.ts?raw';
 import deriveSource from '../lib/derive.ts?raw';
+import instrumentsSource from '../scripts/instruments.ts?raw';
 
 import { EXPERIENCE } from '../content/experience';
-import { SYSTEMS } from '../content/systems';
-import { VENTURE } from '../content/venture';
-import { excerpt, highlightCode } from '../lib/code';
+import { highlightCode, unit } from '../lib/code';
 import { TOTALS } from '../lib/derive';
 
 type Step = {
@@ -35,13 +30,14 @@ type Step = {
 	reveals?: string;
 	/** Pre-highlighted lines, so the browser streams strings rather than tokenising at runtime. */
 	code: string[];
-	/** Dropped on a narrow screen, where the sequence runs six steps rather than nine. */
+	/** Dropped on a narrow screen, where the sequence runs shorter and has no code pane. */
 	optional?: boolean;
 };
 
 /*
- * The steps follow the content: a hidden section takes its step with it, rather than leaving
- * the transcript writing a file whose output nobody can scroll to.
+ * Each step streams one COMPLETE declaration out of this site's own source, read at build time
+ * with ?raw — not a window into a file, which always ended somewhere visibly mid-structure.
+ * That is also why the files here are the small ones: a step has to be able to finish.
  */
 const steps: (Step | null)[] = [
 	{
@@ -49,64 +45,36 @@ const steps: (Step | null)[] = [
 		arg: 'content/profile.ts',
 		out: 'senior full-stack engineer · Beirut',
 		reveals: 'masthead',
-		code: highlightCode(excerpt(profileSource, 'export const PROFILE', 13)),
+		code: highlightCode(unit(profileSource, 'export const PROFILE')),
 	},
-	{
-		tool: 'Read',
-		arg: 'content/experience.ts',
-		out: `${EXPERIENCE.length} roles · ${TOTALS.files} files · ${TOTALS.lines} lines`,
-		reveals: 'timeline',
-		code: highlightCode(excerpt(experienceSource, 'export const EXPERIENCE', 15)),
-	},
-	SYSTEMS.length
-		? {
-				tool: 'Write',
-				arg: 'scripts/scope-engine.ts',
-				out: 'resolver · transitive grants',
-				reveals: 'systems',
-				code: highlightCode(excerpt(scopeSource, 'function resolve(', 16)),
-			}
-		: null,
-	SYSTEMS.length
-		? {
-				tool: 'Write',
-				arg: 'scripts/extension-bus.ts',
-				out: `${SYSTEMS.length} systems · 5 scenarios`,
-				reveals: 'systems',
-				optional: true,
-				code: highlightCode(excerpt(busSource, 'function travel(hop', 15)),
-			}
-		: null,
-	VENTURE
-		? {
-				tool: 'Write',
-				arg: 'scripts/kliknote.ts',
-				out: 'local-first · no network',
-				reveals: 'venture',
-				optional: true,
-				code: highlightCode(excerpt(klikSource, 'function render()', 14)),
-			}
-		: null,
 	{
 		tool: 'Read',
 		arg: 'lib/derive.ts',
-		out: 'counts, periods, server-first ordering',
+		out: `${EXPERIENCE.length} roles · ${TOTALS.files} files · ${TOTALS.lines} lines`,
 		reveals: 'timeline',
-		optional: true,
-		code: highlightCode(excerpt(deriveSource, 'export function duration', 14)),
+		code: highlightCode(unit(deriveSource, 'export function duration')),
 	},
 	{
 		tool: 'Read',
 		arg: 'content/stack.ts',
-		out: 'two halves, server first',
+		out: 'two halves, backend first',
 		reveals: 'stack',
-		code: highlightCode(excerpt(stackSource, 'export const STACK', 14)),
+		optional: true,
+		code: highlightCode(unit(stackSource, 'export type Column')),
+	},
+	{
+		tool: 'Write',
+		arg: 'scripts/instruments.ts',
+		out: 'measured on your view, not asserted',
+		reveals: 'instruments',
+		optional: true,
+		code: highlightCode(unit(instrumentsSource, 'function transferred()')),
 	},
 	{
 		tool: 'Bash',
 		arg: 'npm run build',
 		out: '',
-		reveals: 'instruments',
+		reveals: 'contact',
 		code: [],
 	},
 ];

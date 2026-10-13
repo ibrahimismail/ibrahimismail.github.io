@@ -24,11 +24,13 @@ type Step = {
  * finished. The card settles and the pane is marked saved at the start of that rest, not the
  * end of it, so the completion is what the reader is looking at while it holds.
  */
-const PROMPT_MS = 700;
-const PLAN_MS = 560;
-const LINE_MS = 44;
-const REST = 820;
-const BASH_MS = 700;
+const PROMPT_MS = 620;
+const PLAN_MS = 480;
+const LINE_MS = 40;
+const REST = 720;
+const BASH_MS = 680;
+/* A long declaration streams faster per line rather than making the whole sequence long. */
+const WRITE_CAP = 1200;
 
 /** What the page actually cost to load. Measured, never asserted. */
 function measured() {
@@ -68,7 +70,9 @@ export function runBuild(overlay: HTMLElement) {
 	const prompt = `build portfolio --target=${root.dataset.role || 'full-stack'}`;
 
 	/* Durations, derived from the work each step actually does: write, then rest on it. */
-	const writes = steps.map((step) => (step.tool === 'Bash' ? BASH_MS : step.code.length * LINE_MS));
+	const writes = steps.map((step) =>
+		step.tool === 'Bash' ? BASH_MS : Math.min(step.code.length * LINE_MS, WRITE_CAP),
+	);
 	const spans = writes.map((write) => write + REST);
 	const heads = PROMPT_MS + PLAN_MS;
 	const total = heads + spans.reduce((sum, span) => sum + span, 0) + 420;
