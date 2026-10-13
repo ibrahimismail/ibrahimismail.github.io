@@ -29,8 +29,7 @@ export const PROFILE = {
 	email: 'ibrahimismailh@gmail.com',
 	website: 'https://ibrahimismail.dev',
 	linkedin: 'https://linkedin.com/in/ibrahimismailh',
-	github: 'https://github.com/ibrahimismail',
-	sameAs: ['https://linkedin.com/in/ibrahimismailh', 'https://github.com/ibrahimismail'],
+	sameAs: ['https://linkedin.com/in/ibrahimismailh'],
 	/* Server-side first: this array's order is a ranking signal, and crawlers read it as one. */
 	knowsAbout: [
 		'Authorization systems',
