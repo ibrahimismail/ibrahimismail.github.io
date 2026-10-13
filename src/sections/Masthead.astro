@@ -24,7 +24,7 @@ const WAYS = [
  * keeps a line's height so the numbers space evenly rather than bunching wherever the content
  * happens to stop.
  */
-const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 ---
 
 <section id="masthead" data-build="masthead" aria-labelledby="masthead-name">
@@ -75,17 +75,27 @@ const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 								</h1>
 							)}
 
-							{number === 5 && (
-								<div class="flex max-w-[58ch] flex-col gap-1.5 font-sans text-lg leading-snug sm:text-xl">
+							{number === 5 && <p class="text-text-lo/50">/**</p>}
+
+							{number === 6 && (
+								<div class="flex max-w-[76ch] flex-col gap-1 text-[0.9375rem] leading-relaxed">
 									{PROFILE.sentence.map((clause, index) => (
-										<p data-clause={index === 0 ? 'server' : 'client'} class="text-text-lo">
-											{clause}
+										<p
+											data-clause={index === 0 ? 'server' : 'client'}
+											class="flex gap-2.5"
+										>
+											<span aria-hidden="true" class="shrink-0 text-text-lo/50">
+												*
+											</span>
+											<span class="text-text-hi">{clause}</span>
 										</p>
 									))}
 								</div>
 							)}
 
-							{number === 7 && (
+							{number === 7 && <p class="text-text-lo/50">{' */'}</p>}
+
+							{number === 9 && (
 								<p class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
 									<span data-no-print class="text-sx-key">const</span>
 									<span data-no-print class="text-sx-fn">status</span>
@@ -96,9 +106,9 @@ const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 								</p>
 							)}
 
-							{number === 8 && <p data-addressee hidden class="text-accent"></p>}
+							{number === 10 && <p data-addressee hidden class="text-accent"></p>}
 
-							{number === 9 && (
+							{number === 11 && (
 								<nav aria-label="Ways to get in touch" class="flex flex-wrap gap-2">
 									{WAYS.map(({ label, href, primary }) => (
 										<a
