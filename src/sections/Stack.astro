@@ -1,0 +1,46 @@
+---
+/*
+ * Two halves, server first, depth tiers inside each. The two-column layout is the argument: a
+ * reader sees two full columns before reading a word, so "full-stack" is something they observe
+ * rather than something they are told.
+ *
+ * No logos. Twenty colour badges from a third-party icon CDN cost requests, mismatch each
+ * other, and imply the same depth in Flask as in TypeScript.
+ */
+import { STACK, TIER_NOTE } from '../content/stack';
+---
+
+<section id="stack" data-build="stack" aria-labelledby="stack-heading">
+	<h2 id="stack-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+		Stack
+	</h2>
+
+	<div class="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-8">
+		{
+			STACK.map((column) => (
+				<div>
+					<h3 class="font-display text-lg font-semibold">{column.label}</h3>
+					<dl class="mt-5 space-y-5">
+						{column.tiers.map(({ tier, entries }) => (
+							<div>
+								<dt class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
+									{tier}
+									<span class="ml-2 tracking-normal normal-case opacity-70">
+										— {TIER_NOTE[tier]}
+									</span>
+								</dt>
+								{/* Spacing separates them. A printed interpunct strands itself at the
+								end of a wrapped line, and there is no CSS that can see that coming. */}
+								<dd class="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.8125rem]">
+									{entries.map((entry) => (
+										<span class="text-text-hi">{entry.name}</span>
+									))}
+								</dd>
+							</div>
+						))}
+					</dl>
+				</div>
+			))
+		}
+	</div>
+</section>

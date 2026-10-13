@@ -12,32 +12,29 @@
 The repo was emptied and re-scaffolded. `main` still holds the old React/Vite site in full, so
 nothing is lost — anything from it is one `git checkout main -- <path>` away.
 
-**In place and verified building:**
+**Phase 0 (scaffold) and phase 1 (the spine) are done.** The site builds, prints, and is
+deployable; what is missing is every piece of interactivity, which is phases 2–4.
 
 ```
 astro.config.mjs      Astro 6 · Cloudflare adapter · sitemap · build.format 'file'
 wrangler.jsonc        Workers config, assets from ./dist, observability on
-package.json          astro 6.4 · @astrojs/cloudflare 13.6 · tailwindcss 4.3 · wrangler 4.96
-tsconfig.json         astro/tsconfigs/strict
-src/styles/global.css palette tokens (both themes), motion tokens, reveal utilities, rm kill switch
-src/lib/theme.ts      preference → resolved theme, localStorage, theme-color
-src/components/       Head.astro (meta + Person/WebSite JSON-LD), ThemeScript.astro
-src/layouts/Base.astro
-src/content/          profile.ts (two-clause pitch, server-first knowsAbout)
-                      types.ts (Half, Venture), venture.ts (KlikNote + its one-line switch)
-src/pages/index.astro masthead real, five section anchors stubbed
-public/               favicons, apple-touch-icon, CV pdf, robots.txt, _headers
+src/content/          profile · types · experience · systems · stack · education · facts
+                      venture.ts — KlikNote behind its one-line switch
+src/lib/              derive.ts (counts, periods, server-first sort, tag index) · theme.ts
+src/sections/         Masthead · Timeline · Systems · Venture · Stack · Instruments ·
+                      Contact · Footer
+src/pages/            index.astro · cv.astro · 404.astro
+src/build/config.ts   BUILD_SEQUENCE_ENABLED — false until phase 3 has a driver
+src/styles/global.css One Dark tokens, both themes, motion tokens, grain, reveal utilities
+public/               print.css · textures/grain.webp · favicons · CV pdf · robots · _headers
 ```
 
-Carried over from the old `public/`: the five favicon files, the apple-touch icon, and
-`Ibrahim_Ismail_CV.pdf`. Dropped: `CNAME` (GitHub Pages only — the domain is Cloudflare's now),
-`sitemap.xml` (generated), `thumbnail.png` (the OG image gets rendered from code, §10.6).
+**Measured on the built site:** HTML 8.3 kB gzip · CSS 8.3 kB gzip · **0 JS requests** (the
+theme and print scripts inline to ~1 kB) · 0 third-party requests · 3 pages built in ~2 s.
+`/` and `/cv` print identically at 3 pages. Mobile verified at 500 px, which is as narrow as
+headless Chrome's window will go; a true 390 px pass needs CDP and happens in phase 4.
 
-**Measured on the scaffold:** HTML 2.5 kB gzip · CSS 6.0 kB gzip · 0 kB JS · build 3.5 s.
-
-**Not done yet:** everything in §14 phases 1–4.
-
----
+**Not done:** phases 2–4.
 
 ## 1. Where we came from
 
@@ -944,6 +941,17 @@ phase 4 rather than chasing a major now.
 - A print-only contact line, because a printed page has no links.
 - Keep `public/Ibrahim_Ismail_CV.pdf` as the explicit download for people who want a file.
 
+Two traps, both found the hard way and both now commented in `public/print.css`:
+
+1. **Tailwind v4's `space-y-*` sets `margin-block-end`,** not `margin-top`. A print rule that
+   only overrides `margin-top` leaves 6rem between every section — and `/` printed a page
+   longer than `/cv` until the end margins were cancelled too.
+2. **Engines disagree about how a closed `<details>` hides its content.** Older ones use
+   `display: none` on the non-summary children; current Chrome, Safari and Firefox hide the
+   `::details-content` pseudo with `content-visibility`. Forcing only the first silently drops
+   seven directories from the paper. The markup now sidesteps the whole question — see §14
+   phase 1 — and both rules stay as belt and braces.
+
 ---
 
 ## 13. SEO, metadata, a11y
@@ -985,15 +993,37 @@ what `main` holds today.
 - [x] `Head.astro` with meta + JSON-LD, `ThemeScript`, `theme.ts`, `theme-init.ts`
 - [x] `profile.ts`, `types.ts`, masthead rendering, `npm run build` green
 
-### Phase 1 — The spine *(1 session)*
-- [ ] Content ported from the old `constants.tsx` into `experience.ts` / `systems.ts` /
-      `stack.ts` / `education.ts`; JumpCloud mapped into the dirs and files of §5 act 2
-- [ ] `derive.ts`: counts, durations, tag index
-- [ ] All six sections rendered as a **plain, complete, beautifully typeset document**
-- [ ] `/cv` + `print.css`; `404.astro`
-- [ ] Deploy to the Workers preview URL
-- **Acceptance:** Lighthouse ≥ 98 with zero JS, two-page print, reads better than the old site,
-  and `VENTURE = null` builds clean with no gap, no stray heading and no broken anchor
+### Phase 1 — The spine *(done)*
+- [x] Content ported from the old `constants.tsx` into `experience.ts` / `systems.ts` /
+      `stack.ts` / `education.ts` / `facts.ts`; JumpCloud mapped into the dirs and files of
+      §5 act 2 — 8 directories, 17 files, 21 lines, every one of them tagged
+- [x] `derive.ts`: counts, periods, durations, server-first sort, tag index
+- [x] All eight sections rendered as a plain, complete, typeset document
+- [x] `/cv` + `public/print.css`; `404.astro`
+- [x] `VENTURE = null` builds clean with no gap, no stray heading, no broken anchor
+- [ ] Deploy to the Workers preview URL *(needs a Cloudflare account connected)*
+
+**Three decisions made while building it, each worth knowing:**
+
+1. **Directories render `open`, and the screen collapses them.** The obvious way round —
+   render closed, expand on demand — makes the printed page depend on how each engine hides a
+   closed `<details>`, which differs, and cost a page. Rendering open means the complete
+   document is what a crawler, a screen reader, a reader with no JavaScript and the printer all
+   receive, and collapsing is the enhancement. It is behind `html.js`, set inline before first
+   paint, so there is no flash of everything expanded.
+2. **`BUILD_SEQUENCE_ENABLED` in `src/build/config.ts`.** The reveal styles are armed by
+   `html.js-build`; with no driver to add `.built`, arming them renders a blank page. The flag
+   keeps them disarmed until phase 3 brings the driver.
+3. **Native `<details>` instead of JavaScript accordions.** The whole timeline collapses and
+   expands with zero script, which is the behaviour phase 2 will build keyboard navigation and
+   filtering *on top of* rather than replace.
+
+**Acceptance, measured:** 0 JS requests · HTML 8.3 kB gzip · CSS 8.3 kB gzip · 0 third-party
+requests · `/` and `/cv` print identically · the venture switch verified both ways.
+
+**Acceptance, missed:** the printed CV is **3 pages, not 2** — 678 mm of content against
+542 mm of usable paper. That is not a layout problem; it is 21 achievements plus a founder
+role, and no amount of tightening fits them on two sheets at a readable size. §16 decision 6.
 
 ### Phase 2 — Timeline + systems *(1–2 sessions)*
 - [ ] Commit-log rail, diff panes, `plain ⇄ diff` toggle, `j/k/enter`, live filter
@@ -1056,8 +1086,13 @@ what `main` holds today.
 
 **Still open:**
 
-4. **Status line** — what are you open to, in one sentence, as of October 2026? `profile.ts`
-   carries a placeholder marked `TODO`, and it is the most load-bearing sentence on the page.
+6. **The printed CV is 3 pages.** Two pages needs roughly a third of the timeline cut — about
+   7 of the 21 lines. Options: (a) leave it at 3, which is normal for six years of work;
+   (b) I propose the cut and you approve it; (c) add a `paper: false` flag per line so the
+   site keeps everything and the paper carries a selection. I would pick (c) — it keeps the
+   full record on the site, where there is no page count.
+
+4. ~~**Status line**~~ — settled: *Open to senior engineering roles*, in `profile.ts`.
 5. **Portrait** — off the masthead (my recommendation) or in it? If in it, I need a photo for
    the img2img pass in §10.5.
 

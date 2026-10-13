@@ -1,0 +1,58 @@
+---
+/*
+ * Real links only. A portfolio with a dead social icon on it undoes everything the rest of the
+ * page was trying to prove.
+ */
+import { PROFILE } from '../content/profile';
+
+const WAYS = [
+	{ label: 'Email', value: PROFILE.email, href: `mailto:${PROFILE.email}` },
+	{ label: 'Phone', value: PROFILE.phone, href: `tel:${PROFILE.phone.replace(/\s/g, '')}` },
+	{
+		label: 'LinkedIn',
+		value: PROFILE.linkedin.replace('https://', ''),
+		href: PROFILE.linkedin,
+	},
+	{ label: 'GitHub', value: PROFILE.github.replace('https://', ''), href: PROFILE.github },
+	{ label: 'CV', value: 'Ibrahim_Ismail_CV.pdf', href: '/Ibrahim_Ismail_CV.pdf' },
+];
+---
+
+<section id="contact" data-build="contact" aria-labelledby="contact-heading">
+	<h2 id="contact-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+		Contact
+	</h2>
+
+	<p class="mt-6 max-w-[48ch] text-xl leading-snug text-text-hi sm:text-2xl">
+		{PROFILE.status.text}, from {PROFILE.location}.
+	</p>
+
+	<p data-print-only class="mt-4 font-mono text-[0.8125rem]">
+		{PROFILE.email} · {PROFILE.phone} · {PROFILE.linkedin.replace('https://', '')} ·
+		{PROFILE.github.replace('https://', '')}
+	</p>
+
+	<dl data-no-print class="mt-8 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+		{
+			WAYS.map((way, index) => (
+				<div
+					class:list={[
+						'bg-surface',
+						/* An odd count leaves a dead cell; the last row takes the width instead. */
+						index === WAYS.length - 1 && WAYS.length % 2 === 1 && 'sm:col-span-2',
+					]}
+				>
+					<a
+						href={way.href}
+						class="flex items-baseline justify-between gap-4 p-4 transition-colors duration-200 hover:bg-editor"
+					>
+						<dt class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
+							{way.label}
+						</dt>
+						<dd class="font-mono text-[0.8125rem] text-accent">{way.value}</dd>
+					</a>
+				</div>
+			))
+		}
+	</dl>
+</section>

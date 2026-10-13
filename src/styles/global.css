@@ -58,6 +58,13 @@
 	--radius: 0.5rem;
 	--selection: #3e4451;
 
+	/*
+	 * Film grain strength. One generated plate serves both themes because soft-light is
+	 * symmetric: speckle above mid-grey lightens, below it darkens. Tune by eye — this is the
+	 * only value either theme needs.
+	 */
+	--grain: 0.32;
+
 	/* Motion. Nothing animates above --t-slow except the build sequence itself. */
 	--t-fast: 120ms;
 	--t-base: 200ms;
@@ -89,6 +96,7 @@
 	--cursor: #526fff;
 
 	--selection: #e5e5e6;
+	--grain: 0.22;
 }
 
 @theme inline {
@@ -155,6 +163,52 @@
 
 	::-moz-selection {
 		background-color: var(--selection);
+	}
+
+	/*
+	 * Collapsing a directory the markup rendered open. Only under html.js — set inline before
+	 * first paint — so there is no flash of everything expanded, and so a reader with no
+	 * JavaScript keeps the whole document.
+	 */
+	.js details[data-collapsed] > div {
+		display: none;
+	}
+
+	.js details[data-collapsed] [data-chevron] {
+		transform: none;
+	}
+
+	/* Shown only on paper and on /cv, where there are no links to click. */
+	[data-print-only] {
+		display: none;
+	}
+
+	/*
+	 * Grain over everything. Fixed, so it is composited once and never repaints on scroll;
+	 * pointer-events: none so it is inert; above the build overlay so the whole page wears it.
+	 * 256px tile at 1:1, which is where the plate's speckle lands at one device pixel.
+	 */
+	body::after {
+		content: '';
+		position: fixed;
+		inset: 0;
+		z-index: 100;
+		pointer-events: none;
+		background-image: url('/textures/grain.webp'), url('/textures/grain.webp');
+		background-size:
+			256px 256px,
+			173px 173px;
+		background-position:
+			0 0,
+			37px 61px;
+		mix-blend-mode: soft-light;
+		opacity: var(--grain);
+	}
+
+	@media print {
+		body::after {
+			display: none;
+		}
 	}
 }
 

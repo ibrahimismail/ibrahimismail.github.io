@@ -1,0 +1,44 @@
+---
+/*
+ * The work that cannot be screenshotted. Phase 1 states each piece plainly; phase 2 replaces
+ * the first two cards' bodies with their islands. The cover images are placeholders until
+ * phase 4 — a flat panel with the filename is enough to judge the layout, and a missing <img>
+ * would cost a layout shift the budget does not have.
+ */
+import { SYSTEMS } from '../content/systems';
+---
+
+<section id="systems" data-build="systems" data-no-print aria-labelledby="systems-heading">
+	<h2 id="systems-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+		Systems
+	</h2>
+	<p class="mt-4 max-w-[60ch] text-[0.9375rem] leading-relaxed text-text-lo">
+		A message-passing layer does not photograph. These are the four pieces worth explaining
+		rather than listing — two of them you will be able to drive.
+	</p>
+
+	<ul class="mt-8 grid gap-4 sm:grid-cols-2">
+		{
+			SYSTEMS.map((system) => (
+				<li class="flex flex-col overflow-hidden rounded-lg border border-border bg-surface">
+					<div
+						aria-hidden="true"
+						class="flex aspect-16/10 items-end bg-editor p-3 font-mono text-[0.6875rem] text-text-lo/60"
+					>
+						{system.cover}
+					</div>
+					<div class="flex grow flex-col p-4">
+						<p class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
+							{system.half === 'both' ? 'server + client' : system.half}
+							{system.island && <span class="text-accent"> · interactive</span>}
+						</p>
+						<h3 class="font-display mt-2 text-lg leading-snug font-semibold">
+							{system.title}
+						</h3>
+						<p class="mt-1.5 text-sm leading-relaxed text-text-lo">{system.blurb}</p>
+					</div>
+				</li>
+			))
+		}
+	</ul>
+</section>

@@ -1,0 +1,48 @@
+---
+/*
+ * His own product, so it gets its own act rather than a card among the work he did for
+ * employers. Rendered only when there is a venture to render — see content/venture.ts; the
+ * page's section list is computed from the same nullable export, so nothing is left behind
+ * when it is switched off.
+ */
+import { VENTURE } from '../content/venture';
+
+if (!VENTURE) {
+	throw new Error('Venture.astro rendered with no venture — check the caller guards on VENTURE');
+}
+---
+
+<section id="venture" data-build="venture" aria-labelledby="venture-heading">
+	<h2 id="venture-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+		Built it himself
+	</h2>
+
+	<div class="mt-8 rounded-lg border border-border bg-surface p-6 sm:p-8">
+		<div class="flex items-center gap-3">
+			<img src={VENTURE.logo} alt="" width="28" height="28" class="size-7" />
+			<div>
+				<h3 class="font-display text-2xl leading-none font-semibold">{VENTURE.name}</h3>
+			</div>
+		</div>
+		<p class="mt-3 font-mono text-[0.8125rem] text-sx-type">{VENTURE.role}</p>
+
+		<p class="mt-5 max-w-[56ch] text-lg leading-snug text-text-hi">{VENTURE.tagline}</p>
+
+		<div class="mt-6 grid max-w-[68ch] gap-3.5">
+			{
+				VENTURE.body.map((paragraph) => (
+					<p class="text-[0.9375rem] leading-relaxed text-text-lo">{paragraph}</p>
+				))
+			}
+		</div>
+
+		<a
+			href={VENTURE.url}
+			rel="noopener"
+			target="_blank"
+			class="mt-7 inline-block rounded-md border border-accent/40 bg-accent/10 px-3.5 py-2 font-mono text-[0.8125rem] text-accent transition-colors duration-200 hover:bg-accent/20"
+		>
+			{VENTURE.cta} →
+		</a>
+	</div>
+</section>

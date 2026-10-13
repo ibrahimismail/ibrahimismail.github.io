@@ -1,4 +1,5 @@
 ---
+import { BUILD_SEQUENCE_ENABLED } from '../build/config';
 import { DEFAULT_THEME_PREFERENCE, THEME_COLORS, THEME_STORAGE_KEY } from '../lib/theme';
 ---
 
@@ -8,6 +9,7 @@ import { DEFAULT_THEME_PREFERENCE, THEME_COLORS, THEME_STORAGE_KEY } from '../li
 		storageKey: THEME_STORAGE_KEY,
 		defaultPreference: DEFAULT_THEME_PREFERENCE,
 		themeColors: THEME_COLORS,
+		buildEnabled: BUILD_SEQUENCE_ENABLED,
 	}}
 >
 	(function () {
@@ -23,6 +25,8 @@ import { DEFAULT_THEME_PREFERENCE, THEME_COLORS, THEME_STORAGE_KEY } from '../li
 		const resolved = preference === 'system' ? getSystemTheme() : preference;
 
 		const root = document.documentElement;
+		/* Styles that may only apply when there is a runtime to undo them. */
+		root.classList.add('js');
 		root.classList.toggle('light', resolved === 'light');
 		root.classList.toggle('dark', resolved === 'dark');
 
@@ -34,7 +38,7 @@ import { DEFAULT_THEME_PREFERENCE, THEME_COLORS, THEME_STORAGE_KEY } from '../li
 		const seen = sessionStorage.getItem('ii:built');
 		const skipped = new URLSearchParams(location.search).has('skip');
 		const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		if (!seen && !skipped && !still) {
+		if (buildEnabled && !seen && !skipped && !still) {
 			root.classList.add('js-build');
 		}
 

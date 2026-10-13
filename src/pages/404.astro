@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { PROFILE } from '../content/profile';
+---
+
+<Base title={`Not found — ${PROFILE.name}`} canonicalPath="/404">
+	<main class="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center px-6 sm:px-10">
+		<p class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">404</p>
+		<h1 class="font-display mt-5 text-[clamp(2rem,7vw,3.5rem)] leading-tight font-semibold">
+			No such page.
+		</h1>
+		<p class="mt-5 max-w-[42ch] text-lg text-text-lo">
+			Nothing lives at this address. The whole site is one page.
+		</p>
+		<a
+			href="/"
+			class="mt-8 inline-block self-start rounded-md border border-accent/40 bg-accent/10 px-3.5 py-2 font-mono text-[0.8125rem] text-accent transition-colors duration-200 hover:bg-accent/20"
+		>
+			← {PROFILE.name}
+		</a>
+	</main>
+</Base>

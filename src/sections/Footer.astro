@@ -1,0 +1,24 @@
+---
+/*
+ * The repo link is part of the pitch, not a formality: the site argues that it was built with
+ * care, and the source is where that is checked. Phase 3 adds `↻ replay build` beside it, and
+ * phase 4 the commit SHA from stats.json.
+ */
+import { PROFILE } from '../content/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-border py-8">
+	<div
+		class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-6 font-mono text-xs text-text-lo sm:px-10"
+	>
+		<p>© {year} {PROFILE.name}</p>
+		<a
+			href={`${PROFILE.github}/ibrahimismail.github.io`}
+			rel="noopener"
+			target="_blank"
+			class="transition-colors duration-200 hover:text-text-hi">view source</a
+		>
+	</div>
+</footer>

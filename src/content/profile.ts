@@ -23,8 +23,7 @@ export const PROFILE = {
 	],
 	description:
 		'Senior full-stack engineer, six years on security software. Authorization and scope-evaluation engines, gRPC service contracts, cryptographic key exchange and schema migrations on the backend; Manifest V3 extension architecture, native IPC bridges and micro-frontends on the frontend.',
-	/* TODO confirm with Ibrahim — see REDESIGN-PLAN.md §16. */
-	status: { text: 'Open to senior and staff engineering roles', asOf: '2026-10' },
+	status: { text: 'Open to senior engineering roles', asOf: '2026-10' },
 	location: 'Beirut, Lebanon',
 	phone: '+961 3 689 039',
 	email: 'ibrahimismailh@gmail.com',

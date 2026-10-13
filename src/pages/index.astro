@@ -1,61 +1,36 @@
 ---
 /*
  * The document. Every section renders complete, server-side, in source order — the build
- * sequence is an overlay over a page that is already finished, so this file never knows the
- * overlay exists beyond the data-build attributes it hands out.
+ * sequence of phase 3 is an overlay over a page that is already finished, so this file never
+ * needs to know the overlay exists beyond the data-build attributes the sections carry.
  *
- * Scaffold state: the masthead is real, the rest are anchors waiting on phase 1 of
- * REDESIGN-PLAN.md.
+ * The venture is the one removable part: switch it off in content/venture.ts and it is absent
+ * here, with no gap left behind. See REDESIGN-PLAN.md §8.1.
  */
-import Base from '../layouts/Base.astro';
-import { PROFILE } from '../content/profile';
-
 import { VENTURE } from '../content/venture';
-
-/*
- * Section order. The venture is spliced in only when there is one — see content/venture.ts.
- * Everything that lays the page out reads this list, so hiding KlikNote cannot leave a gap.
- */
-const SECTIONS = [
-	{ id: 'timeline', label: 'Career, as a commit log' },
-	{ id: 'systems', label: 'Systems' },
-	...(VENTURE ? [{ id: 'venture', label: VENTURE.name }] : []),
-	{ id: 'stack', label: 'Stack' },
-	{ id: 'instruments', label: 'Instruments' },
-	{ id: 'contact', label: 'Contact' },
-];
+import Base from '../layouts/Base.astro';
+import Contact from '../sections/Contact.astro';
+import Footer from '../sections/Footer.astro';
+import Instruments from '../sections/Instruments.astro';
+import Masthead from '../sections/Masthead.astro';
+import Stack from '../sections/Stack.astro';
+import Systems from '../sections/Systems.astro';
+import Timeline from '../sections/Timeline.astro';
+import Venture from '../sections/Venture.astro';
 ---
 
 <Base>
-	<main class="mx-auto w-full max-w-5xl px-6 py-20 sm:px-10 lg:py-28">
-		<section id="masthead" data-build="masthead" aria-labelledby="masthead-name">
-			<p class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
-				{PROFILE.location}
-			</p>
-			<h1
-				id="masthead-name"
-				class="font-display mt-5 text-[clamp(2.75rem,9vw,6rem)] leading-[0.92] font-semibold tracking-tight"
-			>
-				{PROFILE.name}
-			</h1>
-			{/* Two lines, equal weight, server first: the balance is shown, not asserted. */}
-			<div class="mt-6 grid max-w-[62ch] gap-2 text-lg text-text-lo sm:text-xl">
-				{PROFILE.sentence.map((clause) => <p>{clause}</p>)}
-			</div>
-			<p class="mt-8 font-mono text-sm">
-				<span class="text-accent">▍</span>
-				<span>{PROFILE.status.text}</span>
-			</p>
-		</section>
+	<main class="mx-auto w-full max-w-5xl px-6 pt-16 pb-8 sm:px-10 sm:pt-24">
+		<Masthead />
 
-		{
-			SECTIONS.map(({ id, label }) => (
-				<section id={id} data-build={id} class="mt-24 border-t border-border pt-8">
-					<h2 class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
-						{label}
-					</h2>
-				</section>
-			))
-		}
+		<div class="mt-24 space-y-24">
+			<Timeline />
+			<Systems />
+			{VENTURE && <Venture />}
+			<Stack />
+			<Instruments />
+			<Contact />
+		</div>
 	</main>
+	<Footer />
 </Base>

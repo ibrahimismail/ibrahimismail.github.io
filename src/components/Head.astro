@@ -22,6 +22,11 @@ export interface Props {
 	imageAlt?: string;
 	/** Browser UI colour at first paint. ThemeScript updates it from the resolved theme. */
 	themeColor?: string;
+	/**
+	 * Apply the paper stylesheet on screen as well as on paper. /cv sets it; everywhere else
+	 * the same file is linked media="print" and only bites in the print dialog.
+	 */
+	paper?: boolean;
 }
 
 const {
@@ -31,6 +36,7 @@ const {
 	image = '/og.png',
 	imageAlt = `${PROFILE.name} — ${PROFILE.title}`,
 	themeColor = '#1b1e24',
+	paper = false,
 } = Astro.props;
 
 const siteUrl = PROFILE.website;
@@ -90,6 +96,7 @@ const structuredData = {
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="stylesheet" href="/print.css" media={paper ? 'all' : 'print'} />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <title>{title}</title>
 <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />

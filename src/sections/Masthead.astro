@@ -1,0 +1,55 @@
+---
+/*
+ * Not a hero. A masthead: who, what, what he is open to, and the ways in — in that order,
+ * because that is the order a recruiter reads in.
+ */
+import { PROFILE } from '../content/profile';
+
+const WAYS = [
+	{ label: 'Download CV', href: '/Ibrahim_Ismail_CV.pdf', primary: true },
+	{ label: 'Email', href: `mailto:${PROFILE.email}` },
+	{ label: 'LinkedIn', href: PROFILE.linkedin },
+	{ label: 'GitHub', href: PROFILE.github },
+];
+---
+
+<section id="masthead" data-build="masthead" aria-labelledby="masthead-name" class="pt-4">
+	<p class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+		{PROFILE.location} · {PROFILE.title}
+	</p>
+
+	<h1
+		id="masthead-name"
+		class="font-display mt-6 text-[clamp(2.75rem,9vw,5.5rem)] leading-[0.95] font-semibold tracking-[-0.02em] text-balance"
+	>
+		{PROFILE.name}
+	</h1>
+
+	{/* Two clauses, equal weight, server on top: the balance is shown, not asserted. */}
+	<div class="mt-7 grid max-w-[58ch] gap-1.5 text-lg leading-snug sm:text-xl">
+		{PROFILE.sentence.map((clause) => <p class="text-text-lo">{clause}</p>)}
+	</div>
+
+	<p class="mt-8 flex items-center gap-2.5 font-mono text-sm">
+		<span aria-hidden="true" class="text-sx-add">●</span>
+		<span>{PROFILE.status.text}</span>
+	</p>
+
+	<nav aria-label="Ways to get in touch" class="mt-9 flex flex-wrap gap-2.5">
+		{
+			WAYS.map(({ label, href, primary }) => (
+				<a
+					href={href}
+					class:list={[
+						'rounded-md border px-3.5 py-2 font-mono text-[0.8125rem] transition-colors duration-200',
+						primary
+							? 'border-accent/40 bg-accent/10 text-accent hover:bg-accent/20'
+							: 'border-border text-text-lo hover:border-accent/40 hover:text-text-hi',
+					]}
+				>
+					{label}
+				</a>
+			))
+		}
+	</nav>
+</section>

@@ -1,0 +1,37 @@
+---
+/*
+ * The CV, on paper — the same document and the same components, with the paper stylesheet
+ * applied on screen as well. Nothing here is a second copy of the content: if it diverged from
+ * the page, one of the two would quietly go stale.
+ *
+ * ⌘P works identically from / — this route exists so the printable version has an address, and
+ * so what the paper looks like can be checked without opening a print dialog.
+ */
+import Base from '../layouts/Base.astro';
+import Contact from '../sections/Contact.astro';
+import Instruments from '../sections/Instruments.astro';
+import Masthead from '../sections/Masthead.astro';
+import Stack from '../sections/Stack.astro';
+import Timeline from '../sections/Timeline.astro';
+import Venture from '../sections/Venture.astro';
+import { PROFILE } from '../content/profile';
+import { VENTURE } from '../content/venture';
+---
+
+<Base
+	title={`CV — ${PROFILE.name}`}
+	description={PROFILE.description}
+	canonicalPath="/cv"
+	paper
+	themeColor="#ffffff"
+>
+	<main class="mx-auto w-full max-w-[190mm] px-6 py-10">
+		<Masthead />
+		<Timeline allOpen />
+		{/* A founder role belongs on a CV — and it still disappears with the switch. */}
+		{VENTURE && <Venture />}
+		<Stack />
+		<Instruments />
+		<Contact />
+	</main>
+</Base>
