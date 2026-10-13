@@ -1,7 +1,11 @@
 ---
 /*
- * Not a hero. A masthead: who, what, what he is open to, and the ways in — in that order,
- * because that is the order a recruiter reads in.
+ * Not a hero, and no longer a document header either: an open editor pane.
+ *
+ * The frame is the argument. Before a word is read, the page says what kind of thing it is and
+ * who made it — and it sets up the build sequence, the diff below, and the palette, all of
+ * which live in the same metaphor. The content inside stays ordinary typography: a gutter that
+ * makes the name hard to read would be a costume, not a design.
  */
 import { PROFILE } from '../content/profile';
 
@@ -11,54 +15,110 @@ const WAYS = [
 	{ label: 'LinkedIn', href: PROFILE.linkedin },
 	{ label: 'GitHub', href: PROFILE.github },
 ];
+
+/*
+ * The `const status = '…'` framing on row 7 is screen dressing — every part of it but the
+ * sentence carries data-no-print, so paper keeps the words and drops the code.
+ *
+ * The gutter counts rows, including the blank ones, the way a real one does — and every row
+ * keeps a line's height so the numbers space evenly rather than bunching wherever the content
+ * happens to stop.
+ */
+const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 ---
 
-<section id="masthead" data-build="masthead" aria-labelledby="masthead-name" class="pt-4">
-	<p class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
-		{PROFILE.location} · {PROFILE.title}
-	</p>
+<section id="masthead" data-build="masthead" aria-labelledby="masthead-name">
+	<div class="overflow-hidden rounded-lg border border-border bg-editor">
+		{/* Tab bar. */}
+		<div class="flex items-stretch border-b border-border bg-surface/60 font-mono text-[0.75rem]">
+			<span
+				class="flex items-center gap-2 border-r border-border bg-editor px-3.5 py-2 text-text-hi"
+			>
+				<span aria-hidden="true" class="size-1.5 rounded-full bg-sx-fn"></span>
+				profile.ts
+			</span>
+			<span class="flex items-center gap-2 border-r border-border px-3.5 py-2 text-text-lo/60">
+				<span aria-hidden="true" class="size-1.5 rounded-full bg-sx-esc/60"></span>
+				experience.ts
+			</span>
+			<span class="ml-auto hidden items-center px-3.5 py-2 text-text-lo/70 sm:flex">
+				{PROFILE.location}
+			</span>
+		</div>
 
-	<h1
-		id="masthead-name"
-		class="font-display mt-6 text-[clamp(2.75rem,9vw,5.5rem)] leading-[0.95] font-semibold tracking-[-0.02em] text-balance"
-	>
-		{PROFILE.name}
-	</h1>
+		{/* Body. Each row carries its own gutter cell, so the numbers line up with the content. */}
+		<div class="py-4 font-mono text-[0.8125rem] sm:py-6">
+			{
+				ROWS.map((number) => (
+					<div class="flex min-h-[1.65rem] items-start" data-row={number}>
+						<span
+							aria-hidden="true"
+							class="w-10 shrink-0 pt-1 pr-3 text-right text-[0.6875rem] text-text-lo/40 select-none sm:w-14"
+						>
+							{number}
+						</span>
 
-	{/* Two clauses, equal weight, server on top: the balance is shown, not asserted. */}
-	<div class="mt-7 flex max-w-[58ch] flex-col gap-1.5 text-lg leading-snug sm:text-xl">
-		{
-			PROFILE.sentence.map((clause, index) => (
-				<p data-clause={index === 0 ? 'server' : 'client'} class="text-text-lo">
-					{clause}
-				</p>
-			))
-		}
+						<div class="min-w-0 grow pr-4 sm:pr-8">
+							{number === 1 && (
+								<p class="text-text-lo/70">
+									<span class="text-text-lo/50">{'// '}</span>
+									{PROFILE.title}
+								</p>
+							)}
+
+							{number === 3 && (
+								<h1
+									id="masthead-name"
+									class="font-display -ml-0.5 mt-1.5 mb-2 text-[clamp(2.5rem,8vw,5rem)] leading-[1.02] font-semibold tracking-[-0.02em]"
+								>
+									{PROFILE.name}
+								</h1>
+							)}
+
+							{number === 5 && (
+								<div class="flex max-w-[58ch] flex-col gap-1.5 font-sans text-lg leading-snug sm:text-xl">
+									{PROFILE.sentence.map((clause, index) => (
+										<p data-clause={index === 0 ? 'server' : 'client'} class="text-text-lo">
+											{clause}
+										</p>
+									))}
+								</div>
+							)}
+
+							{number === 7 && (
+								<p class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+									<span data-no-print class="text-sx-key">const</span>
+									<span data-no-print class="text-sx-fn">status</span>
+									<span data-no-print class="text-text-lo/60">=</span>
+									<span class="text-sx-add">
+										<span data-no-print>'</span>{PROFILE.status.text}<span data-no-print>'</span>
+									</span>
+								</p>
+							)}
+
+							{number === 8 && <p data-addressee hidden class="text-accent"></p>}
+
+							{number === 9 && (
+								<nav aria-label="Ways to get in touch" class="flex flex-wrap gap-2">
+									{WAYS.map(({ label, href, primary }) => (
+										<a
+											href={href}
+											class:list={[
+												'rounded border px-3 py-1.5 transition-colors duration-200',
+												primary
+													? 'border-accent/40 bg-accent/10 text-accent hover:bg-accent/20'
+													: 'border-border text-text-lo hover:border-accent/40 hover:text-text-hi',
+											]}
+										>
+											{label}
+										</a>
+									))}
+								</nav>
+							)}
+						</div>
+					</div>
+				))
+			}
+		</div>
 	</div>
-
-	{/* Filled in by ?for=, and absent otherwise. */}
-	<p data-addressee hidden class="mt-5 font-mono text-[0.8125rem] text-accent"></p>
-
-	<p class="mt-8 flex items-center gap-2.5 font-mono text-sm">
-		<span aria-hidden="true" class="text-sx-add">●</span>
-		<span>{PROFILE.status.text}</span>
-	</p>
-
-	<nav aria-label="Ways to get in touch" class="mt-9 flex flex-wrap gap-2.5">
-		{
-			WAYS.map(({ label, href, primary }) => (
-				<a
-					href={href}
-					class:list={[
-						'rounded-md border px-3.5 py-2 font-mono text-[0.8125rem] transition-colors duration-200',
-						primary
-							? 'border-accent/40 bg-accent/10 text-accent hover:bg-accent/20'
-							: 'border-border text-text-lo hover:border-accent/40 hover:text-text-hi',
-					]}
-				>
-					{label}
-				</a>
-			))
-		}
-	</nav>
 </section>

@@ -30,7 +30,7 @@ import { monthYear } from '../lib/derive';
 					<dt class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
 						{fact.label}
 					</dt>
-					<dd class="font-display mt-1.5 text-3xl leading-none font-semibold text-accent">
+					<dd class="font-display mt-1.5 text-3xl leading-none font-semibold text-sx-num">
 						{fact.value}
 					</dd>
 					<p class="mt-2 font-mono text-[0.6875rem] leading-snug text-text-lo">
@@ -102,7 +102,7 @@ import { monthYear } from '../lib/derive';
 					<span class="text-[0.9375rem] text-text-hi">{entry.degree}</span>
 					<span class="text-[0.9375rem] text-text-lo">{entry.school}</span>
 					{entry.gpa && (
-						<span class="font-mono text-xs text-sx-type">GPA {entry.gpa}</span>
+						<span class="font-mono text-xs text-sx-num">GPA {entry.gpa}</span>
 					)}
 				</li>
 			))

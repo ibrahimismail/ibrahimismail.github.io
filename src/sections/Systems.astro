@@ -12,6 +12,13 @@ import ScopeEngine from '../islands/ScopeEngine.astro';
 
 const interactive = SYSTEMS.filter((system) => system.island);
 const still = SYSTEMS.filter((system) => !system.island);
+
+/* Server cyan, client purple, both yellow — the same hues the diff gives those ideas. */
+const HALF_CLASS = {
+	server: 'text-sx-esc',
+	client: 'text-sx-key',
+	both: 'text-sx-type',
+} as const;
 ---
 
 <section id="systems" data-build="systems" data-no-print aria-labelledby="systems-heading">
@@ -28,9 +35,11 @@ const still = SYSTEMS.filter((system) => !system.island);
 			interactive.map((system) => (
 				<article aria-labelledby={`system-${system.id}`}>
 					<header class="mb-3">
-						<p class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
-							{system.half === 'both' ? 'server + client' : system.half}
-							{system.company && <span> · {system.company}</span>}
+						<p class="font-mono text-[0.6875rem] tracking-[0.14em] uppercase">
+							<span class={HALF_CLASS[system.half]}>
+								{system.half === 'both' ? 'server + client' : system.half}
+							</span>
+							{system.company && <span class="text-text-lo"> · {system.company}</span>}
 						</p>
 						<h3
 							id={`system-${system.id}`}
@@ -58,7 +67,12 @@ const still = SYSTEMS.filter((system) => !system.island);
 						{system.cover}
 					</div>
 					<div class="flex grow flex-col p-4">
-						<p class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
+						<p
+							class:list={[
+								'font-mono text-[0.6875rem] tracking-[0.14em] uppercase',
+								HALF_CLASS[system.half],
+							]}
+						>
 							{system.half === 'both' ? 'server + client' : system.half}
 						</p>
 						<h3 class="font-display mt-2 text-lg leading-snug font-semibold">

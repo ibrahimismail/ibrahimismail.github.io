@@ -29,9 +29,9 @@ const node = (id: string) => NODES.find((candidate) => candidate.id === id)!;
 					type="button"
 					data-scenario={scenario.id}
 					aria-pressed={index === 0 ? 'true' : 'false'}
-					class="rounded border border-border px-2.5 py-1 font-mono text-[0.75rem] text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi aria-pressed:border-accent/50 aria-pressed:bg-accent/10 aria-pressed:text-accent"
+					class="rounded border border-border px-2.5 py-1 font-mono text-[0.75rem] text-sx-fn/80 transition-colors duration-200 hover:border-accent/40 hover:text-sx-fn aria-pressed:border-accent/50 aria-pressed:bg-accent/10 aria-pressed:text-accent"
 				>
-					{scenario.label}
+					{scenario.label}()
 				</button>
 			))
 		}

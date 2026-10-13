@@ -72,6 +72,23 @@ main {
 	padding: 0 !important;
 }
 
+/*
+ * The masthead is an editor pane on screen. On paper the frame, the tab bar and the gutter are
+ * all chrome, and the blank rows that space the gutter evenly are pure height.
+ */
+#masthead [data-row] {
+	min-height: 0 !important;
+}
+
+#masthead [data-row] > span:first-child,
+#masthead [data-row]:empty {
+	display: none !important;
+}
+
+#masthead [data-row] > div {
+	padding-right: 0 !important;
+}
+
 /* Screen furniture. */
 nav,
 footer,
@@ -203,8 +220,19 @@ details > div {
 }
 
 /* The diff becomes a plain bulleted list: the + markers were a screen convention. */
-[data-plus] {
+[data-plus],
+[data-gutter] {
 	display: none !important;
+}
+
+/* Ink has no syntax colouring. */
+[data-line] span {
+	color: #000000 !important;
+	background: transparent !important;
+}
+
+[data-line] {
+	background: transparent !important;
 }
 
 [data-line] {

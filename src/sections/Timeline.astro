@@ -1,17 +1,18 @@
 ---
 /*
- * The career as a commit log, in native <details>.
+ * The career as a commit log, rendered as a diff view rather than a bullet list with a plus in
+ * front of it: a line-number gutter, a tinted add column, hunk headers, file-type colour, and
+ * the lines themselves coloured the way an editor colours code (see lib/highlight).
  *
- * Every directory is rendered OPEN, and the screen collapses the ones it wants collapsed. That
- * is the opposite of the obvious way round, and it is deliberate: the complete, expanded
- * document is then what a crawler, a screen reader, a reader with JS off, and the printer all
- * receive, and collapsing is the enhancement. Doing it the other way made paper depend on how
- * each engine hides a closed <details> — which differs, and cost a whole printed page.
- *
- * Phase 2 layers keyboard navigation, live filtering and the plain/diff toggle on this markup.
+ * Every directory renders OPEN and the screen collapses the ones it wants collapsed. That is
+ * the opposite of the obvious way round, and it is deliberate: the complete, expanded document
+ * is then what a crawler, a screen reader, a reader with JS off, and the printer all receive,
+ * and collapsing is the enhancement. Doing it the other way made paper depend on how each
+ * engine hides a closed <details>, which differs, and cost a printed page.
  */
 import { EXPERIENCE } from '../content/experience';
 import { duration, fileCount, lineCount, openByDefault, period, serverFirst } from '../lib/derive';
+import { extensionClass, highlightHtml } from '../lib/highlight';
 
 export interface Props {
 	/** /cv renders every directory expanded: paper has no affordance for opening one. */
@@ -57,7 +58,8 @@ const { allOpen = false } = Astro.props;
 		data-no-print
 		class="mt-3 font-mono text-xs text-text-lo"
 		hidden
-	></p>
+	>
+	</p>
 
 	<ol class="mt-8 space-y-10">
 		{
@@ -65,7 +67,6 @@ const { allOpen = false } = Astro.props;
 				const open = openByDefault(role);
 				return (
 					<li data-role-entry class="relative border-l border-border pl-6 sm:pl-8">
-						{/* The commit dot, on the rail. */}
 						<span
 							aria-hidden="true"
 							data-no-print
@@ -74,7 +75,7 @@ const { allOpen = false } = Astro.props;
 
 						<header>
 							<p class="font-mono text-xs text-text-lo">
-								<span>{period(role)}</span>
+								<span class="text-sx-num">{period(role)}</span>
 								<span aria-hidden="true"> · </span>
 								<span>{duration(role)}</span>
 								<span aria-hidden="true"> · </span>
@@ -96,6 +97,8 @@ const { allOpen = false } = Astro.props;
 								</span>
 								<span aria-hidden="true"> · </span>
 								<span class="text-sx-add">+{lineCount(role)}</span>
+								<span aria-hidden="true"> · </span>
+								<span class="text-sx-del">−0</span>
 							</p>
 						</header>
 
@@ -107,9 +110,7 @@ const { allOpen = false } = Astro.props;
 									data-collapsed={!allOpen && dir.name !== open ? '' : undefined}
 									class:list={['group', index > 0 && 'border-t border-border']}
 								>
-									<summary
-										class="flex cursor-pointer items-center gap-2 px-4 py-3 font-mono text-[0.8125rem] marker:content-none hover:bg-surface"
-									>
+									<summary class="flex cursor-pointer items-center gap-2 bg-surface/60 px-3 py-2 font-mono text-[0.8125rem] marker:content-none hover:bg-surface">
 										<span
 											aria-hidden="true"
 											data-chevron
@@ -122,33 +123,60 @@ const { allOpen = false } = Astro.props;
 										<span class="text-text-lo">
 											{dir.files.length} file{dir.files.length === 1 ? '' : 's'}
 										</span>
+										<span class="ml-auto font-mono text-[0.6875rem] text-sx-add">
+											+{dir.files.reduce((sum, file) => sum + file.lines.length, 0)}
+										</span>
 									</summary>
 
-									<div class="space-y-4 border-t border-border px-4 py-4">
-										{dir.files.map((file) => (
-											<div data-file>
-												<p data-path class="font-mono text-xs text-text-lo">
-													{dir.name}/{file.path}
-												</p>
-												<ul class="mt-2 space-y-2">
-													{file.lines.map((line) => (
-														<li
-															data-line
-															class="flex gap-2.5 font-mono text-[0.8125rem] leading-relaxed"
-														>
-															<span
-																aria-hidden="true"
-																data-plus
-																class="shrink-0 text-sx-add"
+									<div class="border-t border-border">
+										{dir.files.map((file) => {
+											const path = `${dir.name}/${file.path}`;
+											return (
+												<div data-file class="border-b border-border/60 last:border-b-0">
+													{/* The hunk header, as a diff prints it. */}
+													<p
+														data-path
+														class="flex items-center gap-2 px-3 py-1.5 font-mono text-[0.6875rem]"
+													>
+														<span aria-hidden="true" class="text-text-lo/50">
+															@@
+														</span>
+														<span class={extensionClass(file.path)}>{path}</span>
+														<span aria-hidden="true" class="text-text-lo/50">
+															+{file.lines.length}
+														</span>
+													</p>
+
+													<ul class="pb-1">
+														{file.lines.map((line, lineIndex) => (
+															<li
+																data-line
+																class="flex gap-0 bg-sx-add/[0.07] font-mono text-[0.8125rem] leading-relaxed"
 															>
-																+
-															</span>
-															<span class="text-text-hi">{line.text}</span>
-														</li>
-													))}
-												</ul>
-											</div>
-										))}
+																<span
+																	aria-hidden="true"
+																	data-gutter
+																	class="w-9 shrink-0 border-r border-border/60 px-2 text-right text-[0.6875rem] leading-relaxed text-text-lo/45 select-none"
+																>
+																	{lineIndex + 1}
+																</span>
+																<span
+																	aria-hidden="true"
+																	data-plus
+																	class="w-6 shrink-0 text-center text-sx-add select-none"
+																>
+																	+
+																</span>
+																<span
+																	class="py-0.5 pr-3 text-text-hi"
+																	set:html={highlightHtml(line.text)}
+																/>
+															</li>
+														))}
+													</ul>
+												</div>
+											);
+										})}
 									</div>
 								</details>
 							))}

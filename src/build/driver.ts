@@ -1,17 +1,30 @@
-import { measure, steps, type Facts, type Step } from './script';
-
 /**
  * Runs the build sequence.
  *
  * Three properties it has to have. It is a pure function of elapsed time, so skipping is
  * `elapsed = total` and one final pass — there is no state a half-finished run can be left in.
- * It never animates a layout property. And it can be stopped at any point by anything the
- * reader does, because a visitor with forty seconds must never be made to wait.
+ * It never animates a layout property. And it can be stopped by anything the reader does,
+ * because a visitor with forty seconds must never be made to wait.
  */
+type Step = {
+	tool: 'Read' | 'Write' | 'Bash';
+	arg: string;
+	out: string;
+	reveals?: string;
+	code: string[];
+	optional?: boolean;
+};
 
 const SEEN_SESSION = 'ii:built';
 const SEEN_STAMP = 'ii:built-at';
 const WEEK = 7 * 24 * 60 * 60 * 1000;
+
+/* Pacing. A line of code every LINE_MS, and a beat between steps. */
+const PROMPT_MS = 700;
+const PLAN_MS = 560;
+const LINE_MS = 46;
+const STEP_PAD = 260;
+const BASH_MS = 760;
 
 function remember() {
 	try {
@@ -22,29 +35,54 @@ function remember() {
 	}
 }
 
-export function seenRecently(): boolean {
+/** What the page actually cost to load. Measured, never asserted. */
+function measured() {
 	try {
-		if (sessionStorage.getItem(SEEN_SESSION)) return true;
-		const stamp = Number(localStorage.getItem(SEEN_STAMP) ?? 0);
-		return stamp > 0 && Date.now() - stamp < WEEK;
+		const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+		const nav = performance.getEntriesByType('navigation')[0] as
+			| PerformanceNavigationTiming
+			| undefined;
+		const bytes =
+			resources.reduce((sum, e) => sum + (e.transferSize || e.encodedBodySize || 0), 0) +
+			(nav?.transferSize ?? 0);
+		const js = resources.filter((entry) => entry.initiatorType === 'script').length;
+		return { kb: Math.round(bytes / 1024), js };
 	} catch {
-		return false;
+		return { kb: 0, js: 0 };
 	}
 }
 
-export function runBuild(overlay: HTMLElement, facts: Omit<Facts, 'transferredKb' | 'jsRequests'>) {
+export function runBuild(overlay: HTMLElement) {
 	const root = document.documentElement;
 	const transcript = overlay.querySelector<HTMLElement>('[data-transcript]')!;
+	const codeList = overlay.querySelector<HTMLOListElement>('[data-code]')!;
+	const codeName = overlay.querySelector<HTMLElement>('[data-code-name]')!;
 	const promptLine = overlay.querySelector<HTMLElement>('[data-prompt]')!;
+	const headState = overlay.querySelector<HTMLElement>('[data-head-state]')!;
 	const skipButton = overlay.querySelector<HTMLButtonElement>('[data-skip]')!;
 
 	const compact = window.innerWidth < 640;
-	const timeline = steps({ ...facts, ...measure() }, compact);
-	const total = timeline.reduce((sum, step) => sum + step.ms, 0);
+	const all: Step[] = JSON.parse(overlay.dataset.steps ?? '[]');
+	const steps = compact ? all.filter((step) => !step.optional) : all;
+	const plan: string[] = JSON.parse(overlay.dataset.plan ?? '[]');
+	const pages = Number(overlay.dataset.pages ?? 0);
+
+	/* The flag carries the preset's own id, not the first word of its prose label. */
+	const prompt = `build portfolio --target=${root.dataset.role || 'full-stack'}`;
+
+	/* Durations, derived from the work each step actually does. */
+	const spans = steps.map((step) =>
+		step.tool === 'Bash' ? BASH_MS : step.code.length * LINE_MS + STEP_PAD,
+	);
+	const heads = PROMPT_MS + PLAN_MS;
+	const total = heads + spans.reduce((sum, span) => sum + span, 0) + 420;
 
 	let frame = 0;
 	let done = false;
+	let planted = false;
 	let rendered = -1;
+	let shownFile = -1;
+	let shownLines = 0;
 	const started = performance.now();
 
 	function reveal(id?: string) {
@@ -52,87 +90,128 @@ export function runBuild(overlay: HTMLElement, facts: Omit<Facts, 'transferredKb
 		document.querySelector(`[data-build='${id}']`)?.classList.add('built');
 	}
 
-	function card(step: Step): HTMLElement {
-		const line = document.createElement('div');
+	function card(step: Step, index: number) {
+		const row = document.createElement('div');
+		row.dataset.card = String(index);
+		row.className =
+			'rounded border border-border/70 bg-surface/40 px-2.5 py-2 transition-colors duration-200';
 
-		if (step.kind === 'plan') {
-			line.className = 'mt-1 space-y-0.5 border-l border-border pl-3 text-text-lo';
-			for (const text of step.lines) {
-				const item = document.createElement('p');
-				item.textContent = text;
-				line.append(item);
-			}
-			return line;
-		}
+		const head = document.createElement('p');
+		head.className = 'flex items-baseline gap-2';
+		const mark = document.createElement('span');
+		mark.dataset.mark = '';
+		mark.className = 'text-sx-num';
+		mark.textContent = '◐';
+		const tool = document.createElement('span');
+		tool.className = 'text-sx-key';
+		tool.textContent = step.tool;
+		const arg = document.createElement('span');
+		arg.className = 'truncate text-text-hi';
+		arg.textContent = step.arg;
+		head.append(mark, tool, arg);
 
-		if (step.kind === 'done') {
-			line.className = 'mt-2 text-sx-add';
-			line.textContent = step.text;
-			return line;
-		}
+		const note = document.createElement('p');
+		note.dataset.note = '';
+		note.className = 'mt-1 pl-5 text-[0.75rem] text-text-lo';
+		note.textContent = '…';
 
-		if (step.kind === 'tool') {
-			line.className = 'mt-1.5 flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5';
-			const mark = document.createElement('span');
-			mark.className = 'text-accent';
-			mark.textContent = '⏺';
-			const tool = document.createElement('span');
-			tool.className = 'text-sx-key';
-			tool.textContent = step.tool;
-			const arg = document.createElement('span');
-			arg.className = 'text-text-hi';
-			arg.textContent = step.arg;
-			const out = document.createElement('span');
-			out.className = 'text-text-lo';
-			out.textContent = step.out;
-			line.append(mark, tool, arg, out);
-			return line;
-		}
-
-		line.className = 'text-text-hi';
-		line.textContent = step.text;
-		return line;
+		row.append(head, note);
+		return row;
 	}
 
-	/** The prompt types itself by index — one text write per frame, never innerHTML +=. */
-	function typePrompt(step: Step, progress: number) {
-		if (step.kind !== 'prompt') return;
-		const shown = Math.ceil(step.text.length * Math.min(progress, 1));
-		promptLine.textContent = step.text.slice(0, shown);
+	function settle(index: number, step: Step, span: number) {
+		const row = transcript.querySelector<HTMLElement>(`[data-card='${index}']`);
+		if (!row || row.dataset.settled) return;
+		row.dataset.settled = 'true';
+		row.classList.add('border-sx-add/30');
+		row.querySelector<HTMLElement>('[data-mark]')!.textContent = '✓';
+		row.querySelector<HTMLElement>('[data-mark]')!.className = 'text-sx-add';
+
+		const { kb, js } = measured();
+		const note = row.querySelector<HTMLElement>('[data-note]')!;
+		note.textContent =
+			step.tool === 'Bash'
+				? `✓ ${pages} pages · ${js} js requests · ${kb} kB · ${Math.round(span)} ms`
+				: `${step.out}${step.code.length ? ` · ${step.code.length} lines` : ''} · ${Math.round(span)} ms`;
+		note.className = 'mt-1 pl-5 text-[0.75rem] text-sx-add/90';
+	}
+
+	/** The code pane. Lines are appended, never re-rendered — one write per frame at most. */
+	function paintCode(index: number, lines: number, step: Step) {
+		if (index !== shownFile) {
+			shownFile = index;
+			shownLines = 0;
+			codeList.replaceChildren();
+			codeName.textContent = step.arg;
+		}
+		while (shownLines < lines && shownLines < step.code.length) {
+			const row = document.createElement('li');
+			row.className = 'flex gap-3';
+			const number = document.createElement('span');
+			number.className = 'w-6 shrink-0 text-right text-[0.6875rem] text-text-lo/35';
+			number.textContent = String(shownLines + 1);
+			const body = document.createElement('span');
+			body.className = 'whitespace-pre text-text-hi';
+			body.innerHTML = step.code[shownLines];
+			row.append(number, body);
+			codeList.append(row);
+			shownLines++;
+		}
 	}
 
 	function paint(elapsed: number) {
-		let at = 0;
-		for (let index = 0; index < timeline.length; index++) {
-			const step = timeline[index];
-			const end = at + step.ms;
+		promptLine.textContent = prompt.slice(
+			0,
+			Math.ceil(prompt.length * Math.min(elapsed / PROMPT_MS, 1)),
+		);
+
+		if (!planted && elapsed >= PROMPT_MS) {
+			planted = true;
+			const block = document.createElement('div');
+			block.className = 'space-y-0.5 border-l border-border pl-3 text-text-lo';
+			for (const line of plan) {
+				const item = document.createElement('p');
+				item.textContent = line;
+				block.append(item);
+			}
+			transcript.append(block);
+		}
+
+		let at = heads;
+		for (let index = 0; index < steps.length; index++) {
+			const step = steps[index];
+			const span = spans[index];
 
 			if (elapsed >= at && index > rendered) {
 				rendered = index;
-				if (step.kind !== 'prompt') {
-					transcript.append(card(step));
-					transcript.scrollTop = transcript.scrollHeight;
+				transcript.append(card(step, index));
+				transcript.scrollTop = transcript.scrollHeight;
+			}
+
+			if (elapsed >= at && elapsed < at + span) {
+				const progress = (elapsed - at) / Math.max(span - STEP_PAD, 1);
+				if (step.code.length) {
+					paintCode(index, Math.ceil(progress * step.code.length), step);
+				} else {
+					codeName.textContent = step.arg;
 				}
-				if (step.kind === 'tool') reveal(step.reveals);
 			}
 
-			if (step.kind === 'prompt' && elapsed < end) {
-				typePrompt(step, (elapsed - at) / step.ms);
-			} else if (step.kind === 'prompt' && rendered >= index) {
-				typePrompt(step, 1);
+			if (elapsed >= at + span) {
+				if (step.code.length) paintCode(index, step.code.length, step);
+				settle(index, step, span);
+				reveal(step.reveals);
 			}
 
-			at = end;
+			at += span;
 		}
 	}
 
 	/*
 	 * Two backstops, because the sequence hides the document behind it and must never be the
-	 * reason someone cannot read the page.
-	 *
-	 * requestAnimationFrame does not fire in a backgrounded tab — open the site in a new tab,
-	 * switch away, come back, and without the timer the overlay would still be sitting there.
-	 * And leaving the tab at all ends the show: there is nobody watching it.
+	 * reason someone cannot read the page. requestAnimationFrame does not fire in a backgrounded
+	 * tab — open the site in a new tab, switch away, come back, and without the timer the overlay
+	 * would still be sitting there. And leaving the tab at all ends the show: nobody is watching.
 	 */
 	let watchdog = 0;
 	const onHidden = () => {
@@ -148,6 +227,8 @@ export function runBuild(overlay: HTMLElement, facts: Omit<Facts, 'transferredKb
 		detach();
 
 		paint(total);
+		headState.textContent = 'ready';
+		headState.className = 'text-sx-add';
 		for (const section of document.querySelectorAll('[data-build]')) {
 			section.classList.add('built');
 		}
@@ -157,7 +238,7 @@ export function runBuild(overlay: HTMLElement, facts: Omit<Facts, 'transferredKb
 		setTimeout(() => {
 			overlay.remove();
 			root.classList.remove('js-build');
-		}, 260);
+		}, 300);
 	}
 
 	function tick(now: number) {
@@ -187,4 +268,14 @@ export function runBuild(overlay: HTMLElement, facts: Omit<Facts, 'transferredKb
 
 	frame = requestAnimationFrame(tick);
 	return finish;
+}
+
+export function seenRecently(): boolean {
+	try {
+		if (sessionStorage.getItem(SEEN_SESSION)) return true;
+		const stamp = Number(localStorage.getItem(SEEN_STAMP) ?? 0);
+		return stamp > 0 && Date.now() - stamp < WEEK;
+	} catch {
+		return false;
+	}
 }

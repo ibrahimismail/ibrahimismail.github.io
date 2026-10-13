@@ -192,8 +192,17 @@
 		display: none;
 	}
 
-	.is-plain [data-plus] {
-		visibility: hidden;
+	.is-plain [data-plus],
+	.is-plain [data-gutter] {
+		display: none;
+	}
+
+	.is-plain [data-line] {
+		background: transparent;
+	}
+
+	.is-plain [data-line] span {
+		color: inherit;
 	}
 
 	.is-plain [data-line] {

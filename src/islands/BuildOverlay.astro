@@ -1,59 +1,162 @@
 ---
 /*
- * The build overlay — act 0.
+ * Act 0 — the build, as a split editor.
  *
- * It is an overlay over a page that is already complete, never a loading screen: every word of
- * the document is in the HTML behind it, and if this element never ran, nothing would be
- * missing. It is aria-hidden and inert, so a screen reader is handed the finished document and
- * never hears the performance.
+ * Left: the agent's transcript, as tool-call cards that resolve from a spinner to a timing.
+ * Right: the file it is writing, streaming in line by line and syntax-highlighted. When a file
+ * lands, the section it produced is revealed behind the overlay; at the end the chrome peels
+ * away and the reader is in the page.
  *
- * It only renders at all when the sequence is enabled and the reader has not seen it this week;
- * see ThemeScript, which decides that before first paint.
+ * The source it streams is this site's own, read at build time with ?raw. That matters: a build
+ * log full of invented code on an engineer's portfolio would be the one unforgivable detail.
+ *
+ * It is aria-hidden and inert, so a screen reader is handed the finished document and never
+ * hears the performance. It only renders when the sequence is enabled and the reader has not
+ * seen it this week — ThemeScript decides that before first paint.
  */
+import profileSource from '../content/profile.ts?raw';
+import experienceSource from '../content/experience.ts?raw';
+import stackSource from '../content/stack.ts?raw';
+import busSource from '../scripts/extension-bus.ts?raw';
+import scopeSource from '../scripts/scope-engine.ts?raw';
+import klikSource from '../scripts/kliknote.ts?raw';
+
+import { EXPERIENCE } from '../content/experience';
 import { SYSTEMS } from '../content/systems';
 import { VENTURE } from '../content/venture';
-import { EXPERIENCE } from '../content/experience';
-import { TARGETS, DEFAULT_TARGET } from '../content/targets';
+import { excerpt, highlightCode } from '../lib/code';
 import { TOTALS } from '../lib/derive';
 
-const facts = {
-	roles: EXPERIENCE.length,
-	files: TOTALS.files,
-	lines: TOTALS.lines,
-	systems: SYSTEMS.length,
-	venture: VENTURE !== null,
-	/* Counted from the routes themselves, so the transcript cannot drift from the build. */
-	pages: Object.keys(import.meta.glob('../pages/*.astro')).length,
+type Step = {
+	tool: 'Read' | 'Write' | 'Bash';
+	arg: string;
+	out: string;
+	reveals?: string;
+	/** Pre-highlighted lines, so the browser streams strings rather than tokenising at runtime. */
+	code: string[];
+	/** Dropped on a narrow screen, where the sequence runs six steps rather than nine. */
+	optional?: boolean;
 };
 
-const labels = Object.fromEntries(TARGETS.map((target) => [target.id, target.label]));
+const steps: (Step | null)[] = [
+	{
+		tool: 'Read',
+		arg: 'content/profile.ts',
+		out: 'senior full-stack engineer · Beirut',
+		reveals: 'masthead',
+		code: highlightCode(excerpt(profileSource, 'export const PROFILE', 13)),
+	},
+	{
+		tool: 'Read',
+		arg: 'content/experience.ts',
+		out: `${EXPERIENCE.length} roles · ${TOTALS.files} files · ${TOTALS.lines} lines`,
+		reveals: 'timeline',
+		code: highlightCode(excerpt(experienceSource, 'export const EXPERIENCE', 15)),
+	},
+	{
+		tool: 'Write',
+		arg: 'scripts/scope-engine.ts',
+		out: 'resolver · transitive grants',
+		reveals: 'systems',
+		code: highlightCode(excerpt(scopeSource, 'function resolve(', 16)),
+	},
+	{
+		tool: 'Write',
+		arg: 'scripts/extension-bus.ts',
+		out: `${SYSTEMS.length} systems · 5 scenarios`,
+		reveals: 'systems',
+		optional: true,
+		code: highlightCode(excerpt(busSource, 'function travel(hop', 15)),
+	},
+	VENTURE
+		? {
+				tool: 'Write',
+				arg: 'scripts/kliknote.ts',
+				out: 'local-first · no network',
+				reveals: 'venture',
+				optional: true,
+				code: highlightCode(excerpt(klikSource, 'function render()', 14)),
+			}
+		: null,
+	{
+		tool: 'Read',
+		arg: 'content/stack.ts',
+		out: 'two halves, server first',
+		reveals: 'stack',
+		optional: true,
+		code: highlightCode(excerpt(stackSource, 'export const STACK', 14)),
+	},
+	{
+		tool: 'Bash',
+		arg: 'npm run build',
+		out: '',
+		reveals: 'instruments',
+		code: [],
+	},
+];
+
+const plan = [
+	'read the career, lay out the document, wire the interactives',
+	'server-side first — ordering, not volume',
+	'no framework: the islands are plain modules',
+];
 ---
 
 <div
 	data-build-overlay
-	data-facts={JSON.stringify(facts)}
-	data-labels={JSON.stringify({ ...labels, default: DEFAULT_TARGET.label })}
+	data-steps={JSON.stringify(steps.filter(Boolean))}
+	data-plan={JSON.stringify(plan)}
+	data-pages={Object.keys(import.meta.glob('../pages/*.astro')).length}
 	aria-hidden="true"
 	inert
-	class="fixed inset-0 z-50 flex flex-col justify-end bg-background px-6 pt-10 pb-8 font-mono text-[0.8125rem] leading-relaxed transition-opacity duration-[260ms] data-[state=leaving]:opacity-0 sm:px-10"
+	class="fixed inset-0 z-50 flex flex-col bg-ink-900 font-mono text-[0.8125rem] transition-opacity duration-[280ms] data-[state=leaving]:opacity-0"
 >
-	<div class="mx-auto w-full max-w-[720px]">
-		<div data-transcript class="max-h-[60vh] overflow-hidden"></div>
+	{/* Window chrome. */}
+	<div
+		class="flex shrink-0 items-center gap-3 border-b border-border bg-surface/70 px-4 py-2.5 text-[0.75rem]"
+	>
+		<span aria-hidden="true" class="flex gap-1.5">
+			<span class="size-2.5 rounded-full bg-sx-del/70"></span>
+			<span class="size-2.5 rounded-full bg-sx-num/70"></span>
+			<span class="size-2.5 rounded-full bg-sx-add/70"></span>
+		</span>
+		<span class="text-text-lo">ibrahimismail.dev</span>
+		<span data-head-state class="text-sx-num">building…</span>
+		<button
+			type="button"
+			data-skip
+			class="ml-auto rounded border border-border px-2.5 py-1 text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi"
+		>
+			skip ⏎
+		</button>
+	</div>
 
-		<p class="mt-4 flex items-baseline gap-2 border-t border-border pt-4">
+	<div class="grid min-h-0 grow sm:grid-cols-[minmax(0,21rem)_minmax(0,1fr)]">
+		{/* The agent. */}
+		<aside class="min-h-0 overflow-hidden border-border sm:border-r">
+			<div data-transcript class="h-full space-y-2 overflow-hidden p-4"></div>
+		</aside>
+
+		{/* What it is writing. */}
+		<section class="hidden min-h-0 flex-col sm:flex">
+			<div class="flex shrink-0 items-center gap-2 border-b border-border px-4 py-2 text-[0.75rem]">
+				<span aria-hidden="true" class="size-1.5 rounded-full bg-sx-fn"></span>
+				<span data-code-name class="text-text-lo">waiting…</span>
+			</div>
+			<div class="min-h-0 grow overflow-hidden p-4">
+				<ol data-code class="leading-[1.65]"></ol>
+			</div>
+		</section>
+	</div>
+
+	{/* The prompt, which stays behind as the palette. */}
+	<div class="shrink-0 border-t border-border px-4 py-3">
+		<p class="flex items-baseline gap-2">
 			<span aria-hidden="true" class="text-accent">›</span>
 			<span data-prompt class="text-text-hi"></span>
 			<span aria-hidden="true" class="animate-[blink_1s_steps(2)_infinite] text-cursor">▍</span>
 		</p>
 	</div>
-
-	<button
-		type="button"
-		data-skip
-		class="fixed top-5 right-5 rounded border border-border px-2.5 py-1 text-[0.75rem] text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi sm:top-7 sm:right-8"
-	>
-		skip ⏎
-	</button>
 </div>
 
 <script>
@@ -64,12 +167,7 @@ const labels = Object.fromEntries(TARGETS.map((target) => [target.id, target.lab
 		if (!overlay || overlay.dataset.ran) return;
 		if (!document.documentElement.classList.contains('js-build')) return;
 		overlay.dataset.ran = 'true';
-
-		const facts = JSON.parse(overlay.dataset.facts ?? '{}');
-		const labels = JSON.parse(overlay.dataset.labels ?? '{}');
-		const role = document.documentElement.dataset.role;
-
-		runBuild(overlay, { ...facts, target: labels[role ?? ''] ?? labels.default });
+		runBuild(overlay);
 	}
 
 	start();

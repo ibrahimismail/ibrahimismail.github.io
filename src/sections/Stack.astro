@@ -7,7 +7,15 @@
  * No logos. Twenty colour badges from a third-party icon CDN cost requests, mismatch each
  * other, and imply the same depth in Flask as in TypeScript.
  */
-import { STACK, TIER_NOTE } from '../content/stack';
+import { STACK, TIER_NOTE, type Tier } from '../content/stack';
+
+/* Depth, as colour: what he reaches for daily reads as a call, the shipped work as a keyword,
+   and the rest stays plain. A reader sees the shape of the stack before reading a word of it. */
+const TIER_CLASS: Record<Tier, string> = {
+	daily: 'text-sx-fn',
+	shipped: 'text-sx-key',
+	'reach for': 'text-text-lo',
+};
 ---
 
 <section id="stack" data-build="stack" aria-labelledby="stack-heading">
@@ -33,7 +41,7 @@ import { STACK, TIER_NOTE } from '../content/stack';
 								end of a wrapped line, and there is no CSS that can see that coming. */}
 								<dd class="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.8125rem]">
 									{entries.map((entry) => (
-										<span class="text-text-hi">{entry.name}</span>
+										<span class={TIER_CLASS[tier]}>{entry.name}</span>
 									))}
 								</dd>
 							</div>
