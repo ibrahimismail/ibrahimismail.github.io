@@ -15,12 +15,20 @@ type Step = {
 	optional?: boolean;
 };
 
-/* Pacing. A line of code every LINE_MS, and a beat between steps. */
+/*
+ * Pacing. A line of code every LINE_MS, then REST on the finished file before the next one
+ * opens.
+ *
+ * REST is the whole difference between "it is writing files" and "it keeps abandoning them": at
+ * 260ms the pane cleared almost the instant the last line landed, so no file ever looked
+ * finished. The card settles and the pane is marked saved at the start of that rest, not the
+ * end of it, so the completion is what the reader is looking at while it holds.
+ */
 const PROMPT_MS = 700;
 const PLAN_MS = 560;
-const LINE_MS = 46;
-const STEP_PAD = 260;
-const BASH_MS = 760;
+const LINE_MS = 44;
+const REST = 820;
+const BASH_MS = 700;
 
 /** What the page actually cost to load. Measured, never asserted. */
 function measured() {
@@ -44,6 +52,8 @@ export function runBuild(overlay: HTMLElement) {
 	const transcript = overlay.querySelector<HTMLElement>('[data-transcript]')!;
 	const codeList = overlay.querySelector<HTMLOListElement>('[data-code]')!;
 	const codeName = overlay.querySelector<HTMLElement>('[data-code-name]')!;
+	const codeState = overlay.querySelector<HTMLElement>('[data-code-state]')!;
+	const codeDot = overlay.querySelector<HTMLElement>('[data-code-dot]')!;
 	const promptLine = overlay.querySelector<HTMLElement>('[data-prompt]')!;
 	const headState = overlay.querySelector<HTMLElement>('[data-head-state]')!;
 	const skipButton = overlay.querySelector<HTMLButtonElement>('[data-skip]')!;
@@ -57,10 +67,9 @@ export function runBuild(overlay: HTMLElement) {
 	/* The flag carries the preset's own id, not the first word of its prose label. */
 	const prompt = `build portfolio --target=${root.dataset.role || 'full-stack'}`;
 
-	/* Durations, derived from the work each step actually does. */
-	const spans = steps.map((step) =>
-		step.tool === 'Bash' ? BASH_MS : step.code.length * LINE_MS + STEP_PAD,
-	);
+	/* Durations, derived from the work each step actually does: write, then rest on it. */
+	const writes = steps.map((step) => (step.tool === 'Bash' ? BASH_MS : step.code.length * LINE_MS));
+	const spans = writes.map((write) => write + REST);
 	const heads = PROMPT_MS + PLAN_MS;
 	const total = heads + spans.reduce((sum, span) => sum + span, 0) + 420;
 
@@ -130,6 +139,8 @@ export function runBuild(overlay: HTMLElement) {
 			shownLines = 0;
 			codeList.replaceChildren();
 			codeName.textContent = step.arg;
+			codeState.textContent = '';
+			codeDot.className = 'size-1.5 rounded-full bg-sx-num';
 		}
 		while (shownLines < lines && shownLines < step.code.length) {
 			const row = document.createElement('li');
@@ -167,6 +178,7 @@ export function runBuild(overlay: HTMLElement) {
 		let at = heads;
 		for (let index = 0; index < steps.length; index++) {
 			const step = steps[index];
+			const write = writes[index];
 			const span = spans[index];
 
 			if (elapsed >= at && index > rendered) {
@@ -175,8 +187,9 @@ export function runBuild(overlay: HTMLElement) {
 				transcript.scrollTop = transcript.scrollHeight;
 			}
 
-			if (elapsed >= at && elapsed < at + span) {
-				const progress = (elapsed - at) / Math.max(span - STEP_PAD, 1);
+			/* Writing. */
+			if (elapsed >= at && elapsed < at + write) {
+				const progress = (elapsed - at) / Math.max(write, 1);
 				if (step.code.length) {
 					paintCode(index, Math.ceil(progress * step.code.length), step);
 				} else {
@@ -184,9 +197,16 @@ export function runBuild(overlay: HTMLElement) {
 				}
 			}
 
-			if (elapsed >= at + span) {
-				if (step.code.length) paintCode(index, step.code.length, step);
-				settle(index, step, span);
+			/* Written — and it stays on screen, finished, for the whole of REST. */
+			if (elapsed >= at + write) {
+				if (step.code.length) {
+					paintCode(index, step.code.length, step);
+					if (shownFile === index && codeState.textContent !== 'saved') {
+						codeState.textContent = 'saved';
+						codeDot.className = 'size-1.5 rounded-full bg-sx-add';
+					}
+				}
+				settle(index, step, write);
 				reveal(step.reveals);
 			}
 

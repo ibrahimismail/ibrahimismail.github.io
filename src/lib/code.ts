@@ -101,14 +101,47 @@ export function highlightCode(lines: string[]): string[] {
 }
 
 /**
- * `count` lines of a file starting at the line that contains `marker`, so an excerpt keeps
- * pointing at the right thing when the file around it changes.
+ * An excerpt that ends where the code does.
+ *
+ * Taking a flat `count` lines cut files mid-statement — the last line streamed was often a
+ * dangling `packet.animate(` or a bare `{`, which reads as a file that never finished no matter
+ * how long it is left on screen.
+ *
+ * So: measure bracket depth line by line up to a cap, then end on the last line where depth has
+ * returned to zero. Data files never balance inside a short window, so they fall back to the
+ * last line that at least closes something rather than opening one.
  */
-export function excerpt(source: string, marker: string, count: number): string[] {
+export function excerpt(source: string, marker: string, count: number, slack = 8): string[] {
 	const lines = source.split('\n');
 	const start = Math.max(
 		0,
 		lines.findIndex((line) => line.includes(marker)),
 	);
-	return lines.slice(start, start + count).map((line) => line.replace(/\t/g, '  '));
+	const cap = Math.min(lines.length, start + count + slack);
+
+	let depth = 0;
+	let balanced = -1;
+	let closing = -1;
+
+	for (let i = start; i < cap; i++) {
+		/* Strings and comments go first, so a brace inside one cannot skew the count. */
+		const code = lines[i]
+			.replace(/(['"`])(?:\\.|(?!\1)[^\\])*\1/g, '')
+			.replace(/\/\/.*$/, '')
+			.replace(/\/\*.*?\*\//g, '');
+		for (const char of code) {
+			if ('{(['.includes(char)) depth++;
+			else if ('})]'.includes(char)) depth--;
+		}
+
+		const trimmed = lines[i].trim();
+		if (!trimmed) continue;
+		const closes = /[,;}\)\]]$/.test(trimmed);
+		/* Depth alone is not enough: a `/**` opening the next doc comment sits at depth 0 too. */
+		if (i >= start + count - 1 && depth <= 0 && closes) balanced = i;
+		if (closes) closing = i;
+	}
+
+	const end = balanced >= 0 ? balanced : closing >= 0 ? closing : cap - 1;
+	return lines.slice(start, end + 1).map((line) => line.replace(/\t/g, '  '));
 }
