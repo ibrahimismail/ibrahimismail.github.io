@@ -61,6 +61,8 @@ export function runBuild(overlay: HTMLElement) {
 	const skipButton = overlay.querySelector<HTMLButtonElement>('[data-skip]')!;
 
 	const compact = window.innerWidth < 640;
+	/* On a phone the tool calls and the code share one column; on a laptop they are two panes. */
+	const stream = compact ? transcript : codeList;
 	const all: Step[] = JSON.parse(overlay.dataset.steps ?? '[]');
 	const steps = compact ? all.filter((step) => !step.optional) : all;
 	const plan: string[] = JSON.parse(overlay.dataset.plan ?? '[]');
@@ -93,8 +95,10 @@ export function runBuild(overlay: HTMLElement) {
 	function card(step: Step, index: number) {
 		const row = document.createElement('div');
 		row.dataset.card = String(index);
-		row.className =
-			'shrink-0 rounded border border-border/70 bg-surface/40 px-2.5 py-1.5 transition-colors duration-200 sm:py-2';
+		/* A boxed card in the laptop column; a plain log entry in the phone's stream. */
+		row.className = compact
+			? 'mt-2 shrink-0 first:mt-0'
+			: 'shrink-0 rounded border border-border/70 bg-surface/40 px-2.5 py-1.5 transition-colors duration-200 sm:py-2';
 
 		const head = document.createElement('p');
 		head.className = 'flex items-baseline gap-2';
@@ -112,7 +116,9 @@ export function runBuild(overlay: HTMLElement) {
 
 		const note = document.createElement('p');
 		note.dataset.note = '';
-		note.className = 'mt-1 pl-5 text-[0.75rem] text-text-lo';
+		note.className = compact
+			? 'pl-5 text-[0.6875rem] text-text-lo'
+			: 'mt-1 pl-5 text-[0.75rem] text-text-lo';
 		note.textContent = '…';
 
 		row.append(head, note);
@@ -123,7 +129,7 @@ export function runBuild(overlay: HTMLElement) {
 		const row = transcript.querySelector<HTMLElement>(`[data-card='${index}']`);
 		if (!row || row.dataset.settled) return;
 		row.dataset.settled = 'true';
-		row.classList.add('border-sx-add/30');
+		if (!compact) row.classList.add('border-sx-add/30');
 		row.querySelector<HTMLElement>('[data-mark]')!.textContent = '✓';
 		row.querySelector<HTMLElement>('[data-mark]')!.className = 'text-sx-add';
 
@@ -133,36 +139,49 @@ export function runBuild(overlay: HTMLElement) {
 			step.tool === 'Bash'
 				? `✓ ${pages} pages · ${js} js requests · ${kb} kB · ${Math.round(span)} ms`
 				: `${step.out}${step.code.length ? ` · ${step.code.length} lines` : ''} · ${Math.round(span)} ms`;
-		note.className = 'mt-1 pl-5 text-[0.75rem] text-sx-add/90';
+		note.className = compact
+			? 'pl-5 text-[0.6875rem] text-sx-add/90'
+			: 'mt-1 pl-5 text-[0.75rem] text-sx-add/90';
 	}
 
-	/** The code pane. Lines are appended, never re-rendered — one write per frame at most. */
+	/**
+	 * Lines are appended, never re-rendered — one write per frame at most.
+	 *
+	 * On a laptop they go into the side pane, which clears per file. On a phone they go into the
+	 * same stream as the tool calls and nothing is ever cleared: the column is bottom-aligned
+	 * with its overflow hidden, so each new line pushes the rest up and off the top.
+	 */
 	function paintCode(index: number, lines: number, step: Step) {
 		if (index !== shownFile) {
 			shownFile = index;
 			shownLines = 0;
-			codeList.replaceChildren();
-			codeName.textContent = step.arg;
-			codeState.textContent = '';
-			codeDot.className = 'size-1.5 rounded-full bg-sx-num';
+			if (!compact) {
+				codeList.replaceChildren();
+				codeName.textContent = step.arg;
+				codeState.textContent = '';
+				codeDot.className = 'size-1.5 rounded-full bg-sx-num';
+			}
 		}
+
 		while (shownLines < lines && shownLines < step.code.length) {
-			const row = document.createElement('li');
-			row.className = 'flex gap-3';
+			/* A list item belongs in the laptop's <ol>; the phone's stream is not a list. */
+			const row = document.createElement(compact ? 'div' : 'li');
+			row.className = compact ? 'flex gap-2 pl-5' : 'flex gap-3';
+
 			const number = document.createElement('span');
-			number.className = 'w-6 shrink-0 text-right text-[0.6875rem] text-text-lo/35';
+			number.className = compact
+				? 'w-4 shrink-0 text-right text-[0.625rem] text-text-lo/30'
+				: 'w-6 shrink-0 text-right text-[0.6875rem] text-text-lo/35';
 			number.textContent = String(shownLines + 1);
+
 			const body = document.createElement('span');
-			/*
-			 * Wrapped on a phone, where a clipped line reads as broken, and left as written on a
-			 * laptop, where there is room for it. A wrapped line and one gutter number is what an
-			 * editor with soft wrap does, so the mismatch is the familiar one.
-			 */
+			/* Wrapped on a phone, where a clipped line reads as broken; as written on a laptop. */
 			body.className =
 				'min-w-0 break-words whitespace-pre-wrap text-text-hi sm:break-normal sm:whitespace-pre';
 			body.innerHTML = step.code[shownLines];
+
 			row.append(number, body);
-			codeList.append(row);
+			stream.append(row);
 			shownLines++;
 		}
 	}
@@ -207,9 +226,16 @@ export function runBuild(overlay: HTMLElement) {
 				}
 			}
 
-			/* Written — and it stays on screen, finished, for the whole of REST. */
+			/*
+			 * Written — and it stays on screen, finished, for the whole of REST.
+			 *
+			 * `index >= shownFile` is load-bearing: this branch is true for every step that has
+			 * already finished, on every frame. Without the guard each of them re-opened its
+			 * file and appended it again — invisible on a laptop, where the pane clears first,
+			 * and six thousand nodes deep on a phone, where the stream never clears.
+			 */
 			if (elapsed >= at + write) {
-				if (step.code.length) {
+				if (step.code.length && index >= shownFile) {
 					paintCode(index, step.code.length, step);
 					if (shownFile === index && codeState.textContent !== 'saved') {
 						codeState.textContent = 'saved';

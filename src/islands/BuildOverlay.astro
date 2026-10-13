@@ -115,26 +115,27 @@ const plan = [
 	</div>
 
 	{/*
-	 * On a phone the two panes stack rather than one of them disappearing. The code was hidden
-	 * below sm, which left the smaller screen watching a list of filenames — the least
-	 * interesting half of the sequence, and the half that needs the least space.
+	 * Two layouts, because a phone is not a narrow laptop.
+	 *
+	 * On a laptop: the agent on the left, the file it is writing on the right. On a phone there
+	 * is no room for two panes, so everything runs down one stream instead — the tool call, then
+	 * the lines it wrote, then the next tool call — and the column is bottom-aligned with its
+	 * overflow hidden, so new lines push the old ones up off the top. No scroll handling, no
+	 * clearing: it just runs, the way a terminal does.
 	 */}
 	<div
-		class="grid min-h-0 min-w-0 grow grid-rows-[auto_minmax(0,1fr)] sm:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] sm:grid-rows-1"
+		class="grid min-h-0 min-w-0 grow sm:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] sm:grid-rows-1"
 	>
-		{/* The agent. A short strip on a phone, the full column on a laptop. */}
-		<aside
-			class="min-h-0 min-w-0 overflow-hidden border-b border-border sm:border-r sm:border-b-0"
-		>
+		<aside class="min-h-0 min-w-0 overflow-hidden sm:border-r sm:border-border">
 			<div
 				data-transcript
-				class="flex max-h-[7.5rem] flex-col justify-end gap-1.5 overflow-hidden p-3 sm:h-full sm:max-h-none sm:justify-start sm:gap-2 sm:p-4"
+				class="flex h-full flex-col justify-end gap-1 overflow-hidden p-3 sm:justify-start sm:gap-2 sm:p-4"
 			>
 			</div>
 		</aside>
 
-		{/* What it is writing. */}
-		<section class="flex min-h-0 min-w-0 flex-col">
+		{/* What it is writing. The laptop half. */}
+		<section class="hidden min-h-0 min-w-0 flex-col sm:flex">
 			<div
 				class="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2 text-[0.6875rem] sm:px-4 sm:text-[0.75rem]"
 			>
