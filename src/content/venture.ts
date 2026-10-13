@@ -20,7 +20,7 @@ const KLIKNOTE: Venture = {
 	tagline:
 		'A high-velocity, local-first, keyboard-native note-taking app built for uninterrupted focus.',
 	url: 'https://kliknote.com',
-	logo: '/kliknote-logo.svg',
+	logo: '/kliknote-square.svg',
 	island: 'KlikNote',
 	body: [
 		'When your mind moves fast, context-switching kills momentum. I founded KlikNote to replace the cloud latency, account walls, and heavy interfaces of traditional note tools with something that keeps up.',

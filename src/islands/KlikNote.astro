@@ -1,0 +1,59 @@
+---
+/*
+ * A playable KlikNote, small enough to understand in ten seconds: type, enter, it is saved.
+ * The point it has to make is that nothing left the machine — so the request counter is
+ * measured from the Performance API rather than written on the page as a claim.
+ *
+ * Seeded server-side, so with no JavaScript this is still a picture of the product.
+ */
+const SEED = [
+	{ text: 'offset-path is uneven in Safari — animate transform instead', note: 'from a tab' },
+	{ text: 'ask about their rollout story in the interview', note: 'typed here' },
+];
+---
+
+<div class="rounded-lg border border-border bg-editor" data-kliknote>
+	<div class="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
+		<p class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
+			Try it — type and press enter
+		</p>
+		<p class="font-mono text-[0.6875rem] text-sx-add" data-network>network · 0 requests</p>
+	</div>
+
+	<div class="p-4">
+		<input
+			type="text"
+			data-input
+			placeholder="Capture a thought…"
+			aria-label="Capture a note"
+			autocomplete="off"
+			class="w-full rounded border border-border bg-surface px-3 py-2 font-mono text-[0.8125rem] text-text-hi placeholder:text-text-lo/60 focus:border-accent/50 focus:outline-none"
+		/>
+
+		<ul class="mt-3 space-y-1" data-notes>
+			{
+				SEED.map((item) => (
+					<li
+						data-note
+						class="flex items-baseline justify-between gap-3 rounded border border-transparent px-2.5 py-1.5 font-mono text-[0.8125rem] text-text-hi aria-selected:border-border aria-selected:bg-surface"
+					>
+						<span>{item.text}</span>
+						<span class="shrink-0 text-[0.6875rem] text-text-lo">{item.note}</span>
+					</li>
+				))
+			}
+		</ul>
+
+		<p class="mt-3 font-mono text-[0.6875rem] text-text-lo">
+			<kbd>↑</kbd> <kbd>↓</kbd> move · <kbd>⌫</kbd> delete · <kbd>esc</kbd> clear · stored in
+			this browser, nowhere else
+		</p>
+	</div>
+</div>
+
+<script>
+	import { mountKlikNote } from '../scripts/kliknote';
+
+	mountKlikNote();
+	document.addEventListener('astro:page-load', mountKlikNote);
+</script>

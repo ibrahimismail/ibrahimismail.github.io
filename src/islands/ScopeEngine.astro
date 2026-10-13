@@ -1,0 +1,143 @@
+---
+/*
+ * The scope engine, as something you drive.
+ *
+ * Everything renders server-side in its resolved default state, so with no JavaScript this is
+ * still a readable explanation: the roles, the scopes they grant, the portal areas they open,
+ * and the trace that connects them. The script turns the chips on, nothing more.
+ */
+import { AREAS, ROLES, SCOPES, SHIPPED_SCOPE } from '../content/scopes';
+
+/** The same resolver the script runs, so the server-rendered state is the real one. */
+function resolve(roleIds: string[]) {
+	const direct = new Map<string, string>();
+	for (const role of ROLES.filter((candidate) => roleIds.includes(candidate.id))) {
+		for (const grant of role.grants) {
+			if (!direct.has(grant)) direct.set(grant, role.label);
+		}
+	}
+
+	const resolved = new Map(direct);
+	const queue = [...direct.keys()];
+	while (queue.length) {
+		const id = queue.shift()!;
+		const scope = SCOPES.find((candidate) => candidate.id === id);
+		for (const implied of scope?.implies ?? []) {
+			if (!resolved.has(implied)) {
+				resolved.set(implied, `implied by ${id}`);
+				queue.push(implied);
+			}
+		}
+	}
+	return resolved;
+}
+
+const DEFAULT_ROLES = ['device-manager', 'billing-viewer'];
+const resolved = resolve(DEFAULT_ROLES);
+---
+
+<div
+	class="rounded-lg border border-border bg-editor"
+	data-scope-engine
+	data-shipped={JSON.stringify(SHIPPED_SCOPE)}
+	data-scopes={JSON.stringify(SCOPES)}
+	data-roles={JSON.stringify(ROLES)}
+>
+	<div class="flex flex-wrap items-center gap-2 border-b border-border px-4 py-3">
+		<span class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
+			Roles held
+		</span>
+		{
+			ROLES.map((role) => (
+				<button
+					type="button"
+					data-role={role.id}
+					aria-pressed={DEFAULT_ROLES.includes(role.id) ? 'true' : 'false'}
+					class="rounded border border-border px-2.5 py-1 font-mono text-[0.75rem] text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi aria-pressed:border-accent/50 aria-pressed:bg-accent/10 aria-pressed:text-accent"
+				>
+					{role.label}
+				</button>
+			))
+		}
+	</div>
+
+	<div class="grid gap-px bg-border sm:grid-cols-2">
+		{/* What the admin can reach. */}
+		<div class="bg-editor p-4">
+			<p class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
+				Admin portal
+			</p>
+			<ul class="mt-3 space-y-1.5" data-areas>
+				{
+					AREAS.map((area) => {
+						const scopes = SCOPES.filter((scope) => scope.area === area);
+						const granted = scopes.filter((scope) => resolved.has(scope.id));
+						return (
+							<li
+								data-area={area}
+								data-state={granted.length ? 'open' : 'closed'}
+								class="flex items-center justify-between gap-3 rounded border border-transparent px-2 py-1.5 font-mono text-[0.8125rem] data-[state=closed]:text-text-lo/40 data-[state=open]:border-border data-[state=open]:text-text-hi"
+							>
+								<span>{area}</span>
+								<span data-area-detail class="text-[0.6875rem] text-text-lo">
+									{granted.length
+										? granted.map((scope) => scope.verb).join(' + ')
+										: 'no access'}
+								</span>
+							</li>
+						);
+					})
+				}
+			</ul>
+		</div>
+
+		{/* Why. */}
+		<div class="bg-editor p-4">
+			<p class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">
+				resolve()
+			</p>
+			<ol class="mt-3 space-y-1 font-mono text-[0.75rem] leading-relaxed" data-trace>
+				{
+					SCOPES.map((scope) => {
+						const reason = resolved.get(scope.id);
+						return (
+							<li data-scope={scope.id} class="flex gap-2">
+								<span
+									aria-hidden="true"
+									class:list={[reason ? 'text-sx-add' : 'text-sx-del']}
+									data-mark>{reason ? '✓' : '✗'}</span
+								>
+								<span class:list={[reason ? 'text-text-hi' : 'text-text-lo/50']}>
+									{scope.id}
+								</span>
+								<span data-reason class="ml-auto text-right text-text-lo">
+									{reason ? `← ${reason}` : '← no grant'}
+								</span>
+							</li>
+						);
+					})
+				}
+			</ol>
+		</div>
+	</div>
+
+	<div class="flex flex-wrap items-center gap-3 border-t border-border px-4 py-3">
+		<button
+			type="button"
+			data-ship
+			class="rounded border border-accent/40 bg-accent/10 px-2.5 py-1 font-mono text-[0.75rem] text-accent transition-colors duration-200 hover:bg-accent/20"
+		>
+			Ship a new permission
+		</button>
+		<p class="font-mono text-[0.75rem] text-text-lo" data-ship-note>
+			Server-side only — the UI renders it from metadata.
+		</p>
+	</div>
+</div>
+
+<script>
+	import { mountScopeEngine } from '../scripts/scope-engine';
+
+	mountScopeEngine();
+	document.addEventListener('astro:page-load', mountScopeEngine);
+</script>

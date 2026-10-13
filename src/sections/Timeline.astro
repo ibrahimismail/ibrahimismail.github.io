@@ -22,16 +22,49 @@ const { allOpen = false } = Astro.props;
 ---
 
 <section id="timeline" data-build="timeline" aria-labelledby="timeline-heading">
-	<h2 id="timeline-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
-		Career, as a commit log
-	</h2>
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<h2 id="timeline-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+			Career, as a commit log
+		</h2>
+
+		{/* Hidden until the script that drives it has run. Nothing here is the only path to
+		anything: every line is on the page already, and every directory opens by clicking it. */}
+		<div class="flex items-center gap-2" data-timeline-tools data-no-print hidden>
+			<label class="relative">
+				<span class="sr-only">Filter the career by keyword</span>
+				<input
+					type="search"
+					data-filter
+					placeholder="filter…"
+					autocomplete="off"
+					class="w-36 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[0.75rem] text-text-hi placeholder:text-text-lo/60 focus:border-accent/50 focus:outline-none sm:w-48"
+				/>
+			</label>
+			<button
+				type="button"
+				data-plain
+				aria-pressed="false"
+				class="rounded border border-border px-2.5 py-1 font-mono text-[0.75rem] text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi aria-pressed:border-accent/50 aria-pressed:bg-accent/10 aria-pressed:text-accent"
+			>
+				plain
+			</button>
+		</div>
+	</div>
+
+	<p
+		data-filter-status
+		role="status"
+		data-no-print
+		class="mt-3 font-mono text-xs text-text-lo"
+		hidden
+	></p>
 
 	<ol class="mt-8 space-y-10">
 		{
 			EXPERIENCE.map((role) => {
 				const open = openByDefault(role);
 				return (
-					<li class="relative border-l border-border pl-6 sm:pl-8">
+					<li data-role-entry class="relative border-l border-border pl-6 sm:pl-8">
 						{/* The commit dot, on the rail. */}
 						<span
 							aria-hidden="true"
@@ -92,7 +125,7 @@ const { allOpen = false } = Astro.props;
 
 									<div class="space-y-4 border-t border-border px-4 py-4">
 										{dir.files.map((file) => (
-											<div>
+											<div data-file>
 												<p data-path class="font-mono text-xs text-text-lo">
 													{dir.name}/{file.path}
 												</p>
@@ -125,3 +158,10 @@ const { allOpen = false } = Astro.props;
 		}
 	</ol>
 </section>
+
+<script>
+	import { mountTimeline } from '../scripts/timeline';
+
+	mountTimeline();
+	document.addEventListener('astro:page-load', mountTimeline);
+</script>

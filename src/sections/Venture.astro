@@ -5,6 +5,7 @@
  * page's section list is computed from the same nullable export, so nothing is left behind
  * when it is switched off.
  */
+import KlikNote from '../islands/KlikNote.astro';
 import { VENTURE } from '../content/venture';
 
 if (!VENTURE) {
@@ -12,14 +13,20 @@ if (!VENTURE) {
 }
 ---
 
-<section id="venture" data-build="venture" aria-labelledby="venture-heading">
+<section id="venture" data-build="venture" data-no-print aria-labelledby="venture-heading">
 	<h2 id="venture-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
 		Built it himself
 	</h2>
 
 	<div class="mt-8 rounded-lg border border-border bg-surface p-6 sm:p-8">
 		<div class="flex items-center gap-3">
-			<img src={VENTURE.logo} alt="" width="28" height="28" class="size-7" />
+			<img
+				src={VENTURE.logo}
+				alt=""
+				width="40"
+				height="40"
+				class="size-10 rounded-lg border border-border"
+			/>
 			<div>
 				<h3 class="font-display text-2xl leading-none font-semibold">{VENTURE.name}</h3>
 			</div>
@@ -35,6 +42,12 @@ if (!VENTURE) {
 				))
 			}
 		</div>
+
+		{VENTURE.island === 'KlikNote' && (
+			<div class="mt-7">
+				<KlikNote />
+			</div>
+		)}
 
 		<a
 			href={VENTURE.url}

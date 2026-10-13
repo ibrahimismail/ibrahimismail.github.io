@@ -178,6 +178,26 @@
 		transform: none;
 	}
 
+	/*
+	 * The plain view. Some readers want the boring list, and one click is what makes the clever
+	 * version safe to ship. It changes presentation only — no line is added or removed.
+	 */
+	.is-plain [data-path] {
+		display: none;
+	}
+
+	.is-plain [data-plus] {
+		visibility: hidden;
+	}
+
+	.is-plain [data-line] {
+		font-family: var(--font-sans);
+		font-size: 0.9375rem;
+		list-style: disc;
+		display: list-item;
+		margin-left: 1.25rem;
+	}
+
 	/* Shown only on paper and on /cv, where there are no links to click. */
 	[data-print-only] {
 		display: none;
@@ -229,6 +249,13 @@
 			opacity var(--t-reveal) var(--e-out),
 			transform var(--t-reveal) var(--e-out),
 			clip-path var(--t-reveal) var(--e-out);
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(4px);
 	}
 }
 

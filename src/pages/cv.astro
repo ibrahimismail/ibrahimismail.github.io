@@ -13,9 +13,7 @@ import Instruments from '../sections/Instruments.astro';
 import Masthead from '../sections/Masthead.astro';
 import Stack from '../sections/Stack.astro';
 import Timeline from '../sections/Timeline.astro';
-import Venture from '../sections/Venture.astro';
 import { PROFILE } from '../content/profile';
-import { VENTURE } from '../content/venture';
 ---
 
 <Base
@@ -28,8 +26,6 @@ import { VENTURE } from '../content/venture';
 	<main class="mx-auto w-full max-w-[190mm] px-6 py-10">
 		<Masthead />
 		<Timeline allOpen />
-		{/* A founder role belongs on a CV — and it still disappears with the switch. */}
-		{VENTURE && <Venture />}
 		<Stack />
 		<Instruments />
 		<Contact />
