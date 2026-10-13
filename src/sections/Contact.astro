@@ -4,6 +4,7 @@
  * page was trying to prove.
  */
 import { PROFILE } from '../content/profile';
+import { away } from '../lib/links';
 
 const WAYS = [
 	{ label: 'Email', value: PROFILE.email, href: `mailto:${PROFILE.email}` },
@@ -39,6 +40,7 @@ const WAYS = [
 				>
 					<a
 						href={way.href}
+						{...away(way.href)}
 						class="flex items-baseline justify-between gap-4 p-4 transition-colors duration-200 hover:bg-editor"
 					>
 						<dt class="font-mono text-[0.6875rem] tracking-[0.14em] text-text-lo uppercase">

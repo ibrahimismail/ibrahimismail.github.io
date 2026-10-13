@@ -8,18 +8,17 @@ import type { Half } from './types';
  * thinking" as a proficiency level, and a tier called "reach for" sitting below one called
  * "shipped" reads as though it were the deeper of the two.
  *
- * So the grouping is now by category, which is what someone is actually looking for — languages,
- * data, security — and depth survives in one plain-English form: whatever is in `also` is
- * working knowledge rather than something he would claim as current.
+ * So the grouping is by category, which is what someone is actually looking for: languages,
+ * databases, security. There was a second list per group for working knowledge, set quietly
+ * under an "also" — it undersold things that belong on a CV at full size, and the column had
+ * the room. Everything a group holds is now one list.
  *
  * Two columns, backend first, per the framing rule in REDESIGN-PLAN.md §2.
  */
 export type Group = {
 	label: string;
-	/** What he would put his name to. Ordered most-used first. */
+	/** Ordered most-used first. */
 	main: string[];
-	/** Read fluently, reached for when it fits. Rendered quietly, and labelled as such. */
-	also?: string[];
 };
 
 export type Column = {
@@ -35,12 +34,11 @@ export const STACK: Column[] = [
 		groups: [
 			{
 				label: 'Languages',
-				main: ['TypeScript', 'Go', 'Node.js'],
-				also: ['Python', 'Java', 'PHP'],
+				main: ['TypeScript', 'Go', 'Node.js', 'Python', 'Java', 'PHP'],
 			},
 			{
 				label: 'APIs & contracts',
-				main: ['gRPC', 'Protocol Buffers', 'GraphQL', 'REST', 'Webhooks'],
+				main: ['gRPC', 'Protocol Buffers', 'GraphQL', 'REST', 'Webhooks', 'Flask'],
 			},
 			{
 				label: 'Databases',
@@ -57,8 +55,7 @@ export const STACK: Column[] = [
 			},
 			{
 				label: 'Services & delivery',
-				main: ['Microservices', 'Docker', 'GitHub Actions', 'CI/CD'],
-				also: ['CircleCI', 'Flask'],
+				main: ['Microservices', 'Docker', 'GitHub Actions', 'CI/CD', 'CircleCI'],
 			},
 		],
 	},
@@ -90,8 +87,7 @@ export const STACK: Column[] = [
 			},
 			{
 				label: 'Styling & build',
-				main: ['Tailwind', 'Vite', 'Webpack'],
-				also: ['SASS', 'Framer Motion'],
+				main: ['Tailwind', 'SASS', 'Vite', 'Webpack', 'Framer Motion'],
 			},
 		],
 	},

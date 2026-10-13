@@ -17,7 +17,7 @@
 import profileSource from '../content/profile.ts?raw';
 import stackSource from '../content/stack.ts?raw';
 import deriveSource from '../lib/derive.ts?raw';
-import factsSource from '../content/facts.ts?raw';
+import educationSource from '../content/education.ts?raw';
 
 import { EXPERIENCE } from '../content/experience';
 import { highlightCode, unit } from '../lib/code';
@@ -63,11 +63,11 @@ const steps: (Step | null)[] = [
 	},
 	{
 		tool: 'Read',
-		arg: 'content/facts.ts',
-		out: 'every figure traces to a line above',
-		reveals: 'numbers',
+		arg: 'content/education.ts',
+		out: 'MSc & BSc, Computer Engineering',
+		reveals: 'education',
 		optional: true,
-		code: highlightCode(unit(factsSource, 'export const FACTS')),
+		code: highlightCode(unit(educationSource, 'export const EDUCATION')),
 	},
 	{
 		tool: 'Bash',
@@ -103,12 +103,12 @@ const plan = [
 			<span class="size-2.5 rounded-full bg-sx-num/70"></span>
 			<span class="size-2.5 rounded-full bg-sx-add/70"></span>
 		</span>
-		<span class="text-text-lo">ibrahimismail.dev</span>
-		<span data-head-state class="text-sx-num">building…</span>
+		<span class="truncate text-text-lo">ibrahimismail.dev</span>
+		<span data-head-state class="shrink-0 text-sx-num">building…</span>
 		<button
 			type="button"
 			data-skip
-			class="ml-auto rounded border border-border px-2.5 py-1 text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi"
+			class="ml-auto shrink-0 rounded border border-border px-2.5 py-1 text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi"
 		>
 			skip ⏎
 		</button>
@@ -120,11 +120,11 @@ const plan = [
 	 * interesting half of the sequence, and the half that needs the least space.
 	 */}
 	<div
-		class="grid min-h-0 grow grid-rows-[auto_minmax(0,1fr)] sm:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] sm:grid-rows-1"
+		class="grid min-h-0 min-w-0 grow grid-rows-[auto_minmax(0,1fr)] sm:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] sm:grid-rows-1"
 	>
 		{/* The agent. A short strip on a phone, the full column on a laptop. */}
 		<aside
-			class="min-h-0 overflow-hidden border-b border-border sm:border-r sm:border-b-0"
+			class="min-h-0 min-w-0 overflow-hidden border-b border-border sm:border-r sm:border-b-0"
 		>
 			<div
 				data-transcript
@@ -134,7 +134,7 @@ const plan = [
 		</aside>
 
 		{/* What it is writing. */}
-		<section class="flex min-h-0 flex-col">
+		<section class="flex min-h-0 min-w-0 flex-col">
 			<div
 				class="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2 text-[0.6875rem] sm:px-4 sm:text-[0.75rem]"
 			>
@@ -142,17 +142,21 @@ const plan = [
 				<span data-code-name class="truncate text-text-lo">waiting…</span>
 				<span data-code-state class="shrink-0 text-sx-add"></span>
 			</div>
-			<div class="min-h-0 grow overflow-hidden p-3 sm:p-4">
-				<ol data-code class="text-[0.6875rem] leading-[1.6] sm:text-[0.8125rem] sm:leading-[1.65]"></ol>
+			<div class="min-h-0 min-w-0 grow overflow-hidden p-3 sm:p-4">
+				<ol
+					data-code
+					class="min-w-0 text-[0.6875rem] leading-[1.6] sm:text-[0.8125rem] sm:leading-[1.65]"
+				>
+				</ol>
 			</div>
 		</section>
 	</div>
 
 	{/* The prompt, which stays behind as the palette. */}
 	<div class="shrink-0 border-t border-border px-3 py-2.5 sm:px-4 sm:py-3">
-		<p class="flex items-baseline gap-2">
-			<span aria-hidden="true" class="text-accent">›</span>
-			<span data-prompt class="text-text-hi"></span>
+		<p class="flex items-baseline gap-2 overflow-hidden">
+			<span aria-hidden="true" class="shrink-0 text-accent">›</span>
+			<span data-prompt class="truncate text-text-hi"></span>
 			<span aria-hidden="true" class="animate-[blink_1s_steps(2)_infinite] text-cursor">▍</span>
 		</p>
 	</div>

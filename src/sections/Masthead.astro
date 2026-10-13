@@ -8,6 +8,7 @@
  * makes the name hard to read would be a costume, not a design.
  */
 import { PROFILE } from '../content/profile';
+import { away } from '../lib/links';
 
 const WAYS = [
 	{ label: 'Download CV', href: '/Ibrahim_Ismail_CV.pdf', primary: true },
@@ -110,6 +111,7 @@ const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 									{WAYS.map(({ label, href, primary }) => (
 										<a
 											href={href}
+											{...away(href)}
 											class:list={[
 												'rounded border px-3 py-1.5 transition-colors duration-200',
 												primary

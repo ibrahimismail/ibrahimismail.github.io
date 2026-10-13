@@ -5,7 +5,6 @@
  * than something they are told.
  *
  * Grouped by category, because that is what someone scanning for a keyword is looking for.
- * Depth is carried by the quiet "also" line rather than by a tier name — see content/stack.ts.
  *
  * No logos. Twenty colour badges from a third-party icon CDN cost requests, mismatch each
  * other, and imply the same depth in Flask as in TypeScript.
@@ -44,12 +43,6 @@ import { STACK } from '../content/stack';
 											</span>
 										))}
 									</p>
-									{group.also && (
-										<p class="mt-1 font-mono text-[0.75rem] text-text-lo/75">
-											<span class="text-text-lo/55">also</span>{' '}
-											{group.also.join(', ')}
-										</p>
-									)}
 								</dd>
 							</div>
 						))}

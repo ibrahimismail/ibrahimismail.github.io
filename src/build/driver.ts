@@ -153,7 +153,13 @@ export function runBuild(overlay: HTMLElement) {
 			number.className = 'w-6 shrink-0 text-right text-[0.6875rem] text-text-lo/35';
 			number.textContent = String(shownLines + 1);
 			const body = document.createElement('span');
-			body.className = 'whitespace-pre text-text-hi';
+			/*
+			 * Wrapped on a phone, where a clipped line reads as broken, and left as written on a
+			 * laptop, where there is room for it. A wrapped line and one gutter number is what an
+			 * editor with soft wrap does, so the mismatch is the familiar one.
+			 */
+			body.className =
+				'min-w-0 break-words whitespace-pre-wrap text-text-hi sm:break-normal sm:whitespace-pre';
 			body.innerHTML = step.code[shownLines];
 			row.append(number, body);
 			codeList.append(row);

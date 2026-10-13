@@ -1,0 +1,32 @@
+---
+/*
+ * Education.
+ *
+ * A band of career figures used to sit above this — 10×, 8×, 4 browser stores. Every one of
+ * them is already a line in the timeline, stated where the work that produced it is, so the
+ * band was the same claims a second time with a larger typeface.
+ */
+import { EDUCATION } from '../content/education';
+import { monthYear } from '../lib/derive';
+---
+
+<section id="education" data-build="education" aria-labelledby="education-heading">
+	<h2 id="education-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+		Education
+	</h2>
+
+	<ul class="mt-6 space-y-3">
+		{
+			EDUCATION.map((entry) => (
+				<li class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+					<span class="font-mono text-xs text-text-lo">
+						{monthYear(entry.start)} — {monthYear(entry.end)}
+					</span>
+					<span class="text-[0.9375rem] text-text-hi">{entry.degree}</span>
+					<span class="text-[0.9375rem] text-text-lo">{entry.school}</span>
+					{entry.gpa && <span class="font-mono text-xs text-sx-num">GPA {entry.gpa}</span>}
+				</li>
+			))
+		}
+	</ul>
+</section>

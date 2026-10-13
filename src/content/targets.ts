@@ -27,7 +27,7 @@ export const DEFAULT_ORDER: SectionId[] = [
 	'systems',
 	'venture',
 	'stack',
-	'numbers',
+	'education',
 	'contact',
 ];
 
@@ -44,14 +44,14 @@ export const TARGETS: Target[] = [
 		label: 'platform + developer experience',
 		clause: 'server',
 		openDirs: ['platform'],
-		order: ['systems', 'timeline', 'stack', 'venture', 'numbers', 'contact'],
+		order: ['systems', 'timeline', 'stack', 'venture', 'education', 'contact'],
 	},
 	{
 		id: 'security',
 		label: 'security engineering',
 		clause: 'server',
 		openDirs: ['security'],
-		order: ['timeline', 'systems', 'stack', 'venture', 'numbers', 'contact'],
+		order: ['timeline', 'systems', 'stack', 'venture', 'education', 'contact'],
 	},
 	{
 		id: 'fullstack',
@@ -65,7 +65,7 @@ export const TARGETS: Target[] = [
 		label: 'frontend architecture',
 		clause: 'client',
 		openDirs: ['platform'],
-		order: ['systems', 'timeline', 'venture', 'stack', 'numbers', 'contact'],
+		order: ['systems', 'timeline', 'venture', 'stack', 'education', 'contact'],
 	},
 ];
 
