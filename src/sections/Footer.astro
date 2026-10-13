@@ -1,0 +1,17 @@
+---
+/*
+ * A copyright line, and nothing else. The replay link and the source link were both pointing at
+ * things a reader has no reason to want from a footer.
+ */
+import { PROFILE } from '../content/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-border py-8">
+	<div
+		class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-6 font-mono text-xs text-text-lo sm:px-10"
+	>
+		<p>© {year} {PROFILE.name}</p>
+	</div>
+</footer>

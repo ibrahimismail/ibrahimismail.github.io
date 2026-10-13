@@ -1,0 +1,51 @@
+---
+/*
+ * The document itself.
+ *
+ * Every section renders complete, server-side, in source order — the overlay is a layer over a
+ * page that is already finished, and this file never needs to know it exists beyond the
+ * data-build attributes the sections carry.
+ */
+import { SYSTEMS } from '../content/systems';
+import { VENTURE } from '../content/venture';
+import BuildOverlay from '../islands/BuildOverlay.astro';
+import Palette from '../islands/Palette.astro';
+import Base from '../layouts/Base.astro';
+import Contact from '../sections/Contact.astro';
+import Footer from '../sections/Footer.astro';
+import Education from '../sections/Education.astro';
+import Masthead from '../sections/Masthead.astro';
+import Stack from '../sections/Stack.astro';
+import Systems from '../sections/Systems.astro';
+import Timeline from '../sections/Timeline.astro';
+import Venture from '../sections/Venture.astro';
+
+---
+
+<Base>
+	<BuildOverlay />
+
+	<main id="content" class="mx-auto w-full max-w-5xl px-6 pt-16 pb-8 sm:px-10 sm:pt-24">
+		<Masthead />
+
+		{/* A flex column so `?role=` can reorder it with `order` alone — see OrderStyles. */}
+		<div data-sections class="mt-24 flex flex-col gap-24">
+			<Timeline />
+			{SYSTEMS.length > 0 && <Systems />}
+			{VENTURE && <Venture />}
+			<Stack />
+			<Education />
+			<Contact />
+		</div>
+	</main>
+
+	<Footer />
+	<Palette />
+
+	<script>
+		import { applyTargeting } from '../scripts/targeting';
+
+		applyTargeting();
+		document.addEventListener('astro:page-load', applyTargeting);
+	</script>
+</Base>

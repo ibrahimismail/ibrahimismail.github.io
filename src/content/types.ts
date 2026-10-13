@@ -1,0 +1,113 @@
+/**
+ * The shape of the career. One source for the page, the agent build script, the command
+ * palette's index and the print route — nothing on the site is authored twice.
+ */
+
+/**
+ * Which side of the stack a slice of work sits on. Carried as data, not decided in markup, so
+ * the timeline, the stack section and the `?role=` presets all order themselves backend-first
+ * from one field instead of three hand-sorted lists.
+ */
+export type Half = 'server' | 'client' | 'both';
+
+/** Anything a line can be filtered by. The palette's `find` and `stack` are a filter over these. */
+export type Tag =
+	| 'typescript'
+	| 'react'
+	| 'vue'
+	| 'swift'
+	| 'go'
+	| 'node'
+	| 'graphql'
+	| 'grpc'
+	| 'crypto'
+	| 'mv3'
+	| 'perf'
+	| 'ci'
+	| 'ai'
+	| 'leadership'
+	| 'microfrontends'
+	| 'authz'
+	| 'postgres'
+	| 'migrations';
+
+/** One `+` line in a diff: a single thing he did. */
+export type Line = {
+	text: string;
+	tags?: Tag[];
+};
+
+/** A "file changed" — a slice of the work, named like the code it was. */
+export type File = {
+	path: string;
+	lines: Line[];
+};
+
+/** A grouping of files. Rendered as a collapsed directory until the reader opens it. */
+export type Dir = {
+	name: string;
+	half: Half;
+	files: File[];
+};
+
+export type Role = {
+	company: string;
+	role: string;
+	location: string;
+	/** `YYYY-MM`. Absent `end` means current. */
+	start: string;
+	end?: string;
+	/** What the company is, for a reader who has not heard of it. One sentence. */
+	summary: string;
+	/** Anything that needs saying beside the dates, e.g. an acquisition. */
+	note?: string;
+	dirs: Dir[];
+};
+
+export type System = {
+	id: 'scope-engine' | 'extension-bus' | 'icon-service' | 'contracts';
+	half: Half;
+	title: string;
+	/** ≤ 90 characters. The card has room for one line and no more. */
+	blurb: string;
+	/** Absent on the two static cards: they are a diagram and a code block, not an island. */
+	island?: 'ScopeEngine' | 'ExtensionBus';
+	cover: string;
+	/** Which company the work belongs to, so a card can point back into the timeline. */
+	company?: string;
+};
+
+/**
+ * Something he built himself. Separate from System on purpose — a product he owns is not one of
+ * the systems he shipped for an employer, and it is the one thing on the site that can be
+ * hidden (see content/venture.ts).
+ */
+export type Venture = {
+	name: string;
+	role: string;
+	tagline: string;
+	url: string;
+	logo: string;
+	/** The playable demo, if there is one to play. */
+	island?: 'KlikNote';
+	body: string[];
+	cta: string;
+};
+
+export type Education = {
+	school: string;
+	degree: string;
+	location: string;
+	start: string;
+	end: string;
+	gpa?: string;
+};
+
+/** A `?role=` preset: the same content, ordered for one audience. */
+export type Target = {
+	id: string;
+	label: string;
+	sentence: string;
+	/** Directories opened by default in the timeline, most relevant first. */
+	openDirs: string[];
+};

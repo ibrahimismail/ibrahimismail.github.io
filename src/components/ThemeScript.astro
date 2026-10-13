@@ -1,0 +1,69 @@
+---
+import { BUILD_SEQUENCE_ENABLED } from '../build/config';
+import { DEFAULT_THEME_PREFERENCE, THEME_COLORS, THEME_STORAGE_KEY } from '../lib/theme';
+---
+
+<script
+	is:inline
+	define:vars={{
+		storageKey: THEME_STORAGE_KEY,
+		defaultPreference: DEFAULT_THEME_PREFERENCE,
+		themeColors: THEME_COLORS,
+		buildEnabled: BUILD_SEQUENCE_ENABLED,
+	}}
+>
+	(function () {
+		function getSystemTheme() {
+			return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+		}
+
+		const stored = localStorage.getItem(storageKey);
+		const preference =
+			stored === 'light' || stored === 'dark' || stored === 'system'
+				? stored
+				: defaultPreference;
+		const resolved = preference === 'system' ? getSystemTheme() : preference;
+
+		const root = document.documentElement;
+		/* Styles that may only apply when there is a runtime to undo them. */
+		root.classList.add('js');
+		root.classList.toggle('light', resolved === 'light');
+		root.classList.toggle('dark', resolved === 'dark');
+
+		/*
+		 * The one class the reveal styles key off. Set here, inline, before first paint: any
+		 * later and the sections would flash in before the driver hides them. With JS off it
+		 * is never set, so the finished document renders as-is.
+		 */
+		/*
+		 * The build sequence runs on every load. It was rationed to once a week at first, on the
+		 * grounds that a returning reader should not have to sit through it twice — but it is
+		 * skippable by anything at all, including the scroll they were about to do anyway, so
+		 * the ration bought nothing and cost the one thing the site is for.
+		 *
+		 * Deciding here, inline and before first paint, is what keeps the reveal styles from
+		 * flashing the document before the overlay covers it.
+		 */
+		const params = new URLSearchParams(location.search);
+		const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (buildEnabled && !params.has('skip') && !still) {
+			root.classList.add('js-build');
+		}
+
+		/*
+		 * The audience this link was written for. CSS generated at build time reads it to order
+		 * the sections and the two halves of the pitch, so the arrangement is right at first
+		 * paint rather than rearranged afterwards.
+		 */
+		const role = params.get('role');
+		if (role) root.dataset.role = role;
+		const addressee = params.get('for');
+		if (addressee) root.dataset.for = addressee.slice(0, 40);
+
+		// Set here too, not just in theme-init: the browser reads theme-color at first paint,
+		// before the deferred module runs.
+		document
+			.querySelector('meta[name="theme-color"]')
+			.setAttribute('content', themeColors[resolved]);
+	})();
+</script>

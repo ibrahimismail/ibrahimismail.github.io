@@ -1,0 +1,181 @@
+---
+/*
+ * The career as a commit log, rendered as a diff view rather than a bullet list with a plus in
+ * front of it: a line-number gutter, a + column, hunk headers and file-type colour on the paths.
+ *
+ * No row tint. A green wash behind every added line is what a diff viewer does when half its
+ * rows are removals to contrast against; here every row is an addition, so the wash only
+ * lowered the contrast of the text sitting on it.
+ *
+ * The lines themselves are plain. Colouring the prose inside them was tried and taken back out:
+ * the chrome around a line is structure, and structure can be coloured, but highlighting words
+ * in an English sentence decorates it rather than explaining it.
+ *
+ * Every directory renders open and stays open. Collapsing exists — a reader can close one, and
+ * a `?role=` link closes the ones that are not its subject — but nothing is hidden on arrival:
+ * the work is the point of the page, and making someone click to find it is not a feature.
+ */
+import { EXPERIENCE } from '../content/experience';
+import { duration, fileCount, lineCount, period, serverFirst } from '../lib/derive';
+import { extensionClass } from '../lib/highlight';
+
+---
+
+<section id="timeline" data-build="timeline" aria-labelledby="timeline-heading">
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<h2 id="timeline-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+			Career
+		</h2>
+
+		{/* Hidden until the script that drives it has run. It is never the only path to
+		anything: every line is on the page already, and every directory opens by clicking it. */}
+		<div class="flex items-center gap-2" data-timeline-tools hidden>
+			<label class="relative">
+				<span class="sr-only">Filter the career by keyword</span>
+				<input
+					type="search"
+					data-filter
+					placeholder="filter…"
+					autocomplete="off"
+					class="w-36 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[0.75rem] text-text-hi placeholder:text-text-lo/60 focus:border-accent/50 focus:outline-none sm:w-48"
+				/>
+			</label>
+		</div>
+	</div>
+
+	<p
+		data-filter-status
+		role="status"
+		class="mt-3 font-mono text-xs text-text-lo"
+		hidden
+	>
+	</p>
+
+	<ol class="mt-8 space-y-10">
+		{
+			EXPERIENCE.map((role) => {
+				return (
+					<li data-role-entry class="relative border-l border-border pl-6 sm:pl-8">
+						<span
+							aria-hidden="true"
+							class="absolute top-2 -left-[4.5px] size-[9px] rounded-full bg-accent"
+						/>
+
+						<header>
+							<p class="font-mono text-xs text-text-lo">
+								<span class="text-sx-num">{period(role)}</span>
+								<span aria-hidden="true"> · </span>
+								<span>{duration(role)}</span>
+								<span aria-hidden="true"> · </span>
+								<span>{role.location}</span>
+							</p>
+							<h3 class="font-display mt-2 text-2xl leading-tight font-semibold sm:text-[1.75rem]">
+								{role.company}
+								<span class="text-text-lo"> — {role.role}</span>
+							</h3>
+							{role.note && (
+								<p class="mt-2 font-mono text-[0.8125rem] text-sx-type">{role.note}</p>
+							)}
+							<p class="mt-3 max-w-[64ch] text-[0.9375rem] leading-relaxed text-text-lo">
+								{role.summary}
+							</p>
+							<p class="mt-4 font-mono text-xs text-text-lo">
+								<span>
+									{fileCount(role)} file{fileCount(role) === 1 ? '' : 's'} changed
+								</span>
+								<span aria-hidden="true"> · </span>
+								<span class="text-sx-add">+{lineCount(role)}</span>
+								<span aria-hidden="true"> · </span>
+								<span class="text-sx-del">−0</span>
+							</p>
+						</header>
+
+						<div class="mt-5 overflow-hidden rounded-lg border border-border bg-editor">
+							{serverFirst(role.dirs).map((dir, index) => (
+								<details
+									open
+									data-dir={dir.name}
+									class:list={['group', index > 0 && 'border-t border-border']}
+								>
+									<summary class="flex cursor-pointer items-center gap-2 bg-surface/60 px-3 py-2 font-mono text-[0.8125rem] marker:content-none hover:bg-surface">
+										<span
+											aria-hidden="true"
+											data-chevron
+											class="text-text-lo transition-transform duration-200 group-open:rotate-90"
+										>
+											▸
+										</span>
+										<span class="text-sx-type">{dir.name}/</span>
+										<span class="text-text-lo">
+											{dir.files.length} file{dir.files.length === 1 ? '' : 's'}
+										</span>
+										<span class="ml-auto font-mono text-[0.6875rem] text-sx-add">
+											+{dir.files.reduce((sum, file) => sum + file.lines.length, 0)}
+										</span>
+									</summary>
+
+									<div class="border-t border-border">
+										{dir.files.map((file) => {
+											const path = `${dir.name}/${file.path}`;
+											return (
+												<div data-file class="border-b border-border/60 last:border-b-0">
+													{/* The hunk header, as a diff prints it. */}
+													<p
+														data-path
+														class="flex items-center gap-2 px-3 py-1.5 font-mono text-[0.6875rem]"
+													>
+														<span aria-hidden="true" class="text-text-lo/50">
+															@@
+														</span>
+														<span class={extensionClass(file.path)}>{path}</span>
+														<span aria-hidden="true" class="text-text-lo/50">
+															+{file.lines.length}
+														</span>
+													</p>
+
+													<ul class="pb-1">
+														{file.lines.map((line, lineIndex) => (
+															<li
+																data-line
+																class="flex gap-0 font-mono text-[0.8125rem] leading-relaxed"
+															>
+																<span
+																	aria-hidden="true"
+																	data-gutter
+																	class="w-9 shrink-0 border-r border-border/60 px-2 text-right text-[0.6875rem] leading-relaxed text-text-lo/45 select-none"
+																>
+																	{lineIndex + 1}
+																</span>
+																<span
+																	aria-hidden="true"
+																	data-plus
+																	class="w-6 shrink-0 text-center text-sx-add select-none"
+																>
+																	+
+																</span>
+																<span class="py-0.5 pr-3 text-text-hi">
+																	{line.text}
+																</span>
+															</li>
+														))}
+													</ul>
+												</div>
+											);
+										})}
+									</div>
+								</details>
+							))}
+						</div>
+					</li>
+				);
+			})
+		}
+	</ol>
+</section>
+
+<script>
+	import { mountTimeline } from '../scripts/timeline';
+
+	mountTimeline();
+	document.addEventListener('astro:page-load', mountTimeline);
+</script>

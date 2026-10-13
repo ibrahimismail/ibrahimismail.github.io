@@ -1,0 +1,87 @@
+---
+/*
+ * The work that cannot be screenshotted. The two deep pieces are driveable; the other two are a
+ * diagram and a code block, static on purpose rather than padded out with interactions that
+ * would not earn their bytes.
+ *
+ * Server-side first, and the scope engine leads — the backend piece is not the junior one.
+ */
+import { SYSTEMS } from '../content/systems';
+import ExtensionBus from '../islands/ExtensionBus.astro';
+import ScopeEngine from '../islands/ScopeEngine.astro';
+
+const interactive = SYSTEMS.filter((system) => system.island);
+const still = SYSTEMS.filter((system) => !system.island);
+
+/* Server cyan, client purple, both yellow — the same hues the diff gives those ideas. */
+const HALF_CLASS = {
+	server: 'text-sx-esc',
+	client: 'text-sx-key',
+	both: 'text-sx-type',
+} as const;
+---
+
+<section id="systems" data-build="systems" aria-labelledby="systems-heading">
+	<h2 id="systems-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+		Systems
+	</h2>
+	<p class="mt-4 max-w-[60ch] text-[0.9375rem] leading-relaxed text-text-lo">
+		A message-passing layer does not photograph. These are the four pieces worth explaining
+		rather than listing — the first two you can drive.
+	</p>
+
+	<div class="mt-8 space-y-10">
+		{
+			interactive.map((system) => (
+				<article aria-labelledby={`system-${system.id}`}>
+					<header class="mb-3">
+						<p class="font-mono text-[0.6875rem] tracking-[0.14em] uppercase">
+							<span class={HALF_CLASS[system.half]}>
+								{system.half === 'both' ? 'server + client' : system.half}
+							</span>
+							{system.company && <span class="text-text-lo"> · {system.company}</span>}
+						</p>
+						<h3
+							id={`system-${system.id}`}
+							class="font-display mt-1.5 text-xl leading-snug font-semibold"
+						>
+							{system.title}
+						</h3>
+						<p class="mt-1 max-w-[64ch] text-[0.9375rem] text-text-lo">{system.blurb}</p>
+					</header>
+
+					{system.island === 'ScopeEngine' ? <ScopeEngine /> : <ExtensionBus />}
+				</article>
+			))
+		}
+	</div>
+
+	<ul class="mt-10 grid gap-4 sm:grid-cols-2">
+		{
+			still.map((system) => (
+				<li class="flex flex-col overflow-hidden rounded-lg border border-border bg-surface">
+					<div
+						aria-hidden="true"
+						class="flex aspect-16/10 items-end bg-editor p-3 font-mono text-[0.6875rem] text-text-lo/60"
+					>
+						{system.cover}
+					</div>
+					<div class="flex grow flex-col p-4">
+						<p
+							class:list={[
+								'font-mono text-[0.6875rem] tracking-[0.14em] uppercase',
+								HALF_CLASS[system.half],
+							]}
+						>
+							{system.half === 'both' ? 'server + client' : system.half}
+						</p>
+						<h3 class="font-display mt-2 text-lg leading-snug font-semibold">
+							{system.title}
+						</h3>
+						<p class="mt-1.5 text-sm leading-relaxed text-text-lo">{system.blurb}</p>
+					</div>
+				</li>
+			))
+		}
+	</ul>
+</section>

@@ -1,0 +1,285 @@
+@import 'tailwindcss';
+
+/*
+ * The .dark element itself as well as everything inside it, so a subtree can carry its own
+ * theme (the print route forces light on a page the visitor left dark). :is keeps the
+ * specificity the variant always had.
+ */
+@custom-variant dark (&:is(.dark, .dark *));
+
+/*
+ * Palette: Atom One Dark, with Atom One Light as its twin.
+ *
+ * The reason it is this and not a palette of our own: the page is made of code-shaped surfaces —
+ * a diff, a build transcript, a resolver trace, a protobuf excerpt — and in One Dark the colours
+ * already carry meaning to the people reading. Green is an addition, red is a removal, purple is
+ * a keyword, orange is a number. Nothing has to be learned.
+ *
+ * Structure follows an editor rather than a web page: --ink-900 is the workbench (the page),
+ * --ink-800 is panels and cards, --ink-700 is the editor surface, so code-shaped things look
+ * like a pane floating on the workbench. That depth is what keeps a mid-grey palette from
+ * reading flat across a whole page.
+ *
+ * Discipline, or it turns into a parrot: the --sx-* hues appear ONLY inside code-shaped
+ * surfaces, where they mean what they mean in an editor. Everything else — links, focus rings,
+ * buttons, marks, the diagram's live packets — uses the one --accent blue.
+ */
+:root {
+	color-scheme: dark;
+
+	--ink-900: #1b1e24; /* workbench — the page */
+	--ink-800: #21252b; /* panels, cards, the sticky bar */
+	--ink-700: #282c34; /* editor surface — transcript, diff panes, code blocks */
+	--paper: #fafafa; /* light twin's page, and the printed sheet */
+
+	--accent: #61afef; /* One Dark blue: links, focus, marks, live packets */
+	--accent-dim: #2162f0; /* One Light blue, darkened — the same role, legible on paper */
+	--warn: #d19a66;
+
+	/* Syntax hues. Code-shaped surfaces only. */
+	--sx-add: #98c379; /* + lines, strings */
+	--sx-del: #e17079; /* − lines, errors, "no grant" */
+	--sx-key: #c678dd; /* keywords */
+	--sx-type: #e5c07b; /* types, classes */
+	--sx-num: #d19a66; /* numbers, constants */
+	--sx-fn: #61afef; /* functions */
+	--sx-esc: #56b6c2; /* escapes, support — the diagram's second packet colour */
+	--cursor: #528bff;
+
+	--background: var(--ink-900);
+	--surface: var(--ink-800);
+	--editor: var(--ink-700);
+	--border: #343a45;
+	--text-hi: #d7dae0;
+	--text-lo: #90949d; /* One Dark's comment grey, lifted to clear 4.5:1 on the editor
+	                       surface — #7f848e is 3.73:1 there, and #5c6370 is 3:1 even on the
+	                       workbench, so both are decoration only */
+	--ring: var(--accent);
+
+	--radius: 0.5rem;
+	--selection: #3e4451;
+
+	/*
+	 * Film grain strength. One generated plate serves both themes because soft-light is
+	 * symmetric: speckle above mid-grey lightens, below it darkens. Tune by eye — this is the
+	 * only value either theme needs.
+	 */
+	--grain: 0.26;
+
+	/* Motion. Nothing animates above --t-slow except the build sequence itself. */
+	--t-fast: 120ms;
+	--t-base: 200ms;
+	--t-slow: 320ms;
+	--t-reveal: 520ms;
+	--e-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--e-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.light {
+	color-scheme: light;
+
+	--background: #f0f0f1;
+	--surface: #f7f7f8;
+	--editor: var(--paper);
+	--border: #dbdbdc;
+	--text-hi: #383a42;
+	--text-lo: #6b6d76; /* One Light's comment grey #a0a1a7 is 2.4:1 on paper — decoration only */
+	--ring: var(--accent-dim);
+
+	/*
+	 * One Light, darkened just enough to clear 4.5:1 on the page. The published values are
+	 * tuned for a code pane, and several of them land between 2.8 and 3.5 against #f0f0f1 —
+	 * fine for a glyph in an editor, not fine for 13px of running text on a CV.
+	 */
+	--accent: #2162f0;
+	--sx-add: #3c7a3c;
+	--sx-del: #cf2d1f;
+	--sx-key: #a626a4;
+	--sx-type: #916301;
+	--sx-num: #8f6201;
+	--sx-fn: #2162f0;
+	--sx-esc: #0174a5;
+	--cursor: #526fff;
+
+	--selection: #e5e5e6;
+	--grain: 0.18;
+}
+
+@theme inline {
+	/*
+	 * Two faces, not three. A neutral sans was carrying the running prose, and in a page built
+	 * out of editor panes it read as a different document pasted in. The mono carries the body
+	 * now and the display face carries the headings, which is the whole typographic system.
+	 */
+	--font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-sans: var(--font-mono);
+	--font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+
+	--color-ink-900: var(--ink-900);
+	--color-ink-800: var(--ink-800);
+	--color-ink-700: var(--ink-700);
+	--color-paper: var(--paper);
+
+	--color-accent: var(--accent);
+	--color-accent-dim: var(--accent-dim);
+	--color-warn: var(--warn);
+
+	--color-sx-add: var(--sx-add);
+	--color-sx-del: var(--sx-del);
+	--color-sx-key: var(--sx-key);
+	--color-sx-type: var(--sx-type);
+	--color-sx-num: var(--sx-num);
+	--color-sx-fn: var(--sx-fn);
+	--color-sx-esc: var(--sx-esc);
+	--color-cursor: var(--cursor);
+
+	--color-background: var(--background);
+	--color-surface: var(--surface);
+	--color-editor: var(--editor);
+	--color-border: var(--border);
+	--color-text-hi: var(--text-hi);
+	--color-text-lo: var(--text-lo);
+	--color-ring: var(--ring);
+
+	--radius-sm: calc(var(--radius) * 0.6);
+	--radius-md: calc(var(--radius) * 0.8);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) * 1.6);
+
+	--ease-out-soft: var(--e-out);
+	--ease-in-out-soft: var(--e-in-out);
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+
+	html {
+		@apply font-mono scroll-smooth;
+	}
+
+	body {
+		@apply m-0 min-h-screen bg-background text-text-hi antialiased;
+	}
+
+	/* Never removed, only restyled: the whole site is keyboard-drivable. */
+	:focus-visible {
+		@apply outline-2 outline-offset-2 outline-ring;
+	}
+
+	::selection {
+		background-color: var(--selection);
+	}
+
+	::-moz-selection {
+		background-color: var(--selection);
+	}
+
+	/*
+	 * Collapsing a directory the markup rendered open. Only under html.js — set inline before
+	 * first paint — so there is no flash of everything expanded, and so a reader with no
+	 * JavaScript keeps the whole document.
+	 */
+	.js details[data-collapsed] > div {
+		display: none;
+	}
+
+	.js details[data-collapsed] [data-chevron] {
+		transform: none;
+	}
+
+	/*
+	 * Preflight sets `margin: 0` on everything, and a <dialog> is centred by its UA margin — so
+	 * without this the palette opens in the top-left corner.
+	 */
+	dialog[data-palette] {
+		inset: 0;
+		margin: auto;
+	}
+
+	/*
+	 * Grain over everything. Fixed, so it is composited once and never repaints on scroll;
+	 * pointer-events: none so it is inert; above the build overlay so the whole page wears it.
+	 * 256px tile at 1:1, which is where the plate's speckle lands at one device pixel.
+	 */
+	body::after {
+		content: '';
+		position: fixed;
+		inset: 0;
+		z-index: 100;
+		pointer-events: none;
+		/*
+		 * One tile. Two at different sizes pushed the visible repeat further out, but they beat
+		 * against each other and the moiré was worse than the seam they were hiding. At this
+		 * strength the seam is below the threshold anyway.
+		 */
+		background-image: url('/textures/grain.webp');
+		background-size: 256px 256px;
+		mix-blend-mode: soft-light;
+		opacity: var(--grain);
+	}
+}
+
+@layer utilities {
+	/*
+	 * Sections the build sequence reveals. The styles only bite under html.js-build, which an
+	 * inline head script sets before first paint — so with JS off, or before the driver loads,
+	 * every section is simply visible. Nothing is ever absent from the DOM.
+	 */
+	.js-build [data-build]:not(.built) {
+		opacity: 0;
+		transform: translateY(14px);
+		clip-path: inset(0 0 100% 0);
+	}
+
+	/* Without the pre-paint class there is no sequence, so there is no overlay either. */
+	[data-build-overlay] {
+		display: none;
+	}
+
+	.js-build [data-build-overlay] {
+		display: flex;
+	}
+
+	[data-build] {
+		transition:
+			opacity var(--t-reveal) var(--e-out),
+			transform var(--t-reveal) var(--e-out),
+			clip-path var(--t-reveal) var(--e-out);
+	}
+}
+
+@keyframes blink {
+	50% {
+		opacity: 0;
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(4px);
+	}
+}
+
+/* One kill switch for the whole site. */
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+
+	.js-build [data-build]:not(.built) {
+		opacity: 1;
+		transform: none;
+		clip-path: none;
+	}
+}

@@ -1,0 +1,25 @@
+---
+import Head, { type Props as HeadProps } from '../components/Head.astro';
+import ThemeScript from '../components/ThemeScript.astro';
+
+type Props = HeadProps;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<Head {...Astro.props} />
+		<ThemeScript />
+	</head>
+	<body id="top">
+		{/* First in the tab order, visible only once it is focused. */}
+		<a
+			href="#content"
+			class="sr-only font-mono text-[0.8125rem] focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:rounded focus:border focus:border-accent/50 focus:bg-surface focus:px-3 focus:py-2 focus:text-accent"
+		>
+			Skip to the document
+		</a>
+		<slot />
+		<script src="../scripts/theme-init.ts"></script>
+	</body>
+</html>

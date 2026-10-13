@@ -1,0 +1,179 @@
+---
+/*
+ * Act 0 — the build, as a split editor.
+ *
+ * Left: the agent's transcript, as tool-call cards that resolve from a spinner to a timing.
+ * Right: the file it is writing, streaming in line by line and syntax-highlighted. When a file
+ * lands, the section it produced is revealed behind the overlay; at the end the chrome peels
+ * away and the reader is in the page.
+ *
+ * The source it streams is this site's own, read at build time with ?raw. That matters: a build
+ * log full of invented code on an engineer's portfolio would be the one unforgivable detail.
+ *
+ * It is aria-hidden and inert, so a screen reader is handed the finished document and never
+ * hears the performance. It only renders when the sequence is enabled and the reader has not
+ * seen it this week — ThemeScript decides that before first paint.
+ */
+import profileSource from '../content/profile.ts?raw';
+import stackSource from '../content/stack.ts?raw';
+import deriveSource from '../lib/derive.ts?raw';
+import educationSource from '../content/education.ts?raw';
+
+import { EXPERIENCE } from '../content/experience';
+import { highlightCode, unit } from '../lib/code';
+import { TOTALS } from '../lib/derive';
+
+type Step = {
+	tool: 'Read' | 'Write' | 'Bash';
+	arg: string;
+	out: string;
+	reveals?: string;
+	/** Pre-highlighted lines, so the browser streams strings rather than tokenising at runtime. */
+	code: string[];
+	/** Dropped on a narrow screen, where the sequence runs shorter and has no code pane. */
+	optional?: boolean;
+};
+
+/*
+ * Each step streams one COMPLETE declaration out of this site's own source, read at build time
+ * with ?raw — not a window into a file, which always ended somewhere visibly mid-structure.
+ * That is also why the files here are the small ones: a step has to be able to finish.
+ */
+const steps: (Step | null)[] = [
+	{
+		tool: 'Read',
+		arg: 'content/profile.ts',
+		out: 'senior full-stack engineer · Beirut',
+		reveals: 'masthead',
+		code: highlightCode(unit(profileSource, 'export const PROFILE')),
+	},
+	{
+		tool: 'Read',
+		arg: 'lib/derive.ts',
+		out: `${EXPERIENCE.length} roles · ${TOTALS.files} files · ${TOTALS.lines} lines`,
+		reveals: 'timeline',
+		code: highlightCode(unit(deriveSource, 'export function duration')),
+	},
+	{
+		tool: 'Read',
+		arg: 'content/stack.ts',
+		out: 'two halves, backend first',
+		reveals: 'stack',
+		code: highlightCode(unit(stackSource, 'export type Column')),
+	},
+	{
+		tool: 'Read',
+		arg: 'content/education.ts',
+		out: 'MSc & BSc, Computer Engineering',
+		reveals: 'education',
+		optional: true,
+		code: highlightCode(unit(educationSource, 'export const EDUCATION')),
+	},
+	{
+		tool: 'Bash',
+		arg: 'npm run build',
+		out: '',
+		reveals: 'contact',
+		code: [],
+	},
+];
+
+const plan = [
+	'read the career, lay out the document, wire the interactives',
+	'server-side first — ordering, not volume',
+	'no framework: the islands are plain modules',
+];
+---
+
+<div
+	data-build-overlay
+	data-steps={JSON.stringify(steps.filter(Boolean))}
+	data-plan={JSON.stringify(plan)}
+	data-pages={Object.keys(import.meta.glob('../pages/*.astro')).length}
+	aria-hidden="true"
+	inert
+	class="fixed inset-0 z-50 flex flex-col bg-background font-mono text-[0.8125rem] transition-opacity duration-[280ms] data-[state=leaving]:opacity-0"
+>
+	{/* Window chrome. */}
+	<div
+		class="flex shrink-0 items-center gap-3 border-b border-border bg-surface/70 px-3 py-2 text-[0.6875rem] sm:px-4 sm:py-2.5 sm:text-[0.75rem]"
+	>
+		<span aria-hidden="true" class="flex gap-1.5">
+			<span class="size-2.5 rounded-full bg-sx-del/70"></span>
+			<span class="size-2.5 rounded-full bg-sx-num/70"></span>
+			<span class="size-2.5 rounded-full bg-sx-add/70"></span>
+		</span>
+		<span class="truncate text-text-lo">ibrahimismail.dev</span>
+		<span data-head-state class="shrink-0 text-sx-num">building…</span>
+		<button
+			type="button"
+			data-skip
+			class="ml-auto shrink-0 rounded border border-border px-2.5 py-1 text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi"
+		>
+			skip ⏎
+		</button>
+	</div>
+
+	{/*
+	 * Two layouts, because a phone is not a narrow laptop.
+	 *
+	 * On a laptop: the agent on the left, the file it is writing on the right. On a phone there
+	 * is no room for two panes, so everything runs down one stream instead — the tool call, then
+	 * the lines it wrote, then the next tool call — and the column is bottom-aligned with its
+	 * overflow hidden, so new lines push the old ones up off the top. No scroll handling, no
+	 * clearing: it just runs, the way a terminal does.
+	 */}
+	<div
+		class="grid min-h-0 min-w-0 grow sm:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] sm:grid-rows-1"
+	>
+		<aside class="min-h-0 min-w-0 overflow-hidden sm:border-r sm:border-border">
+			<div
+				data-transcript
+				class="flex h-full flex-col justify-end gap-1 overflow-hidden p-3 sm:justify-start sm:gap-2 sm:p-4"
+			>
+			</div>
+		</aside>
+
+		{/* What it is writing. The laptop half. */}
+		<section class="hidden min-h-0 min-w-0 flex-col sm:flex">
+			<div
+				class="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2 text-[0.6875rem] sm:px-4 sm:text-[0.75rem]"
+			>
+				<span aria-hidden="true" data-code-dot class="size-1.5 rounded-full bg-sx-fn"></span>
+				<span data-code-name class="truncate text-text-lo">waiting…</span>
+				<span data-code-state class="shrink-0 text-sx-add"></span>
+			</div>
+			<div class="min-h-0 min-w-0 grow overflow-hidden p-3 sm:p-4">
+				<ol
+					data-code
+					class="min-w-0 text-[0.6875rem] leading-[1.6] sm:text-[0.8125rem] sm:leading-[1.65]"
+				>
+				</ol>
+			</div>
+		</section>
+	</div>
+
+	{/* The prompt, which stays behind as the palette. */}
+	<div class="shrink-0 border-t border-border px-3 py-2.5 sm:px-4 sm:py-3">
+		<p class="flex items-baseline gap-2 overflow-hidden">
+			<span aria-hidden="true" class="shrink-0 text-accent">›</span>
+			<span data-prompt class="truncate text-text-hi"></span>
+			<span aria-hidden="true" class="animate-[blink_1s_steps(2)_infinite] text-cursor">▍</span>
+		</p>
+	</div>
+</div>
+
+<script>
+	import { runBuild } from '../build/driver';
+
+	function start() {
+		const overlay = document.querySelector<HTMLElement>('[data-build-overlay]');
+		if (!overlay || overlay.dataset.ran) return;
+		if (!document.documentElement.classList.contains('js-build')) return;
+		overlay.dataset.ran = 'true';
+		runBuild(overlay);
+	}
+
+	start();
+	document.addEventListener('astro:page-load', start);
+</script>

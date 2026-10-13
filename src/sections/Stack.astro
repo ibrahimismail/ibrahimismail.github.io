@@ -1,0 +1,54 @@
+---
+/*
+ * Skills, in two columns with backend first. The two-column layout is the argument: a reader
+ * sees two full columns before reading a word, so "full-stack" is something they observe rather
+ * than something they are told.
+ *
+ * Grouped by category, because that is what someone scanning for a keyword is looking for.
+ *
+ * No logos. Twenty colour badges from a third-party icon CDN cost requests, mismatch each
+ * other, and imply the same depth in Flask as in TypeScript.
+ */
+import { STACK } from '../content/stack';
+---
+
+<section id="stack" data-build="stack" aria-labelledby="stack-heading">
+	<h2 id="stack-heading" class="font-mono text-xs tracking-[0.18em] text-text-lo uppercase">
+		Skills
+	</h2>
+
+	<div class="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-x-12">
+		{
+			STACK.map((column) => (
+				<div>
+					<h3 class="font-display border-b border-border pb-2 text-lg font-semibold">
+						{column.label}
+					</h3>
+
+					<dl class="mt-4 space-y-3.5">
+						{column.groups.map((group) => (
+							<div class="grid gap-1 sm:grid-cols-[9.5rem_minmax(0,1fr)] sm:gap-4">
+								<dt class="pt-0.5 font-mono text-[0.6875rem] tracking-[0.14em] text-sx-esc uppercase">
+									{group.label}
+								</dt>
+								<dd>
+									{/* Each term needs its own edge: several are two words, and spacing
+									alone left "Protocol Buffers GraphQL REST" ambiguous. Raised off
+									the page and outlined — the fill alone, with no border, read as
+									noise before it read as a list. */}
+									<p class="flex flex-wrap gap-1.5 font-mono text-[0.8125rem] text-text-hi">
+										{group.main.map((entry) => (
+											<span class="rounded border border-border bg-surface px-1.5 py-0.5">
+												{entry}
+											</span>
+										))}
+									</p>
+								</dd>
+							</div>
+						))}
+					</dl>
+				</div>
+			))
+		}
+	</div>
+</section>
