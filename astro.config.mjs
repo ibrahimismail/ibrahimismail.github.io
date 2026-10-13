@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -17,14 +16,6 @@ export default defineConfig({
     // link without a trailing slash, costing a round trip on each navigation and prefetch.
     format: 'file',
   },
-
-  session: {
-    driver: {
-      entrypoint: 'unstorage/drivers/null',
-    },
-  },
-
-  adapter: cloudflare(),
 
   vite: {
     plugins: [tailwindcss()],
