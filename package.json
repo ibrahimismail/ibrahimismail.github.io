@@ -14,11 +14,9 @@
 		"build": "astro build",
 		"preview": "npm run build && wrangler dev",
 		"astro": "astro",
-		"generate-types": "wrangler types",
 		"deploy": "npm run build && wrangler deploy"
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "^13.6.0",
 		"@astrojs/sitemap": "^3.7.4",
 		"@fontsource-variable/bricolage-grotesque": "^5.3.0",
 		"@fontsource-variable/jetbrains-mono": "^5.3.0",
