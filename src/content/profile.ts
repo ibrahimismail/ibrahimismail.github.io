@@ -22,7 +22,7 @@ export const PROFILE = {
 		'Extension platforms, native bridges and micro-frontends on the client.',
 	],
 	description:
-		'Senior full-stack engineer, six years on security software. Authorization and scope-evaluation engines, gRPC service contracts, cryptographic key exchange and schema migrations on the backend; Manifest V3 extension architecture, native IPC bridges and micro-frontends on the frontend.',
+		'Senior full-stack engineer, six years on security software.',
 	status: { text: 'Open to senior engineering roles', asOf: '2026-10' },
 	location: 'Beirut, Lebanon',
 	phone: '+961 3 689 039',
