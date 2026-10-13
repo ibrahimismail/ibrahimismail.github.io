@@ -82,9 +82,9 @@ d.text((PAD, 140), 'Ibrahim Ismail', font=display, fill=HI)
 d.text((PAD, 268), '/**', font=mono_sm, fill=LO)
 for i, line in enumerate([
     '* Authorization engines, service contracts and',
-    '*   encrypted channels on the server.',
+    '* encrypted channels on the server.',
     '* Extension platforms, native bridges and',
-    '*   micro-frontends on the client.',
+    '* micro-frontends on the client.',
 ]):
     d.text((PAD, 302 + i * 36), line, font=mono, fill=HI)
 d.text((PAD, 450), '*/', font=mono_sm, fill=LO)
