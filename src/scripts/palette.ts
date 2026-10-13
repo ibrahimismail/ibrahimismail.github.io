@@ -73,7 +73,16 @@ export function mountPalette() {
 		{
 			name: 'cv',
 			hint: 'download the pdf',
-			run: () => window.open('/Ibrahim_Ismail_CV.pdf', '_blank', 'noopener'),
+			run: () => {
+				/* A click on a `download` anchor is the only way to ask for a save rather than
+				   a view; window.open hands it to the browser's PDF viewer instead. */
+				const link = document.createElement('a');
+				link.href = '/Ibrahim_Ismail_CV.pdf';
+				link.download = '';
+				document.body.append(link);
+				link.click();
+				link.remove();
+			},
 		},
 		{
 			name: 'replay',

@@ -20,7 +20,7 @@ export const EXPERIENCE: Role[] = [
 		end: '2026-05',
 		summary:
 			'A unified identity and device management platform — SSO, MFA, Zero Trust, RADIUS — securing Windows, macOS, Linux and mobile devices.',
-		note: 'Password Manager and Auth teams',
+		note: 'Password Manager & Auth Team',
 		dirs: [
 			{
 				name: 'backend',
