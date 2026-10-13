@@ -12,8 +12,9 @@
 The repo was emptied and re-scaffolded. `main` still holds the old React/Vite site in full, so
 nothing is lost — anything from it is one `git checkout main -- <path>` away.
 
-**Phase 0 (scaffold) and phase 1 (the spine) are done.** The site builds, prints, and is
-deployable; what is missing is every piece of interactivity, which is phases 2–4.
+**Phases 0, 1 and 2 are done.** The document is complete and typeset, and all three
+interactives are built and driveable. What is missing is the build sequence, the command
+palette, the art, and the measured instruments — phases 3 and 4.
 
 ```
 astro.config.mjs      Astro 6 · Cloudflare adapter · sitemap · build.format 'file'
@@ -24,13 +25,16 @@ src/lib/              derive.ts (counts, periods, server-first sort, tag index) 
 src/sections/         Masthead · Timeline · Systems · Venture · Stack · Instruments ·
                       Contact · Footer
 src/pages/            index.astro · cv.astro · 404.astro
+src/islands/          ScopeEngine · ExtensionBus · KlikNote  (markup, server-rendered)
+src/scripts/          scope-engine · extension-bus · kliknote · timeline · theme-init
 src/build/config.ts   BUILD_SEQUENCE_ENABLED — false until phase 3 has a driver
 src/styles/global.css One Dark tokens, both themes, motion tokens, grain, reveal utilities
 public/               print.css · textures/grain.webp · favicons · CV pdf · robots · _headers
 ```
 
-**Measured on the built site:** HTML 8.3 kB gzip · CSS 8.3 kB gzip · **0 JS requests** (the
-theme and print scripts inline to ~1 kB) · 0 third-party requests · 3 pages built in ~2 s.
+**Measured on the built site:** HTML 15.8 kB gzip · CSS 9.2 kB gzip · **0 JS requests** — every
+script is small enough that Astro inlines it, so the interactives cost no round trip at all ·
+0 third-party requests · 3 pages built in ~2 s.
 `/` and `/cv` print identically at 3 pages. Mobile verified at 500 px, which is as narrow as
 headless Chrome's window will go; a true 390 px pass needs CDP and happens in phase 4.
 
@@ -852,7 +856,7 @@ in a vector editor.
 | Concern | Choice | Why |
 |---|---|---|
 | Framework | **Astro 6** | Static HTML for the document → the §3 contract is free, not fought for. Unmatched on SEO and first paint for a content site. |
-| Interactivity | React islands, `client:visible` | Only the 3 systems + palette + build driver hydrate. |
+| Interactivity | **Vanilla TS modules**, not React | Decided during phase 2, against the original plan. With the pieces specced, none of them needed a framework: the scope engine is a state machine over a small graph, the bus is SVG plus the Web Animations API, KlikNote is a list and an input. ~10 kB rather than ~50 kB, and the server-rendered markup stays the no-JS fallback instead of becoming hydration output. |
 | Styling | Tailwind v4 via `@tailwindcss/vite` + `@theme inline` | CSS-first tokens suit the dual palette. |
 | Motion | `motion` in islands only | The build sequence is plain CSS transitions + one rAF; no library on the critical path. |
 | Diagrams | Hand-authored inline SVG + `offset-path` | No three.js, no d3. |
@@ -1025,14 +1029,25 @@ requests · `/` and `/cv` print identically · the venture switch verified both 
 542 mm of usable paper. That is not a layout problem; it is 21 achievements plus a founder
 role, and no amount of tightening fits them on two sheets at a readable size. §16 decision 6.
 
-### Phase 2 — Timeline + systems *(1–2 sessions)*
-- [ ] Commit-log rail, diff panes, `plain ⇄ diff` toggle, `j/k/enter`, live filter
-- [ ] `ExtensionBus` island: 5 scenarios, packet animation, hop log, scrubber
-- [ ] `ScopeEngine` island: scope graph, cascade, resolver trace
-- [ ] Venture act + `KlikNote` island: hotkey capture, local persistence, a `network: 0` badge
-      measured rather than asserted
-- [ ] Mobile layouts for all three; reduced-motion variants
-- **Acceptance:** every interactive usable by thumb and by keyboard, 60fps on a mid-range Android
+### Phase 2 — Timeline + systems *(done)*
+- [x] Commit-log diff panes, `plain ⇄ diff` toggle, `j`/`k`, `/` to filter, live filtering that
+      opens the directories holding matches
+- [x] `ScopeEngine`: role chips that union their grants, transitive implications, the resolver
+      trace, and "ship a new permission" — the same resolver runs server-side, so the page
+      arrives in a state the first click agrees with
+- [x] `ExtensionBus`: five scenarios over one wiring, a packet animated with `transform` only,
+      a step log that doubles as the accessible version, a scrubber. Cold start evicts the
+      worker, queues a request on nothing, and drains it in order on respawn
+- [x] `KlikNote`: type/enter/arrows/backspace, persisted to the browser, and a
+      `network · 0 requests` badge measured from the Performance API
+- [x] Mobile layouts for all three; reduced-motion variants
+- [ ] ~~60fps on a mid-range Android~~ — deferred to phase 4's measurement pass
+
+**Verified by driving the real controls in headless Chrome:** 18 checks across the resolver,
+the scenario machine, the filter and the demo, plus 4 under forced reduced motion (no
+animations created, steps still advance, log still complete). Two checks found real bugs: the
+request badge was counting fonts that landed after the island mounted, and the cold-start queue
+assertion was reading the step after the drain.
 
 ### Phase 3 — First Run *(1–2 sessions)*
 - [ ] `build/script.ts` choreography + `build/driver.ts` clock, reveal, skip, fast-forward, replay
