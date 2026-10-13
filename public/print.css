@@ -225,12 +225,6 @@ details > div {
 	display: none !important;
 }
 
-/* Ink has no syntax colouring. */
-[data-line] span {
-	color: #000000 !important;
-	background: transparent !important;
-}
-
 [data-line] {
 	background: transparent !important;
 }

@@ -1,8 +1,12 @@
 ---
 /*
  * The career as a commit log, rendered as a diff view rather than a bullet list with a plus in
- * front of it: a line-number gutter, a tinted add column, hunk headers, file-type colour, and
- * the lines themselves coloured the way an editor colours code (see lib/highlight).
+ * front of it: a line-number gutter, a tinted add column, hunk headers and file-type colour on
+ * the paths.
+ *
+ * The lines themselves are plain. Colouring the prose inside them was tried and taken back out:
+ * the chrome around a line is structure, and structure can be coloured, but highlighting words
+ * in an English sentence decorates it rather than explaining it.
  *
  * Every directory renders OPEN and the screen collapses the ones it wants collapsed. That is
  * the opposite of the obvious way round, and it is deliberate: the complete, expanded document
@@ -12,7 +16,7 @@
  */
 import { EXPERIENCE } from '../content/experience';
 import { duration, fileCount, lineCount, openByDefault, period, serverFirst } from '../lib/derive';
-import { extensionClass, highlightHtml } from '../lib/highlight';
+import { extensionClass } from '../lib/highlight';
 
 export interface Props {
 	/** /cv renders every directory expanded: paper has no affordance for opening one. */
@@ -167,10 +171,9 @@ const { allOpen = false } = Astro.props;
 																>
 																	+
 																</span>
-																<span
-																	class="py-0.5 pr-3 text-text-hi"
-																	set:html={highlightHtml(line.text)}
-																/>
+																<span class="py-0.5 pr-3 text-text-hi">
+																	{line.text}
+																</span>
 															</li>
 														))}
 													</ul>

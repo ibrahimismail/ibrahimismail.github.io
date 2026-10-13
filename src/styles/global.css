@@ -201,9 +201,6 @@
 		background: transparent;
 	}
 
-	.is-plain [data-line] span {
-		color: inherit;
-	}
 
 	.is-plain [data-line] {
 		font-family: var(--font-sans);
