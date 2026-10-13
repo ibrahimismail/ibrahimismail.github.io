@@ -41,6 +41,22 @@ const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 			<span class="ml-auto hidden items-center px-3.5 py-2 text-text-lo/70 sm:flex">
 				{PROFILE.location}
 			</span>
+
+			{/*
+			 * The theme control lives in the editor's chrome, which is where an editor keeps it —
+			 * and it is the only way to reach the light theme, which is otherwise built and
+			 * unreachable. The label names the theme it switches TO, and which of the two labels
+			 * shows is decided in CSS, so it is correct at first paint with no script behind it.
+			 */}
+			<button
+				type="button"
+				data-theme-toggle
+				aria-label="Switch colour theme"
+				class="ml-auto flex shrink-0 items-center border-l border-border px-3 py-2 text-text-lo transition-colors duration-200 hover:bg-editor hover:text-text-hi sm:ml-0"
+			>
+				<span class="dark:hidden">☾ dark</span>
+				<span class="hidden dark:inline">☀ light</span>
+			</button>
 		</div>
 
 		{/* Body. Each row carries its own gutter cell, so the numbers line up with the content. */}
