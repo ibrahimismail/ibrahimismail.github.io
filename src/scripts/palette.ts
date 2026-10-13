@@ -67,27 +67,14 @@ export function mountPalette() {
 					?.click();
 			},
 		})),
-		{
-			name: 'plain',
-			hint: 'diff ⇄ bullets',
-			run: () => document.querySelector<HTMLButtonElement>('[data-plain]')?.click(),
-		},
 		{ name: 'theme dark', hint: 'one dark', run: () => setTheme('dark') },
 		{ name: 'theme light', hint: 'one light', run: () => setTheme('light') },
 		{ name: 'theme system', hint: 'follow the os', run: () => setTheme('system') },
 		{ name: 'cv', hint: 'print', run: () => window.print() },
 		{
 			name: 'replay',
-			hint: 'run the build again',
-			run: () => {
-				try {
-					sessionStorage.removeItem('ii:built');
-					localStorage.removeItem('ii:built-at');
-				} catch {
-					/* The reload below still works without it. */
-				}
-				location.href = '/replay';
-			},
+			hint: 'watch the build again',
+			run: () => location.reload(),
 		},
 		{ name: 'help', hint: 'what this takes', run: () => input.focus() },
 	];

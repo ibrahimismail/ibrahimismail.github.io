@@ -1,12 +1,10 @@
 /**
- * The commit log's interactions: a live filter, a plain/diff switch, and keyboard movement.
+ * The commit log's interactions: a live filter and keyboard movement.
  *
- * All three are enhancements over markup that already works — every line is in the DOM, and
- * every directory opens by clicking its summary. Nothing here is the only way to reach
- * anything, which is why the toolbar stays hidden until this runs.
+ * Both are enhancements over markup that already works — every line is in the DOM, and every
+ * directory opens by clicking its summary. Neither is the only way to reach anything, which is
+ * why the toolbar stays hidden until this runs.
  */
-const PLAIN_KEY = 'ii:plain';
-
 function normalise(value: string) {
 	return value.toLowerCase().trim();
 }
@@ -18,7 +16,6 @@ export function mountTimeline() {
 
 		const tools = root.querySelector<HTMLElement>('[data-timeline-tools]')!;
 		const filter = root.querySelector<HTMLInputElement>('[data-filter]')!;
-		const plainButton = root.querySelector<HTMLButtonElement>('[data-plain]')!;
 		const status = root.querySelector<HTMLElement>('[data-filter-status]')!;
 		const lines = [...root.querySelectorAll<HTMLElement>('[data-line]')];
 		const files = [...root.querySelectorAll<HTMLElement>('[data-file]')];
@@ -101,16 +98,6 @@ export function mountTimeline() {
 					: `${hits} line${hits === 1 ? '' : 's'} match “${raw.trim()}”`;
 		}
 
-		function setPlain(on: boolean) {
-			root.classList.toggle('is-plain', on);
-			plainButton.ariaPressed = String(on);
-			try {
-				localStorage.setItem(PLAIN_KEY, on ? '1' : '0');
-			} catch {
-				/* A preference not remembered is not a failure worth handling. */
-			}
-		}
-
 		filter.addEventListener('input', () => applyFilter(filter.value));
 		filter.addEventListener('keydown', (event) => {
 			if (event.key === 'Escape') {
@@ -119,14 +106,6 @@ export function mountTimeline() {
 				filter.blur();
 			}
 		});
-
-		plainButton.addEventListener('click', () => setPlain(!root.classList.contains('is-plain')));
-
-		try {
-			if (localStorage.getItem(PLAIN_KEY) === '1') setPlain(true);
-		} catch {
-			/* As above. */
-		}
 
 		/*
 		 * Keyboard: `/` to filter, j/k between directories. Deliberately not a focus trap — tab

@@ -8,7 +8,7 @@ import type { System } from './types';
  * The other two are a diagram and a code block: static on purpose, and there to balance the
  * section's card count without inventing interactions that would not earn their bytes.
  */
-export const SYSTEMS: System[] = [
+const ALL: System[] = [
 	{
 		id: 'scope-engine',
 		half: 'server',
@@ -44,3 +44,14 @@ export const SYSTEMS: System[] = [
 		company: 'JumpCloud',
 	},
 ];
+
+/**
+ * The switch. `ALL` to show the section, `[]` to take it off the site — then redeploy.
+ *
+ * Same shape as the venture's, and for the same reason: the content stays either way, so
+ * turning it back on is the one-line edit in reverse. Everything that could render a system
+ * reads this — the page, the section list, the build sequence's steps, and the palette's `run`
+ * commands — so hiding it cannot leave a gap, a stray heading, or a command that scrolls to
+ * nothing.
+ */
+export const SYSTEMS: System[] = [];

@@ -15,25 +15,12 @@ type Step = {
 	optional?: boolean;
 };
 
-const SEEN_SESSION = 'ii:built';
-const SEEN_STAMP = 'ii:built-at';
-const WEEK = 7 * 24 * 60 * 60 * 1000;
-
 /* Pacing. A line of code every LINE_MS, and a beat between steps. */
 const PROMPT_MS = 700;
 const PLAN_MS = 560;
 const LINE_MS = 46;
 const STEP_PAD = 260;
 const BASH_MS = 760;
-
-function remember() {
-	try {
-		sessionStorage.setItem(SEEN_SESSION, '1');
-		localStorage.setItem(SEEN_STAMP, String(Date.now()));
-	} catch {
-		/* A reader whose storage is blocked watches it once more. No harm done. */
-	}
-}
 
 /** What the page actually cost to load. Measured, never asserted. */
 function measured() {
@@ -233,7 +220,6 @@ export function runBuild(overlay: HTMLElement) {
 			section.classList.add('built');
 		}
 		overlay.dataset.state = 'leaving';
-		remember();
 
 		setTimeout(() => {
 			overlay.remove();
@@ -268,14 +254,4 @@ export function runBuild(overlay: HTMLElement) {
 
 	frame = requestAnimationFrame(tick);
 	return finish;
-}
-
-export function seenRecently(): boolean {
-	try {
-		if (sessionStorage.getItem(SEEN_SESSION)) return true;
-		const stamp = Number(localStorage.getItem(SEEN_STAMP) ?? 0);
-		return stamp > 0 && Date.now() - stamp < WEEK;
-	} catch {
-		return false;
-	}
 }

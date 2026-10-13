@@ -1,12 +1,12 @@
 ---
 /*
- * The document itself, so that / and /replay are the same page rather than two copies of it.
- * The only difference between them is whether the head script arms the build sequence.
+ * The document itself.
  *
  * Every section renders complete, server-side, in source order — the overlay is a layer over a
  * page that is already finished, and this file never needs to know it exists beyond the
  * data-build attributes the sections carry.
  */
+import { SYSTEMS } from '../content/systems';
 import { VENTURE } from '../content/venture';
 import BuildOverlay from '../islands/BuildOverlay.astro';
 import Palette from '../islands/Palette.astro';
@@ -21,7 +21,6 @@ import Timeline from '../sections/Timeline.astro';
 import Venture from '../sections/Venture.astro';
 
 export interface Props {
-	/** /replay points its canonical at /, so the two are never indexed as duplicates. */
 	canonicalPath?: string;
 }
 
@@ -37,7 +36,7 @@ const { canonicalPath = '' } = Astro.props;
 		{/* A flex column so `?role=` can reorder it with `order` alone — see OrderStyles. */}
 		<div data-sections class="mt-24 flex flex-col gap-24">
 			<Timeline />
-			<Systems />
+			{SYSTEMS.length > 0 && <Systems />}
 			{VENTURE && <Venture />}
 			<Stack />
 			<Instruments />

@@ -1,8 +1,11 @@
 ---
 /*
  * The career as a commit log, rendered as a diff view rather than a bullet list with a plus in
- * front of it: a line-number gutter, a tinted add column, hunk headers and file-type colour on
- * the paths.
+ * front of it: a line-number gutter, a + column, hunk headers and file-type colour on the paths.
+ *
+ * No row tint. A green wash behind every added line is what a diff viewer does when half its
+ * rows are removals to contrast against; here every row is an addition, so the wash only
+ * lowered the contrast of the text sitting on it.
  *
  * The lines themselves are plain. Colouring the prose inside them was tried and taken back out:
  * the chrome around a line is structure, and structure can be coloured, but highlighting words
@@ -32,7 +35,7 @@ const { allOpen = false } = Astro.props;
 			Career, as a commit log
 		</h2>
 
-		{/* Hidden until the script that drives it has run. Nothing here is the only path to
+		{/* Hidden until the script that drives it has run. It is never the only path to
 		anything: every line is on the page already, and every directory opens by clicking it. */}
 		<div class="flex items-center gap-2" data-timeline-tools data-no-print hidden>
 			<label class="relative">
@@ -45,14 +48,6 @@ const { allOpen = false } = Astro.props;
 					class="w-36 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[0.75rem] text-text-hi placeholder:text-text-lo/60 focus:border-accent/50 focus:outline-none sm:w-48"
 				/>
 			</label>
-			<button
-				type="button"
-				data-plain
-				aria-pressed="false"
-				class="rounded border border-border px-2.5 py-1 font-mono text-[0.75rem] text-text-lo transition-colors duration-200 hover:border-accent/40 hover:text-text-hi aria-pressed:border-accent/50 aria-pressed:bg-accent/10 aria-pressed:text-accent"
-			>
-				plain
-			</button>
 		</div>
 	</div>
 
@@ -155,7 +150,7 @@ const { allOpen = false } = Astro.props;
 														{file.lines.map((line, lineIndex) => (
 															<li
 																data-line
-																class="flex gap-0 bg-sx-add/[0.07] font-mono text-[0.8125rem] leading-relaxed"
+																class="flex gap-0 font-mono text-[0.8125rem] leading-relaxed"
 															>
 																<span
 																	aria-hidden="true"

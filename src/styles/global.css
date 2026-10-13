@@ -184,41 +184,6 @@
 		transform: none;
 	}
 
-	/*
-	 * The plain view. Some readers want the boring list, and one click is what makes the clever
-	 * version safe to ship. It changes presentation only — no line is added or removed.
-	 */
-	.is-plain [data-path] {
-		display: none;
-	}
-
-	.is-plain [data-plus],
-	.is-plain [data-gutter] {
-		display: none;
-	}
-
-	.is-plain [data-line] {
-		background: transparent;
-	}
-
-
-	.is-plain [data-line] {
-		font-family: var(--font-sans);
-		font-size: 0.9375rem;
-		list-style: disc;
-		display: list-item;
-		margin-left: 1.25rem;
-	}
-
-	/*
-	 * Preflight sets `margin: 0` on everything, and a <dialog> is centred by its UA margin —
-	 * so without this the palette opens in the top-left corner.
-	 */
-	dialog[data-palette] {
-		inset: 0;
-		margin: auto;
-	}
-
 	/* Shown only on paper and on /cv, where there are no links to click. */
 	[data-print-only] {
 		display: none;

@@ -9,8 +9,12 @@
  *
  * It is not a chatbot, and it says so when someone types a sentence at it.
  */
-import { SECTIONS } from '../content/sections';
+import { SECTIONS, SECTION_IDS } from '../content/sections';
 import { SCENARIOS } from '../content/bus';
+
+/* No systems section means nothing to run, and a command that scrolls to nothing is worse
+   than one that is absent. */
+const scenarios = SECTION_IDS.includes('systems') ? SCENARIOS : [];
 ---
 
 <dialog
@@ -25,7 +29,7 @@ import { SCENARIOS } from '../content/bus';
 				type="text"
 				data-palette-input
 				autocomplete="off"
-				placeholder="goto, find, run, theme, plain, cv, replay, help"
+				placeholder="goto, find, run, theme, cv, replay, help"
 				aria-label="Type a command"
 				class="w-full bg-transparent font-mono text-[0.8125rem] text-text-hi placeholder:text-text-lo/60 focus:outline-none"
 			/>
@@ -54,7 +58,7 @@ import { SCENARIOS } from '../content/bus';
 <script
 	define:vars={{
 		sections: SECTIONS.map((section) => ({ id: section.id, label: section.label })),
-		scenarios: SCENARIOS.map((scenario) => ({ id: scenario.id, label: scenario.label })),
+		scenarios: scenarios.map((scenario) => ({ id: scenario.id, label: scenario.label })),
 	}}
 >
 	window.__paletteData = { sections, scenarios };

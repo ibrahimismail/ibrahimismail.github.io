@@ -34,4 +34,4 @@ const KLIKNOTE: Venture = {
  * The switch. `KLIKNOTE` to show it, `null` to take it off the site — then redeploy. The data
  * above stays either way, so turning it back on is the same one-line edit in reverse.
  */
-export const VENTURE: Venture | null = KLIKNOTE;
+export const VENTURE: Venture | null = null;

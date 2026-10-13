@@ -1,3 +1,4 @@
+import { SYSTEMS } from './systems';
 import { VENTURE } from './venture';
 
 /**
@@ -32,9 +33,11 @@ const ALL: Section[] = [
 	{ id: 'contact', label: 'contact' },
 ];
 
-/** The venture is removable, so every list derived from this one loses it together. */
-export const SECTIONS: Section[] = ALL.filter(
-	(section) => section.id !== 'venture' || VENTURE !== null,
-);
+/** Both removable sections drop out here, so every list derived from this one loses them too. */
+export const SECTIONS: Section[] = ALL.filter((section) => {
+	if (section.id === 'venture') return VENTURE !== null;
+	if (section.id === 'systems') return SYSTEMS.length > 0;
+	return true;
+});
 
 export const SECTION_IDS = SECTIONS.map((section) => section.id);

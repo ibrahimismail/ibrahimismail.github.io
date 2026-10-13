@@ -36,24 +36,17 @@ import { DEFAULT_THEME_PREFERENCE, THEME_COLORS, THEME_STORAGE_KEY } from '../li
 		 * is never set, so the finished document renders as-is.
 		 */
 		/*
-		 * Who gets the build sequence: someone who has not seen it this session or this week,
-		 * did not ask to skip it, and did not ask for less motion. Deciding here, inline and
-		 * before first paint, is what keeps the reveal styles from ever flashing.
+		 * The build sequence runs on every load. It was rationed to once a week at first, on the
+		 * grounds that a returning reader should not have to sit through it twice — but it is
+		 * skippable by anything at all, including the scroll they were about to do anyway, so
+		 * the ration bought nothing and cost the one thing the site is for.
+		 *
+		 * Deciding here, inline and before first paint, is what keeps the reveal styles from
+		 * flashing the document before the overlay covers it.
 		 */
 		const params = new URLSearchParams(location.search);
-		let seen = false;
-		try {
-			const stamp = Number(localStorage.getItem('ii:built-at') || 0);
-			seen =
-				!!sessionStorage.getItem('ii:built') ||
-				(stamp > 0 && Date.now() - stamp < 7 * 24 * 60 * 60 * 1000);
-		} catch (error) {
-			/* Blocked storage means they watch it again. */
-		}
-
 		const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const replay = location.pathname.replace(/\.html$/, '').endsWith('/replay');
-		if (buildEnabled && (replay || (!seen && !params.has('skip') && !still))) {
+		if (buildEnabled && !params.has('skip') && !still) {
 			root.classList.add('js-build');
 		}
 

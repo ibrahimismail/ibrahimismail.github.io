@@ -20,6 +20,7 @@ import stackSource from '../content/stack.ts?raw';
 import busSource from '../scripts/extension-bus.ts?raw';
 import scopeSource from '../scripts/scope-engine.ts?raw';
 import klikSource from '../scripts/kliknote.ts?raw';
+import deriveSource from '../lib/derive.ts?raw';
 
 import { EXPERIENCE } from '../content/experience';
 import { SYSTEMS } from '../content/systems';
@@ -38,6 +39,10 @@ type Step = {
 	optional?: boolean;
 };
 
+/*
+ * The steps follow the content: a hidden section takes its step with it, rather than leaving
+ * the transcript writing a file whose output nobody can scroll to.
+ */
 const steps: (Step | null)[] = [
 	{
 		tool: 'Read',
@@ -53,21 +58,25 @@ const steps: (Step | null)[] = [
 		reveals: 'timeline',
 		code: highlightCode(excerpt(experienceSource, 'export const EXPERIENCE', 15)),
 	},
-	{
-		tool: 'Write',
-		arg: 'scripts/scope-engine.ts',
-		out: 'resolver · transitive grants',
-		reveals: 'systems',
-		code: highlightCode(excerpt(scopeSource, 'function resolve(', 16)),
-	},
-	{
-		tool: 'Write',
-		arg: 'scripts/extension-bus.ts',
-		out: `${SYSTEMS.length} systems · 5 scenarios`,
-		reveals: 'systems',
-		optional: true,
-		code: highlightCode(excerpt(busSource, 'function travel(hop', 15)),
-	},
+	SYSTEMS.length
+		? {
+				tool: 'Write',
+				arg: 'scripts/scope-engine.ts',
+				out: 'resolver · transitive grants',
+				reveals: 'systems',
+				code: highlightCode(excerpt(scopeSource, 'function resolve(', 16)),
+			}
+		: null,
+	SYSTEMS.length
+		? {
+				tool: 'Write',
+				arg: 'scripts/extension-bus.ts',
+				out: `${SYSTEMS.length} systems · 5 scenarios`,
+				reveals: 'systems',
+				optional: true,
+				code: highlightCode(excerpt(busSource, 'function travel(hop', 15)),
+			}
+		: null,
 	VENTURE
 		? {
 				tool: 'Write',
@@ -80,10 +89,17 @@ const steps: (Step | null)[] = [
 		: null,
 	{
 		tool: 'Read',
+		arg: 'lib/derive.ts',
+		out: 'counts, periods, server-first ordering',
+		reveals: 'timeline',
+		optional: true,
+		code: highlightCode(excerpt(deriveSource, 'export function duration', 14)),
+	},
+	{
+		tool: 'Read',
 		arg: 'content/stack.ts',
 		out: 'two halves, server first',
 		reveals: 'stack',
-		optional: true,
 		code: highlightCode(excerpt(stackSource, 'export const STACK', 14)),
 	},
 	{
