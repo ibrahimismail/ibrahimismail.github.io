@@ -34,12 +34,12 @@ import { STACK } from '../content/stack';
 								</dt>
 								<dd>
 									{/* Each term needs its own edge: several are two words, and spacing
-									alone left "Protocol Buffers GraphQL REST" ambiguous. An outline
-									rather than a filled block — a grid of grey fills with no borders
-									reads as noise before it reads as a list. */}
+									alone left "Protocol Buffers GraphQL REST" ambiguous. Raised off
+									the page and outlined — the fill alone, with no border, read as
+									noise before it read as a list. */}
 									<p class="flex flex-wrap gap-1.5 font-mono text-[0.8125rem] text-text-hi">
 										{group.main.map((entry) => (
-											<span class="rounded border border-border px-1.5 py-0.5">
+											<span class="rounded border border-border bg-surface px-1.5 py-0.5">
 												{entry}
 											</span>
 										))}
